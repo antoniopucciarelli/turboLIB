@@ -6,7 +6,8 @@
 #       -- airfoil rotation subroutine
 #       -- turbomachinery stages plot 
 #       -- velocity triangles plot 
-#
+#       -- radial flow deflection  
+#       
 
 # importing libraries
 import matplotlib.pyplot as plt 
