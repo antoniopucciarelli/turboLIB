@@ -54,19 +54,26 @@ class stator:
             plt.axis('equal')
             plt.show()
 
-    def foilRotation(self):
+    def foilRotation(self, dim='deg'):
         '''
         Airfoil rotation function
 
-            function needs:
-                self.foil       -- airfoil coordinates data
+            function input:
+                self
+                +.foil          -- airfoil coordinates data
                                 -- expressed in [x, y] numpy array format
-                self.metalAngle -- airfoil metal angle
-                                -- in radiant
+                +.metalAngle    -- airfoil metal angle
+                dim             -- sets the angle dimensions 
+                                -- radiants: rad
+                                -- degrees: deg
         '''
 
         # profile rotation due to stagger angle
         gamma = self.metalAngle
+        if dim == 'deg':
+            # angle conversion
+            gamma = np.deg2rad(gamma)
+        # matrix computation
         rotMatrix = np.matrix([[np.cos(gamma), -np.sin(gamma)],[np.sin(gamma), np.cos(gamma)]])
 
         # coordinate rotation
