@@ -6,67 +6,110 @@
 #       this script sets the rotor class for the turbomachinery initial design 
 #       
 
+import numpy as np 
+import matplotlib.pyplot as plt 
+import warnings
+
 class rotor:
     '''
     Rotor object, it is used in the stage object.
         AIM:
-            --- rotor geoemtry description 
-            --- rotor thermodynamics 
+            --- stator geoemtry description 
+            --- stator thermodynamics 
     '''
-    def __init__(self, ID, metalAngle = np.NaN, solidity = np.NaN, velVec = np.array([[0,0],[0,0]])):
-        self.ID = ID
-        self.metalAngle = metalAngle 
-        self.solidity = solidity 
-        self.velVec = velVec
+    def __init__(self, ID, angle = np.NaN, pitch = np.NaN, chord = np.NaN, velocity = np.array([[0,0],[0,0]]), airfoilName = 'NoName'):
+        '''
+        Rotor object declaration: 
+            variables:
+                ID          --- stator name/identifier
+                angle       --- angle between the chord and the axial direction 
+                pitch       --- distance between 2 vanes/blades in the stator
+                chord       --- vane/blade aerodynamic chord
+                velocity    --- 2x2 vector that stores the absolute velocity ad the leading edge and the trainling edge of the stator vane
+                            --- e.g. velocity = | V1x, V1y |
+                            ---                 | V2x, V2y |
+                airfoilName --- name of the airfoil used in the rotor
+        '''
+        self.ID             = ID
+        self.angle          = angle
+        self.pitch          = pitch
+        self.chord          = chord
+        self.velocity       = velocity
+        self.airfoilName    = airfoilName
+        self.setSolidity()
+    
+    def print(self):
+        ''' 
+        Rotor properties printout
+        '''
+        
+        print('* ROTOR *')
+        print('-- ID    {0:d}'.format(self.ID))
+        print('-- angle {0:2.2f}'.format(self.angle))
+        print('-- chord {0:2.2f}'.format(self.chord))
+        print('-- pitch {0:2.2f}\n'.format(self.pitch))
+        
+    def setAngle(self, angle):
+        '''
+        Rotor aerodynamic angle with respect to the axial flow direction
+        '''
+        self.angle = angle 
 
-    def setMetalAngle(self, metalAngle):
-        self.metalAngle = metalAngle
+    def setSolidity(self):
+        '''
+        Rotor solidity computation
+        '''
 
-    def setSolidity(self, solidity):
-        # value check
-        if solidity < 0.0:
-            raise ValueError('Input error: solidity < 0.')
+        if self.chord != np.NaN and self.pitch != np.NaN:
+            self.solidity = self.chord * self.pitch
         else:
-            self.solidity = solidity
+            self.solidity = np.NaN
+                
+    def setVelocity(self, velocity):
+        ''' 
+        Rotor velocity vector allocation 
+        '''
 
-    def setVelVec(self, velVec):
-        # velocity array dimension check
-        if velVec.shape == (2,2):
-            self.velVec = velVec
+        if velocity.shape == (2,2):
+            self.velocity = velocity
         else:
             raise ValueError('Input error: velVec dimension is wrong.')
-    
+
     def setFoil(self, foilName, plot=False):
-        # foilName.txt file should be made with xFoil
+        '''
+        Rotor blade airfoil shape setting
+            foil generation tip: 
+                --- "foilName.txt" file should be made with xFoil
+                --- each airfoil "foilName.txt" file should be stored in /data/airfoils/ 
+        '''
+
         self.foil = np.loadtxt(foilName,skiprows=1)
-        
+
         if plot:
             plt.figure()
             plt.plot(self.foil[:,0], self.foil[:,1], 'b')
-            plt.title(self.ID)
+            plt.title('rotor.ID = {0:d}\nrotor.chord = {1:2.2f}'.format(self.ID, self.chord))
             plt.axis('equal')
             plt.show()
 
-    def foilRotation(self, dim='deg'):
+    def foilRotation(self, unit='deg'):
         '''
         Airfoil rotation function
 
-            function input:
-                self
-                +.foil          -- airfoil coordinates data
+            function needs:
+                self.foil       -- airfoil coordinates data
                                 -- expressed in [x, y] numpy array format
-                +.metalAngle    -- airfoil metal angle
-                dim             -- sets the angle dimensions 
-                                -- radiants: rad
-                                -- degrees: deg
+                self.angle      -- airfoil angle with respect to the axial direction of the 
+                                -- in radiant
+                unit            -- defines angle units
+                                -- if == deg the foil angle will be converted in radiants
         '''
 
         # profile rotation due to stagger angle
-        gamma = self.metalAngle
-        if dim == 'deg':
-            # angle conversion
+        gamma = self.angle
+        if unit == 'deg':
             gamma = np.deg2rad(gamma)
-        # matrix computation
+
         rotMatrix = np.matrix([[np.cos(gamma), -np.sin(gamma)],[np.sin(gamma), np.cos(gamma)]])
 
         # coordinate rotation
@@ -74,8 +117,13 @@ class rotor:
             self.foil[ii,:] = np.matmul(rotMatrix, self.foil[ii,:])
 
     def plot(self):
+        '''
+        Rotor airfoil plot
+        '''
+
         plt.figure()
         plt.plot(self.foil[:,0], self.foil[:,1], 'b')
-        plt.title(self.ID)
+        plt.title('rotor.ID = {0:d}\nrotor.chord = {1:2.2f}'.format(self.ID, self.chord))
         plt.axis('equal')
         plt.show()
+
