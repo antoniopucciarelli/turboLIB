@@ -1,9 +1,9 @@
 include <rotorCoords.scad>
 include <statorCoords.scad>
 
-nRotorBlades1 = 30; 
+nRotorBlades1 = 40; 
 alphaRotor1 = floor(360/nRotorBlades1);
-rotorStaggerAngle1 = 30;
+rotorStaggerAngle1 = 60;
 rotorOrigin1 = [0, 0, 4];
 rotorBladeHeight1 = 2;
 
@@ -21,7 +21,7 @@ for(ii = [0:nRotorBlades1-1]){
 
 nStatorBlades1 = 30; 
 alphaStator1 = floor(360/nStatorBlades1);
-statorStaggerAngle1 = -60;
+statorStaggerAngle1 = 10;
 statorOrigin1 = [2, 0, 4];
 statorBladeHeight1 = 2;
 
