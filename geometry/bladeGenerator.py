@@ -8,6 +8,7 @@
 #
 
 # importing libraries
+from re import X
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -53,16 +54,16 @@ class geometryData:
             plt.show()
 
         # data allocation -- points 
-        self.X      = self.x 
-        self.Yupper = yUpper
-        self.Ylower = yLower
-        self.T      = t 
+        self.X       = self.x 
+        self.Yupper  = yUpper
+        self.Ylower  = yLower
+        self.T       = t 
+        self.Ycamber = yCamber
 
         # data allocation -- vectors 
-        self.upper = np.array([self.x, yUpper, np.zeros(self.x.shape[0])])
-        self.lower = np.array([self.x, yLower, np.zeros(self.x.shape[0])])
-
-        return yCamber, yUpper, yLower, t 
+        self.upper  = np.array([self.x, yUpper, np.zeros(self.x.shape[0])])
+        self.lower  = np.array([self.x, yLower, np.zeros(self.x.shape[0])])
+        self.camber = np.array([self.x, yCamber, np.zeros(self.x.shape[0])]) 
 
     def geometryRotation(self, yaw, pitch=0, plot=False):
         '''
@@ -97,35 +98,45 @@ class geometryData:
         # rotation lower surface 
         self.lower = np.matmul(rotMatrix, self.lower)
 
+        # rotation camber line 
+        self.camber = np.matmul(rotMatrix, self.camber)
+
         # variables allocation 
         # -- there was a problem with the 3D plotting (x,y,z) values 
         # -- in order to correct this problem -> raw allocation of data
-        x  = np.zeros(self.upper.shape[1],)
-        y  = np.zeros(self.upper.shape[1],)
-        z  = np.zeros(self.upper.shape[1],)
-        y1 = np.zeros(self.upper.shape[1],)
-        z1 = np.zeros(self.upper.shape[1],)
-        
+        x       = np.zeros(self.upper.shape[1],)
+        yUpper  = np.zeros(self.upper.shape[1],)
+        zUpper  = np.zeros(self.upper.shape[1],)
+        yLower  = np.zeros(self.upper.shape[1],)
+        zLower  = np.zeros(self.upper.shape[1],)
+        yCamber = np.zeros(self.upper.shape[1],)
+        zCamber = np.zeros(self.upper.shape[1],)
+
         for ii in range(self.upper.shape[1]):
-            x[ii]  = self.upper[0,ii]
-            y[ii]  = self.upper[1,ii]
-            z[ii]  = self.upper[2,ii]
-            y1[ii] = self.lower[1,ii]
-            z1[ii] = self.lower[2,ii]
+            x[ii]       = self.upper[0,ii]
+            yUpper[ii]  = self.upper[1,ii]
+            zUpper[ii]  = self.upper[2,ii]
+            yLower[ii]  = self.lower[1,ii]
+            zLower[ii]  = self.lower[2,ii]
+            yCamber[ii] = self.camber[1,ii]
+            zCamber[ii] = self.camber[2,ii]
 
         # data reallocation 
-        self.upper = np.array([x, y, z])
-        self.lower = np.array([x, y1, z1])        
+        self.upper  = np.array([x, yUpper, zUpper])
+        self.lower  = np.array([x, yLower, zLower])
+        self.camber = np.array([x, yCamber, zCamber])        
 
         if plot:
             # plotting blade section 
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
-            ax.set_box_aspect((np.ptp(x), np.ptp(y), np.ptp(z)))
+            ax.set_box_aspect((np.ptp(x), np.ptp(yUpper), np.ptp(zUpper)))
             plt.plot(self.X, self.Yupper, 0, '--r')
             plt.plot(self.x, self.Ylower, 0, '--r')
-            plt.plot(x, y , z,  'k')
-            plt.plot(x, y1, z1, 'k')
+            plt.plot(self.x, self.Ycamber, 0, '-*r')
+            plt.plot(x, yUpper, zUpper, 'k')
+            plt.plot(x, yLower, zLower, 'k')
+            plt.plot(x, yCamber, zCamber, '*k')
             plt.title(r'$\alpha_g = $ {0:.2f}'.format(yaw) + '\n' + r'$\zeta_g = $ {0:.2f}'.format(pitch))
             plt.show()
 
@@ -141,48 +152,79 @@ class geometryData:
         # variables allocation 
         # -- there was a problem with the 3D plotting (x,y,z) values 
         # -- in order to correct this problem -> raw allocation of data
-        x  = np.zeros(self.upper.shape[1],)
-        y  = np.zeros(self.upper.shape[1],)
-        z  = np.zeros(self.upper.shape[1],)
-        y1 = np.zeros(self.upper.shape[1],)
-        z1 = np.zeros(self.upper.shape[1],)
-        
+        x       = np.zeros(self.upper.shape[1],)
+        yUpper  = np.zeros(self.upper.shape[1],)
+        zUpper  = np.zeros(self.upper.shape[1],)
+        yLower  = np.zeros(self.upper.shape[1],)
+        zLower  = np.zeros(self.upper.shape[1],)
+        yCamber = np.zeros(self.upper.shape[1],)
+        zCamber = np.zeros(self.upper.shape[1],)
+
         for ii in range(self.upper.shape[1]):
-            x[ii]  = self.upper[0,ii]
-            y[ii]  = self.upper[1,ii]
-            z[ii]  = self.upper[2,ii]
-            y1[ii] = self.lower[1,ii]
-            z1[ii] = self.lower[2,ii]
+            x[ii]       = self.upper[0,ii]
+            yUpper[ii]  = self.upper[1,ii]
+            zUpper[ii]  = self.upper[2,ii]
+            yLower[ii]  = self.lower[1,ii]
+            zLower[ii]  = self.lower[2,ii]
+            yCamber[ii] = self.camber[1,ii]
+            zCamber[ii] = self.camber[2,ii]
 
         if plot:
             # plotting blade section 
             # initial blade + rotated blade
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
-            ax.set_box_aspect((np.ptp(x), np.ptp(y), np.ptp(z)))
+            ax.set_box_aspect((np.ptp(x), np.ptp(yUpper), np.ptp(zUpper)))
             plt.plot(self.X, self.Yupper, 0, '--r')
             plt.plot(self.x, self.Ylower, 0, '--r')
-            plt.plot(x, y , z,  '--b')
-            plt.plot(x, y1, z1, '--b')
+            plt.plot(self.x, self.Ycamber, 0, '-*r')
+            plt.plot(x, yUpper, zUpper, '--b')
+            plt.plot(x, yLower, zLower, '--b')
+            plt.plot(x, yCamber, zCamber, '-*b')
 
         # upper surface translation 
-        x = x + translationVec[0]
-        y = y + translationVec[1]
-        z = z + translationVec[2]
+        x      = x      + translationVec[0]
+        yUpper = yUpper + translationVec[1]
+        zUpper = zUpper + translationVec[2]
 
         # lower surface translation 
-        y1 = y1 + translationVec[1]
-        z1 = z1 + translationVec[2] 
+        yLower = yLower + translationVec[1]
+        zLower = zLower + translationVec[2] 
+
+        # camber line translation
+        yCamber = yCamber + translationVec[1]
+        zCamber = zCamber + translationVec[2]
 
         # data reallocation 
-        self.upper = np.array([x, y, z])
-        self.lower = np.array([x, y1, z1]) 
+        self.upper  = np.array([x, yUpper, zUpper])
+        self.lower  = np.array([x, yLower, zLower]) 
+        self.camber = np.array([x, yCamber, zCamber])
 
         if plot:
             # plot the translated blade
-            plt.plot(x, y , z,  'k')
-            plt.plot(x, y1, z1, 'k')
+            plt.plot(x, yUpper, zUpper, 'k')
+            plt.plot(x, yLower, zLower, 'k')
+            plt.plot(x, yCamber, zCamber, '--k')
             plt.show()
+
+def writeFacet(file,versor,vec1,vec2,vec3):
+    '''
+    This function allows writing facet in stl format.
+        inputs:
+            file    -- file object 
+            versor  -- normal versor vector 
+            vec1    -- facet triangle (1) point
+            vec2    -- facet triangle (2) point
+            vec3    -- facet triangle (3) point
+    '''
+    # writing facet in stl format into file 
+    file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+    file.write('\t\touter loop\n')
+    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+    file.write('\t\tendloop\n')
+    file.write('\tendfacet\n')
 
 def STLsaving(airfoils, STLname='cad'):
     '''
@@ -195,7 +237,9 @@ def STLsaving(airfoils, STLname='cad'):
     '''
     # stl generation 
     file = open(STLname + '.stl', 'w')
-    file.write('solid blade\n')
+
+    # begin upper + lower surface stl
+    file.write('solid bladeSurface\n')
 
     # loop over all the span positions
     for jj in range(len(airfoils)-1):
@@ -207,30 +251,26 @@ def STLsaving(airfoils, STLname='cad'):
             vec2 = np.array(airfoils[jj].upper[:,ii+1])
             vec3 = np.array(airfoils[jj+1].upper[:,ii])
             versor = np.cross(vec3 - vec1, vec2 - vec1)
-            # writing data
+            # direction check -- for the upper surface the versor direction is towards y > 0 
+            if versor[1] < 0: 
+                versor = - versor 
+            # vector normalization
             versor = versor / np.linalg.norm(versor)
-            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-            file.write('\t\touter loop\n')
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-            file.write('\t\tendloop\n')
-            file.write('\tendfacet\n')
+            # writing data
+            writeFacet(file, versor, vec1, vec2, vec3)
 
             # versor computation
             vec1 = np.array(airfoils[jj+1].upper[:,ii])
             vec2 = np.array(airfoils[jj+1].upper[:,ii+1])
             vec3 = np.array(airfoils[jj].upper[:,ii+1])
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
-            # writing data
+            # direction check -- for the upper surface the versor direction is towards y > 0 
+            if versor[1] < 0: 
+                versor = - versor 
+            # vector normalization 
             versor = versor / np.linalg.norm(versor)
-            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-            file.write('\t\touter loop\n')
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-            file.write('\t\tendloop\n')
-            file.write('\tendfacet\n')
+            # writing data
+            writeFacet(file, versor, vec1, vec2, vec3)
 
         # lower surface stl face generation 
         for ii in range(naca65_hub.lower.shape[1]-1):
@@ -239,56 +279,166 @@ def STLsaving(airfoils, STLname='cad'):
             vec2 = np.array(airfoils[jj].lower[:,ii+1])
             vec3 = np.array(airfoils[jj+1].lower[:,ii])
             versor = np.cross(vec3 - vec1, vec2 - vec1)
-            # writing data
+            # direction check -- for the upper surface the versor direction is towards y < 0 
+            if versor[1] > 0: 
+                versor = - versor 
+            # vectorn normalization
             versor = versor / np.linalg.norm(versor)
-            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-            file.write('\t\touter loop\n')
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-            file.write('\t\tendloop\n')
-            file.write('\tendfacet\n')
+            # writing data
+            writeFacet(file, versor, vec1, vec2, vec3)
 
             # versor computation
             vec1 = np.array(airfoils[jj+1].lower[:,ii])
             vec2 = np.array(airfoils[jj+1].lower[:,ii+1])
             vec3 = np.array(airfoils[jj].lower[:,ii+1])
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
-            # writing data
+            # direction check -- for the upper surface the versor direction is towards y < 0 
+            if versor[1] > 0: 
+                versor = - versor 
+            # vector normalization
             versor = versor / np.linalg.norm(versor)
-            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-            file.write('\t\touter loop\n')
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-            file.write('\t\tendloop\n')
-            file.write('\tendfacet\n')
-
-    file.write('endsolid blade\n')
+            # writing data
+            writeFacet(file, versor, vec1, vec2, vec3)
     
+    # end blade 
+    file.write('endsolid bladeSurface\n')
+
+    # begin bottom blade surface -- hub
+    file.write('solid bladeBottom\n')
+
+    # closing airfoil [hub]
+    for ii in range(airfoils[0].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[0].camber[:,ii+1])
+        vec2 = np.array(airfoils[0].upper[:,ii])
+        vec3 = np.array(airfoils[0].upper[:,ii+1])
+        # versor computation 
+        versor = [0, 0, -1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+
+    for ii in range(airfoils[0].lower.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[0].camber[:,ii+1])
+        vec2 = np.array(airfoils[0].lower[:,ii])
+        vec3 = np.array(airfoils[0].lower[:,ii+1])
+        # versor computation 
+        versor = [0, 0, -1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+
+    for ii in range(airfoils[0].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[0].camber[:,ii+2])
+        vec2 = np.array(airfoils[0].upper[:,ii+1])
+        vec3 = np.array(airfoils[0].camber[:,ii+1])
+        # versor computation 
+        versor = [0, 0, -1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+    
+    for ii in range(airfoils[0].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[0].camber[:,ii+2])
+        vec2 = np.array(airfoils[0].lower[:,ii+1])
+        vec3 = np.array(airfoils[0].camber[:,ii+1])
+        # versor computation 
+        versor = [0, 0, -1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+
+    # end blade bottom surface -- hub 
+    file.write('endsolid bladeBottom\n')
+
+    # begin top blade surface -- tip
+    file.write('solid bladeTop\n')
+
+    # closing airfoil [tip]
+    for ii in range(airfoils[-1].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[-1].camber[:,ii+1])
+        vec2 = np.array(airfoils[-1].upper[:,ii])
+        vec3 = np.array(airfoils[-1].upper[:,ii+1])
+        # versor computation 
+        versor = [0, 0, 1]
+        # writing data
+        file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+        file.write('\t\touter loop\n')
+        file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+        file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+        file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+        file.write('\t\tendloop\n')
+        file.write('\tendfacet\n')
+
+    for ii in range(airfoils[-1].lower.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[-1].camber[:,ii+1])
+        vec2 = np.array(airfoils[-1].lower[:,ii])
+        vec3 = np.array(airfoils[-1].lower[:,ii+1])
+        # versor computation 
+        versor = [0, 0, 1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+
+    for ii in range(airfoils[-1].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[-1].camber[:,ii+2])
+        vec2 = np.array(airfoils[-1].upper[:,ii+1])
+        vec3 = np.array(airfoils[-1].camber[:,ii+1])
+        # versor computation 
+        versor = [0, 0, 1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+    
+    for ii in range(airfoils[-1].upper.shape[1]-2):
+        # versor computation 
+        vec1 = np.array(airfoils[-1].camber[:,ii+2])
+        vec2 = np.array(airfoils[-1].lower[:,ii+1])
+        vec3 = np.array(airfoils[-1].camber[:,ii+1])
+        # versor computation 
+        versor = [0, 0, 1]
+        # writing data
+        writeFacet(file, versor, vec1, vec2, vec3)
+    
+    # end blade top surface -- tip 
+    file.write('endsolid bladeTop\n')
+
     # file closure 
     file.close()
 
 # TIP airfoil setup 
 # getting airfoil data
-naca65_tip = geometryData('data/airfoils/naca65.txt')
+naca65_tip = geometryData('../data/airfoils/naca65.txt')
 
 # airfoil shape 
-_ = naca65_tip.geometryFitting(Cl=1.1, chord=0.75, plot=False)
+naca65_tip.geometryFitting(Cl=1.1, chord=0.6, plot=False)
 
 # airfoil 3D rotation
-naca65_tip.geometryRotation(10, 1, plot=False)
+naca65_tip.geometryRotation(10, 5, plot=False)
 
 # airfoil 3D translation 
-naca65_tip.geometryTranslation([0, 0, 0.2], plot=False)
+naca65_tip.geometryTranslation([0, 0, 0.7], plot=False)
+
+# MIDSPAN airfoil setup 
+# getting airfoil data
+naca65_mid = geometryData('../data/airfoils/naca65.txt')
+
+# airfoil shape 
+naca65_mid.geometryFitting(Cl=1.15, chord=0.8, plot=False)
+
+# airfoil 3D rotation
+naca65_mid.geometryRotation(5, 3, plot=False)
+
+# airfoil 3D translation 
+naca65_mid.geometryTranslation([0, 0, 0.35], plot=False)
 
 # HUB airfoil setup 
 # getting airfoil data 
-naca65_hub = geometryData('data/airfoils/naca65.txt')
+naca65_hub = geometryData('../data/airfoils/naca65.txt')
 
 # airfoil shape 
-_ = naca65_hub.geometryFitting(Cl=1.4, chord=1, plot=False)
+naca65_hub.geometryFitting(Cl=1.4, chord=1, plot=False)
 
 # stl generation 
-airfoils = [naca65_hub, naca65_tip]
-STLsaving(airfoils, STLname='rotor1')
+airfoils = [naca65_hub, naca65_mid, naca65_tip]
+STLsaving(airfoils, STLname='cad')
