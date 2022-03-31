@@ -1,170 +1,294 @@
-#!/usr/bin/python3
+# TURBOMACHINERY -- LIBRARY FOR THE INITIAL TURBOMACHINERY DESIGN
+# AUTHOR: antonio pucciarelli 
+#
+# PROGRAM DESCRIPTION
+#   TURBOMACHINERY DESIGN CLASS:
+#       this script sets the rotor/stator blade geometry 
+#           -- for now the blade geometry is set as a NACA-65 class airfoil modified with respect to the target Cl of the section       
+#
 
 # importing libraries
-import sys
-import os
-import numpy as np
-import matplotlib.pyplot as plt
+import numpy as np 
+import matplotlib.pyplot as plt 
 
-# importing user defined packages 
-sys.path.append(os.getcwd() + '/../parablade')
-from parablade.blade_2D_camber_thickness import Blade2DCamberThickness
+# importing NACA-65 coords
+class geometryData:
+    def __init__(self, file):
+        '''
+        Airfoil data object, it is used for blade geometry generation.
+        '''
+        # data extraction
+        data = np.loadtxt(file, comments='#', usecols=(0,1,2))
+        # data allocation
+        self.x = np.array(data[:,0] / 100)
+        self.y = np.array(data[:,1] / 100)
+        self.t = np.array(data[:,2] / 100)
 
-# 
-# ROTOR GENERATION 
-#
-dim = 1000
-# design variables allocation
-design_variables = {}
-design_variables['stagger'] = -45 * np.pi / 180
-design_variables['theta_in'] = +30 * np.pi / 180
-design_variables['theta_out'] = -70 * np.pi / 180
-design_variables['radius_in'] = 0.05
-design_variables['radius_out'] = 0.01
-design_variables['dist_in'] = 0.60
-design_variables['dist_out'] = 0.5
-design_variables['thickness_upper_1'] = 0.15
-design_variables['thickness_upper_2'] = 0.20
-design_variables['thickness_upper_3'] = 0.13
-design_variables['thickness_upper_4'] = 0.07
-design_variables['thickness_upper_5'] = 0.03
-design_variables['thickness_upper_6'] = 0.02
-design_variables['thickness_lower_1'] = 0.15
-design_variables['thickness_lower_2'] = 0.20
-design_variables['thickness_lower_3'] = 0.13
-design_variables['thickness_lower_4'] = 0.07
-design_variables['thickness_lower_5'] = 0.03
-design_variables['thickness_lower_6'] = 0.02
+    def geometryFitting(self, Cl, chord=1, plot=False):
+        '''
+        Airfoil geometry fitting, it is used for geometry modification with respect to the given Cl.
+            inputs: 
+                Cl      -- blade lift coefficient
+                chord   -- airfoil chord
+                plot    -- showing airfoil coordinates
+        '''
+        # camber line computation
+        yCamber = self.y * Cl * chord
+        
+        # thickness computation  
+        t = self.t * Cl * chord 
+        
+        # upper line computation 
+        yUpper = yCamber + t/2
 
-# convert standard-python scalars into singleton numpy arrays
-for i in design_variables:
-    design_variables[i] = np.asarray(design_variables[i])
+        # lower line computation 
+        yLower = yCamber - t/2  
 
-# rotor object setup
-u      = np.linspace(0.00, 1.00, dim)
-rotor0 = Blade2DCamberThickness(design_variables)
-rotor0.get_section_coordinates(u)
-rotor0.check_analytic_curvature()
+        if plot:
+            plt.figure()
+            plt.plot(self.x, yCamber, 'r')
+            plt.plot(self.x, yUpper, 'b', linewidth=2)
+            plt.plot(self.x, yLower, 'k', linewidth=2)
+            plt.axis('equal')
+            plt.show()
 
-# upper and lower part of the 2D airfoil generation 
-upper  = np.real(rotor0.get_upper_side_coordinates(u))
-lower  = np.real(rotor0.get_lower_side_coordinates(u))
-height = 0 
+        # data allocation -- points 
+        self.X      = self.x 
+        self.Yupper = yUpper
+        self.Ylower = yLower
+        self.T      = t 
 
-# rotor array declaration 
-rotor0 = np.zeros(shape = (upper.shape[1]+lower.shape[1]-1, 3))
-for ii in range(upper.shape[1]):
-    rotor0[ii,0] = upper[0, ii]
-    rotor0[ii,1] = upper[1, ii]
-    rotor0[ii,2] = height
+        # data allocation -- vectors 
+        self.upper = np.array([self.x, yUpper, np.zeros(self.x.shape[0])])
+        self.lower = np.array([self.x, yLower, np.zeros(self.x.shape[0])])
 
-for ii in range(lower.shape[1]-1):
-    rotor0[upper.shape[1]+ii, 0] = lower[0, ii+1]
-    rotor0[upper.shape[1]+ii, 1] = lower[1, ii+1]
-    rotor0[upper.shape[1]+ii, 2] = height
+        return yCamber, yUpper, yLower, t 
 
-# 
-# ROTOR GENERATION 
-#
+    def geometryRotation(self, yaw, pitch=0, plot=False):
+        '''
+        Airfoil geometry rotation:
+            -- yaw      -> [deg] blade to blade plane -- metal angle  
+            -- pitch    -> [deg] meridional plane     -- due to annulus diameter variation
+            -- plot     -- boolean value for the blade plotting
+        '''
 
-# design variables allocation
-design_variables = {}
-design_variables['stagger'] = -45 * np.pi / 180
-design_variables['theta_in'] = +30 * np.pi / 180
-design_variables['theta_out'] = -70 * np.pi / 180
-design_variables['radius_in'] = 0.05
-design_variables['radius_out'] = 0.01
-design_variables['dist_in'] = 0.60
-design_variables['dist_out'] = 0.5
-design_variables['thickness_upper_1'] = 0.15
-design_variables['thickness_upper_2'] = 0.20
-design_variables['thickness_upper_3'] = 0.13
-design_variables['thickness_upper_4'] = 0.07
-design_variables['thickness_upper_5'] = 0.03
-design_variables['thickness_upper_6'] = 0.02
-design_variables['thickness_lower_1'] = 0.15
-design_variables['thickness_lower_2'] = 0.20
-design_variables['thickness_lower_3'] = 0.13
-design_variables['thickness_lower_4'] = 0.07
-design_variables['thickness_lower_5'] = 0.03
-design_variables['thickness_lower_6'] = 0.02
+        # alpha == roll == 0
+        roll = 0
+        cA = np.cos(np.deg2rad(roll))
+        sA = np.sin(np.deg2rad(roll))
+        # beta == pitch --> blade angle in meridional plane
+        cB = np.cos(np.deg2rad(pitch))
+        sB = np.sin(np.deg2rad(pitch))
+        # gamma == yaw --> blade to blade AOA 
+        cG = np.cos(np.deg2rad(yaw))
+        sG = np.sin(np.deg2rad(yaw))
 
-# convert standard-python scalars into singleton numpy arrays
-for i in design_variables:
-    design_variables[i] = np.asarray(design_variables[i])
+        # 3D rotation matrix 
+        # | cosB * cosG, sinA * sinB * cosG - cosA * sinG, cosA * sinB * cosG + sinA * sinG  |
+        # | cosB * sinG, sinA * sinB * sinG + cosA * cosG, cosA * sinB * sinG - sinA * cosG  |
+        # |      - sinB,                      sinA * cosB,                      cosA * cosB  |
+        rotMatrix = np.matrix([[cB * cG, sA * sB * cG - cA * sG, cA * sB * cG + sA * sG], 
+                               [cB * sG, sA * sB * sG + cA * cG, cA * sB * sG - sA * cG],
+                               [   - sB,                sA * cB,                cA * cB]])
 
-# rotor object setup
-u       = np.linspace(0.00, 1.00, dim)
-rotor1 = Blade2DCamberThickness(design_variables)
-rotor1.get_section_coordinates(u)
-rotor1.check_analytic_curvature()
+        # rotating upper surface 
+        self.upper = np.matmul(rotMatrix, self.upper)
 
-# upper and lower part of the 2D airfoil generation 
-upper  = np.real(rotor1.get_upper_side_coordinates(u))
-lower  = np.real(rotor1.get_lower_side_coordinates(u))
-height = 1
+        # rotation lower surface 
+        self.lower = np.matmul(rotMatrix, self.lower)
 
-# translation vector 
-translate = [0, 0, 0]
-# rotation angle in degrees
-alpha = np.deg2rad(30)
-rotMatr = np.matrix([[np.cos(alpha), -np.sin(alpha)],[np.sin(alpha), np.cos(alpha)]])
+        # variables allocation 
+        # -- there was a problem with the 3D plotting (x,y,z) values 
+        # -- in order to correct this problem -> raw allocation of data
+        x  = np.zeros(self.upper.shape[1],)
+        y  = np.zeros(self.upper.shape[1],)
+        z  = np.zeros(self.upper.shape[1],)
+        y1 = np.zeros(self.upper.shape[1],)
+        z1 = np.zeros(self.upper.shape[1],)
+        
+        for ii in range(self.upper.shape[1]):
+            x[ii]  = self.upper[0,ii]
+            y[ii]  = self.upper[1,ii]
+            z[ii]  = self.upper[2,ii]
+            y1[ii] = self.lower[1,ii]
+            z1[ii] = self.lower[2,ii]
 
-# rotor array declaration 
-rotor1 = np.zeros(shape = (upper.shape[1]+lower.shape[1]-1, 3))
-for ii in range(upper.shape[1]):
-    upper[:,ii] = np.matmul(rotMatr, upper[:,ii])
-    rotor1[ii,0] = upper[0, ii] + translate[0]
-    rotor1[ii,1] = upper[1, ii] + translate[1]
-    rotor1[ii,2] = height       + translate[2]
+        # data reallocation 
+        self.upper = np.array([x, y, z])
+        self.lower = np.array([x, y1, z1])        
 
-for ii in range(lower.shape[1]-1):
-    lower[:,ii+1] = np.matmul(rotMatr, lower[:,ii+1])
-    rotor1[lower.shape[1]+ii, 0] = lower[0, ii+1] + translate[0]
-    rotor1[lower.shape[1]+ii, 1] = lower[1, ii+1] + translate[1]
-    rotor1[lower.shape[1]+ii, 2] = height         + translate[2]
+        if plot:
+            # plotting blade section 
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.set_box_aspect((np.ptp(x), np.ptp(y), np.ptp(z)))
+            plt.plot(self.X, self.Yupper, 0, '--r')
+            plt.plot(self.x, self.Ylower, 0, '--r')
+            plt.plot(x, y , z,  'k')
+            plt.plot(x, y1, z1, 'k')
+            plt.title(r'$\alpha_g = $ {0:.2f}'.format(yaw) + '\n' + r'$\zeta_g = $ {0:.2f}'.format(pitch))
+            plt.show()
 
-# saving data
-file = open('rotorCoords.scad', 'w')
-file.write('rotor = [\n')
-# rotor0 saving
-for ii in range(rotor0.shape[0]):
-    file.write('[{0:f}, {1:f}, {2:f}],\n'.format(rotor0[ii,0], rotor0[ii,1], rotor0[ii,2]))
-# rotor1 saving 
-for ii in range(rotor1.shape[0]):
-    file.write('[{0:f}, {1:f}, {2:f}],\n'.format(rotor1[ii,0], rotor1[ii,1], rotor1[ii,2]))
-file.write('];\n')
-file.close()
+    def geometryTranslation(self, translationVec, plot=False):
+        '''
+        Airfoil geometry translation:
+            inputs:
+                translationVec  -- translation vector 
+                plot            -- boolean value for blade plotting 
+            !!! the blade should first rotated and then translated !!!
+        '''
+
+        # variables allocation 
+        # -- there was a problem with the 3D plotting (x,y,z) values 
+        # -- in order to correct this problem -> raw allocation of data
+        x  = np.zeros(self.upper.shape[1],)
+        y  = np.zeros(self.upper.shape[1],)
+        z  = np.zeros(self.upper.shape[1],)
+        y1 = np.zeros(self.upper.shape[1],)
+        z1 = np.zeros(self.upper.shape[1],)
+        
+        for ii in range(self.upper.shape[1]):
+            x[ii]  = self.upper[0,ii]
+            y[ii]  = self.upper[1,ii]
+            z[ii]  = self.upper[2,ii]
+            y1[ii] = self.lower[1,ii]
+            z1[ii] = self.lower[2,ii]
+
+        if plot:
+            # plotting blade section 
+            # initial blade + rotated blade
+            fig = plt.figure()
+            ax = fig.add_subplot(111, projection='3d')
+            ax.set_box_aspect((np.ptp(x), np.ptp(y), np.ptp(z)))
+            plt.plot(self.X, self.Yupper, 0, '--r')
+            plt.plot(self.x, self.Ylower, 0, '--r')
+            plt.plot(x, y , z,  '--b')
+            plt.plot(x, y1, z1, '--b')
+
+        # upper surface translation 
+        x = x + translationVec[0]
+        y = y + translationVec[1]
+        z = z + translationVec[2]
+
+        # lower surface translation 
+        y1 = y1 + translationVec[1]
+        z1 = z1 + translationVec[2] 
+
+        # data reallocation 
+        self.upper = np.array([x, y, z])
+        self.lower = np.array([x, y1, z1]) 
+
+        if plot:
+            # plot the translated blade
+            plt.plot(x, y , z,  'k')
+            plt.plot(x, y1, z1, 'k')
+            plt.show()
+
+def STLsaving(airfoils, STLname='cad'):
+    '''
+    This function saves the blade in .stl format.
+        inputs: 
+            airfoils    -- tuple of airfoils objects
+            STLname     -- .stl file name
+        !!! it is assumed that each airfoil has the same number of description points !!!
+        !!! it is assumed that the each airfoil section element is in sequence with respect the hub !!!
+    '''
+    # stl generation 
+    file = open(STLname + '.stl', 'w')
+    file.write('solid blade\n')
+
+    # loop over all the span positions
+    for jj in range(len(airfoils)-1):
+
+        # upper surface stl face generation 
+        for ii in range(airfoils[jj].upper.shape[1]-1):
+            # versor computation
+            vec1 = np.array(airfoils[jj].upper[:,ii])
+            vec2 = np.array(airfoils[jj].upper[:,ii+1])
+            vec3 = np.array(airfoils[jj+1].upper[:,ii])
+            versor = np.cross(vec3 - vec1, vec2 - vec1)
+            # writing data
+            versor = versor / np.linalg.norm(versor)
+            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+            file.write('\t\touter loop\n')
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+            file.write('\t\tendloop\n')
+            file.write('\tendfacet\n')
+
+            # versor computation
+            vec1 = np.array(airfoils[jj+1].upper[:,ii])
+            vec2 = np.array(airfoils[jj+1].upper[:,ii+1])
+            vec3 = np.array(airfoils[jj].upper[:,ii+1])
+            versor = - np.cross(vec3 - vec1, vec2 - vec1)
+            # writing data
+            versor = versor / np.linalg.norm(versor)
+            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+            file.write('\t\touter loop\n')
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+            file.write('\t\tendloop\n')
+            file.write('\tendfacet\n')
+
+        # lower surface stl face generation 
+        for ii in range(naca65_hub.lower.shape[1]-1):
+            # versor computation
+            vec1 = np.array(airfoils[jj].lower[:,ii])
+            vec2 = np.array(airfoils[jj].lower[:,ii+1])
+            vec3 = np.array(airfoils[jj+1].lower[:,ii])
+            versor = np.cross(vec3 - vec1, vec2 - vec1)
+            # writing data
+            versor = versor / np.linalg.norm(versor)
+            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+            file.write('\t\touter loop\n')
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+            file.write('\t\tendloop\n')
+            file.write('\tendfacet\n')
+
+            # versor computation
+            vec1 = np.array(airfoils[jj+1].lower[:,ii])
+            vec2 = np.array(airfoils[jj+1].lower[:,ii+1])
+            vec3 = np.array(airfoils[jj].lower[:,ii+1])
+            versor = - np.cross(vec3 - vec1, vec2 - vec1)
+            # writing data
+            versor = versor / np.linalg.norm(versor)
+            file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
+            file.write('\t\touter loop\n')
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
+            file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
+            file.write('\t\tendloop\n')
+            file.write('\tendfacet\n')
+
+    file.write('endsolid blade\n')
     
-file = open('cad.stl', 'w')
-file.write('solid blade\n')
-for ii in range(rotor0.shape[0]-1):
-    # versor computation
-    vec1 = np.array(rotor0[ii,:])
-    vec2 = np.array(rotor0[ii+1,:])
-    vec3 = np.array(rotor1[ii,:])
-    versor = np.cross(vec3 - vec1, vec2 - vec1)
-    # writing data
-    file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-    file.write('\t\touter loop\n')
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-    file.write('\t\tendloop\n')
-    file.write('\tendfacet\n')
+    # file closure 
+    file.close()
 
-    # versor computation
-    vec1 = np.array(rotor1[ii,:])
-    vec2 = np.array(rotor1[ii+1,:])
-    vec3 = np.array(rotor0[ii+1,:])
-    # writing data
-    versor = np.cross(vec3 - vec1, vec2 - vec1)
-    file.write('\tfacet normal {0:f} {1:f} {2:f}\n'.format(versor[0], versor[1], versor[2]))
-    file.write('\t\touter loop\n')
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec1[0], vec1[1], vec1[2]))
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec2[0], vec2[1], vec2[2]))
-    file.write('\t\t\tvertex {0:f} {1:f} {2:f}\n'.format(vec3[0], vec3[1], vec3[2]))
-    file.write('\t\tendloop\n')
-    file.write('\tendfacet\n')
-file.write('endsolid blade\n')
-file.close()
+# TIP airfoil setup 
+# getting airfoil data
+naca65_tip = geometryData('data/airfoils/naca65.txt')
+
+# airfoil shape 
+_ = naca65_tip.geometryFitting(Cl=1.1, chord=0.75, plot=False)
+
+# airfoil 3D rotation
+naca65_tip.geometryRotation(10, 1, plot=False)
+
+# airfoil 3D translation 
+naca65_tip.geometryTranslation([0, 0, 0.2], plot=False)
+
+# HUB airfoil setup 
+# getting airfoil data 
+naca65_hub = geometryData('data/airfoils/naca65.txt')
+
+# airfoil shape 
+_ = naca65_hub.geometryFitting(Cl=1.4, chord=1, plot=False)
+
+# stl generation 
+airfoils = [naca65_hub, naca65_tip]
+STLsaving(airfoils, STLname='rotor1')
