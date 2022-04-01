@@ -1,0 +1,3 @@
+# files to ignore 
+*.stl
+__pycache__

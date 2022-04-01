@@ -8,11 +8,10 @@
 #
 
 # importing libraries
-from re import X
 import numpy as np 
 import matplotlib.pyplot as plt 
 
-# importing NACA-65 coords
+# importing coords
 class geometryData:
     def __init__(self, file):
         '''
@@ -140,14 +139,30 @@ class geometryData:
             plt.title(r'$\alpha_g = $ {0:.2f}'.format(yaw) + '\n' + r'$\zeta_g = $ {0:.2f}'.format(pitch))
             plt.show()
 
-    def geometryTranslation(self, translationVec, plot=False):
+    def middleChord(self):
+        '''
+        This function computes the middle chord point of the airfoil.
+            output:
+                middlePoint -- airfoil chord middle point 
+        '''
+
+        self.middlePoint = (self.camber[:,0] + self.camber[:,-1]) / 2 
+
+        return self.middlePoint
+
+    def geometryTranslation(self, translationVec, height, plot=False):
         '''
         Airfoil geometry translation:
             inputs:
-                translationVec  -- translation vector 
+                translationVec  -- translation vector [x, y, z]
+                height          -- airfoil middle chord point height
                 plot            -- boolean value for blade plotting 
             !!! the blade should first rotated and then translated !!!
         '''
+
+        # setting up translationVec 
+        # the airfoil translation is relative the hub chord centre with the addition of height translation 
+        translationVec = translationVec + np.array([0.0, 0.0, height]) - self.middleChord()
 
         # variables allocation 
         # -- there was a problem with the 3D plotting (x,y,z) values 
@@ -207,7 +222,7 @@ class geometryData:
             plt.plot(x, yCamber, zCamber, '--k')
             plt.show()
 
-def writeFacet(file,versor,vec1,vec2,vec3):
+def writeFacet(file, versor, vec1, vec2, vec3):
     '''
     This function allows writing facet in stl format.
         inputs:
@@ -226,7 +241,7 @@ def writeFacet(file,versor,vec1,vec2,vec3):
     file.write('\t\tendloop\n')
     file.write('\tendfacet\n')
 
-def STLsaving(airfoils, STLname='cad'):
+def STLsaving(airfoils, STLname='cad', containerPath='container/'):
     '''
     This function saves the blade in .stl format.
         inputs: 
@@ -236,7 +251,7 @@ def STLsaving(airfoils, STLname='cad'):
         !!! it is assumed that the each airfoil section element is in sequence with respect the hub !!!
     '''
     # stl generation 
-    file = open(STLname + '.stl', 'w')
+    file = open(containerPath + STLname + '.stl', 'w')
 
     # begin upper + lower surface stl
     file.write('solid bladeSurface\n')
@@ -273,7 +288,7 @@ def STLsaving(airfoils, STLname='cad'):
             writeFacet(file, versor, vec1, vec2, vec3)
 
         # lower surface stl face generation 
-        for ii in range(naca65_hub.lower.shape[1]-1):
+        for ii in range(airfoils[jj].lower.shape[1]-1):
             # versor computation
             vec1 = np.array(airfoils[jj].lower[:,ii])
             vec2 = np.array(airfoils[jj].lower[:,ii+1])
@@ -405,40 +420,3 @@ def STLsaving(airfoils, STLname='cad'):
 
     # file closure 
     file.close()
-
-# TIP airfoil setup 
-# getting airfoil data
-naca65_tip = geometryData('../data/airfoils/naca65.txt')
-
-# airfoil shape 
-naca65_tip.geometryFitting(Cl=1.1, chord=0.6, plot=False)
-
-# airfoil 3D rotation
-naca65_tip.geometryRotation(10, 5, plot=False)
-
-# airfoil 3D translation 
-naca65_tip.geometryTranslation([0, 0, 0.7], plot=False)
-
-# MIDSPAN airfoil setup 
-# getting airfoil data
-naca65_mid = geometryData('../data/airfoils/naca65.txt')
-
-# airfoil shape 
-naca65_mid.geometryFitting(Cl=1.15, chord=0.8, plot=False)
-
-# airfoil 3D rotation
-naca65_mid.geometryRotation(5, 3, plot=False)
-
-# airfoil 3D translation 
-naca65_mid.geometryTranslation([0, 0, 0.35], plot=False)
-
-# HUB airfoil setup 
-# getting airfoil data 
-naca65_hub = geometryData('../data/airfoils/naca65.txt')
-
-# airfoil shape 
-naca65_hub.geometryFitting(Cl=1.4, chord=1, plot=False)
-
-# stl generation 
-airfoils = [naca65_hub, naca65_mid, naca65_tip]
-STLsaving(airfoils, STLname='cad')

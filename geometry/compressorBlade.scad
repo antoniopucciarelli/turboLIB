@@ -18,7 +18,7 @@ for(ii = [0:nRotorBlades1-1]){
         rotate(a = ii * alphaRotor1, v = [1, 0, 0]){
             translate(rotorOrigin1){
                 rotate(rotorStaggerAngle1){
-                    import("cad.stl");
+                    import("../container/cad.stl");
                 };
             };
         };

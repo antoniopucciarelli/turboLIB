@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt 
 import numpy as np 
 import warnings
-from turboMachine import * 
+from turboClass.turboMachine import * 
 
 naca1212 = "../data/airfoils/naca1212"
 naca5016 = "../data/airfoils/naca5016"
@@ -47,4 +47,3 @@ turbine.print()
 
 turbine.turboPlot()
 
-turbine.
