@@ -3,6 +3,7 @@
 #
 # PROGRAM DESCRIPTION
 #   THERMODYNAMICS PROCESSES: plot and computation
+#       -- total/static quantities
 #       -- isothermal process
 #       -- isentropic process
 #       -- isobaric process
@@ -25,6 +26,69 @@ unit_mass = pm.config['unit_mass'] = 'kg'
 
 # air object generation 
 air = pm.get('ig.air')
+
+def quantities(V0, Tt0, Pt0, cP, R, gamma, plot=False):
+    '''
+    This function computes the static quantities with respect to the total quantities.
+        inputs:
+            V0      -- velocity 
+            Tt0     -- total temperature
+            Pt0     -- total pressure
+            cP      -- specific heat @ constant pressure
+            R       -- gas constant for a defined gas
+            gamma   -- specific heat ratio
+            plot    -- boolean value for the plot
+    '''
+    # from total temperature definition 
+    # Tt = T + V**2 / (2 * cP) -> T = Tt - V**2 / (2 * cP)
+    T0 = Tt0 - V0**2 / (2*cP)
+    
+    # from the isentropic flow description 
+    # P0 / Pt0 = (T0 / Tt0)**(gamma/(gamma-1))
+    P0 = Pt0 * (T0/Tt0)**(gamma/(gamma-1))
+    
+    # from perfect gas definition
+    # P / rho = R * T -> rho = P / (R * T)
+    rho0 = P0 / (R * T0)
+
+    if plot:
+        fig, host = plt.subplots(figsize=(8,5))        
+        # sovrapposition graphs
+        ax0 = host.twinx()
+        ax1 = host.twinx()
+
+        # fig limit generation 
+        host.set_xlim(min(V0),max(V0))
+        host.set_ylim(0,max(T0))
+        ax0.set_ylim(0,max(P0))
+        ax1.set_ylim(0,max(rho0))
+
+        # axis labels
+        host.set_xlabel(r'$V_0 \ [\frac{m}{s}]$')
+        host.set_ylabel(r'$T_0 \ [K]$')
+        ax0.set_ylabel(r'$P_0 \ [Pa]$')
+        ax1.set_ylabel(r'$\rho_0 \ [\frac{kg}{m^3}]$')
+
+        p1, = host.plot(V0, T0, 'r', label=r'$T_0$')
+        p2, = ax0.plot(V0, P0, 'b', label=r'$P_0$')
+        p3, = ax1.plot(V0, rho0, 'g', label=r'$\rho_0$')
+
+        lns = [p1, p2, p3]
+        host.legend(handles=lns, loc='best')
+
+        # right, left, top, bottom
+        ax1.spines['right'].set_position(('outward', 60))
+
+        # grid lines
+        host.grid(which='both')
+
+        # figure title
+        fig.suptitle(r'$P_{{T0}} = {0:.2f} \ Pa$'.format(Pt0) + '\n' +r'$T_{{T0}} = {0:.2f} \ K$'.format(Tt0))
+
+        plt.tight_layout()
+        plt.show()
+
+    return T0, P0, rho0
 
 def isothermal(T=0,pIn=0,pOut=0,dim=100,name='isothermal',color='k',plot=True):
     '''
