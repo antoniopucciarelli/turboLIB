@@ -205,3 +205,4 @@ for ii in range(rotor1.shape[0]-1):
 
 file.write('endsolid blade\n')
 file.close()
+
