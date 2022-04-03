@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from turboRotor import rotor
 from turboStator import stator
+import warnings
 
 class stage:
     '''
@@ -49,7 +50,7 @@ class stage:
         self.setVelocity(velocity, rotor, stator)
         self.setRevSpeed()
 
-    def setRevSpeed():
+    def setRevSpeed(self):
         '''
         Stage velocity rotor speed
         '''
