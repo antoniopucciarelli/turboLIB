@@ -7,7 +7,6 @@
 #  
 
 # importing libraries
-import enum
 import numpy as np 
 import matplotlib.pyplot as plt 
 from scipy import interpolate
@@ -263,7 +262,7 @@ def stageStudy(mFlux, betaP, rMean, Pt0, Tt0):
     '''
 
     # importing libraries 
-    import coeff 
+    from turboCoeff import coeff 
 
     # air properties allocation 
     R     = 287.06                  # air gas constant Ru / Mm      [J/kg K]
@@ -504,12 +503,3 @@ def stageStudy(mFlux, betaP, rMean, Pt0, Tt0):
     fig0.tight_layout()
 
     plt.show()
-
-mFlux = 100     # mass flux                [kg/s]
-betaP = 1.45    # compression ratio        [--]
-maxD  = 0.9     # maximum tip diameter     [m]
-maxR  = maxD/2  # maximum tip radius       [m]
-rMean = 0.31
-Pt0 = 1e+5
-Tt0 = 300 
-stageStudy(mFlux, betaP, rMean, Pt0, Tt0)
