@@ -1,7 +1,7 @@
 # importing libraries 
 import numpy as np 
 from turboCoeff import similarity
-from turboCoeff import lieblein
+from turboClass import bladeStudy
 
 # data
 # constraints
@@ -40,3 +40,7 @@ eta = similarity.efficiency(phi=phi, rD=rD, plot=False)
 #similarity.reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf')
 
 # lieblein study 
+beta1 = 65
+beta2 = 50
+bladeStudy.optimalIncidence(beta1, beta2, error=1e-4)
+

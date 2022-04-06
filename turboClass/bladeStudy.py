@@ -1,4 +1,5 @@
-import numpy as np 
+import numpy as np
+import matplotlib.pyplot as plt  
 
 def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=1, printout=False, gamma=1.4, R=287.06):
     '''
@@ -218,7 +219,82 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
 
     return adimVec, rotationVec, abs0Vec, rel0Vec, abs1Vec, rel1Vec, angleVec, thermo0, thermo1
 
-def optimalIncidence():
-    pass 
+def optimalIncidence(beta1, beta2, error=1e-4):
+    '''
+    This function computes the optimal incidence for a blade section given flow deflections.
+    '''
 
+    # importing libraries 
+    from turboCoeff import lieblein
+    
+    # vector generation 
+    thetaVec = np.linspace(20, 70, 10)
+    solidityVec = np.linspace(0.8, 1.1, 10)
+    tbcVec = np.linspace(0.08, 0.1, 10)
 
+    # figure generation
+    fig0, ax0 = plt.subplots(nrows=1, ncols=3, figsize=(8,8))
+    fig1, ax1 = plt.subplots(nrows=1, ncols=3, figsize=(8,8))
+
+    # incidence and deviatoric angle 3 fold loop
+    for _,theta in enumerate(thetaVec):
+        for _,solidity in enumerate(solidityVec):
+            for _,tbc in enumerate(tbcVec):
+                try: 
+                    # incidence and deviatoric angle computation 
+                    Ksh = 1 # shape factor 
+                    Kti = lieblein.KtiFunc(tbc, solidity, plot=False)
+                    i0 = lieblein.i0Func(beta1, solidity, plot=False)
+                    n = lieblein.nFunc(beta1, solidity, plot=False)
+                    Ktdelta = lieblein.KtdeltaFunc(tbc, solidity, plot=False)
+                    delta0 = lieblein.delta0Func(beta1, solidity, plot=False)
+                    m = lieblein.mFunc(beta1, solidity, plot=False)
+
+                    # incidence angle 
+                    i =  Kti * Ksh * i0 + n * theta
+                    # deviation angle 
+                    delta = Ktdelta * Ksh * delta0 + m * theta
+
+                    # i = beta1 - k1        -> k1 = beta1 - i     
+                    # delta = beta2 - k2    -> k2 = beta2 - delta 
+                    # theta = k1 - k2       -> theta = beta1 - i - beta2 + delta 
+                    deltaTheta = ((beta1 - i - beta2 + delta) - theta) / theta
+                    ax0[0].scatter(theta, deltaTheta*theta)
+                    ax0[1].scatter(tbc, deltaTheta*theta)
+                    ax0[2].scatter(solidity, deltaTheta*theta)
+                    
+                    if deltaTheta / theta < error: 
+                        ax1[0].scatter(solidity, tbc)
+                        ax1[1].scatter(solidity, theta)
+                        ax1[2].scatter(tbc, theta)
+                except: 
+                    pass 
+
+    # ax setup
+    ax0[0].grid(linestyle='--')
+    ax0[0].set_xlabel(r'$\theta$')
+    ax0[0].set_ylabel(r'$\Delta \theta_{{(i^{{*}}, \delta^{{*}})}}$')
+    # ax setup
+    ax0[1].grid(linestyle='--')
+    ax0[1].set_xlabel(r'$\frac{t_b}{c}$')
+    ax0[1].set_ylabel(r'$\Delta \theta_{{(i^{{*}}, \delta^{{*}})}}$')
+    # ax setup
+    ax0[2].grid(linestyle='--')
+    ax0[2].set_xlabel(r'$\sigma$')
+    ax0[2].set_ylabel(r'$\Delta \theta_{{(i^{{*}}, \delta^{{*}})}}$')
+
+    # ax setup
+    fig1.suptitle(r'$\frac{{\Delta \theta}}{{\theta}} < {0:f}$'.format(error))
+    ax1[0].grid(linestyle='--')
+    ax1[0].set_xlabel(r'$\sigma$')
+    ax1[0].set_ylabel(r'$\frac{t_b}{c}$')
+    ax1[1].grid(linestyle='--')
+    ax1[1].set_xlabel(r'$\sigma$')
+    ax1[1].set_ylabel(r'$\theta$')
+    ax1[2].grid(linestyle='--')
+    ax1[2].set_xlabel(r'$\frac{t_b}{c}$')
+    ax1[2].set_ylabel(r'$\theta$')
+    
+    fig0.tight_layout()
+    fig1.tight_layout()
+    plt.show()
