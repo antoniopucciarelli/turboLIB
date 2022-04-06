@@ -273,6 +273,22 @@ def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printo
             - compute kinetic and thermodynamic properties at rotor outlet
                 - efficiency conditions check 
             - compute kinetic and thermodynamic properties at stator outlet
+
+        inputs:
+            rD          -- reaction degree at the mean line 
+            psi         -- work coefficient at the mean line 
+            rMean       -- mean line radius 
+            mFlux       -- mass flux 
+            Tt0         -- total temperature 
+            Pt0         -- tottal pressure 
+            betaP       -- pressure ratio 
+            T1real      -- boolean value for computation of the real or ideal rotor outlet temperature startig from real work L = Lis / eta
+            printout    -- boolean value for the print of the results 
+            R           -- gas constant
+            gamma       -- specific heat ratio
+        
+        outputs:
+            check return at the bottom
     '''
     # importing libraries  
     import coeff
@@ -445,7 +461,10 @@ def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printo
         # print data 
         printLength = 82
         print('*' * printLength)
-        print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO ISENTROPIC\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
+        if T1real:
+            print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO ISENTROPIC\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
+        else:
+            print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO REAL\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
         print('*' * printLength)
         nAdim = int((printLength - len(' ADIMENSIONAL PARAMETERS '))/2)
         print('*' * nAdim + ' ADIMENSIONAL PARAMETERS  ' + '*' * nAdim)
@@ -794,7 +813,7 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
     Wa1 = Va1 
 
     # Wt1 computation
-    Wt1 = Vt1 
+    Wt1 = Vt1 - U1
 
     # W1 computation
     W1 = np.sqrt(Wa1**2 + Wt1**2)
@@ -914,19 +933,31 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, eta=1, rDmin=0.5, rDmax=0.73, V
     Vt0UmeanArray = np.linspace(Vt0UmeanMin, Vt0UmeanMax, 20)
 
     # figure allocation
-    fig0, [[ax0, ax1, ax2], [ax3, ax4, ax5]] = plt.subplots(figsize=(18,9), nrows=2, ncols=3)
-
+    fig0, [[ax1_11, ax1_12, ax1_13, ax1_14, ax1_15], [ax1_21, ax1_22, ax1_23, ax1_24, ax1_25]] = plt.subplots(figsize=(20,10), nrows=2, ncols=5)
+    fig1, [[ax2_11, ax2_12, ax2_13, ax2_14, ax2_15, ax2_16], [ax2_21, ax2_22, ax2_23, ax2_24, ax2_25, ax2_26]] = plt.subplots(figsize=(20,10), nrows=2, ncols=6)
     for _,rD in enumerate(rDarray):
 
         # vector allocation 
-        Vt0UmeanVecHub = np.array([])
-        Vt0UmeanVecTip = np.array([])
         rDvecHub       = np.array([])
         rDvecTip       = np.array([])
+        Vt0UmeanVecHub = np.array([])
+        Vt0UmeanVecTip = np.array([])
+        alpha0vecHub   = np.array([])
+        alpha1vecHub   = np.array([])
+        beta0vecHub    = np.array([])
+        beta1vecHub    = np.array([])
+        alpha0vecTip   = np.array([])
+        alpha1vecTip   = np.array([])
+        beta0vecTip    = np.array([])
+        beta1vecTip    = np.array([])
         M0vecTip       = np.array([])
         M0vecHub       = np.array([])
         M1vecTip       = np.array([])
         M1vecHub       = np.array([])
+        Mr0vecTip      = np.array([])
+        Mr0vecHub      = np.array([])
+        Mr1vecTip      = np.array([])
+        Mr1vecHub      = np.array([])
 
         for _,Vt0Umean in enumerate(Vt0UmeanArray):
             # Vt0 = (1 - rD - lam/4) * Umean -> lam = 4 * (1 - rD - Vt0/Umean) 
@@ -961,13 +992,19 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, eta=1, rDmin=0.5, rDmax=0.73, V
                 Leu       = L 
                 
                 # computing blade properties 
-                adimVec, rotationVec, _, _, _, _, _, thermo0, thermo1 = bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=eta, printout=False)
+                adimVec, rotationVec, _, _, _, _, angleVec, thermo0, thermo1 = bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=eta, printout=False)
 
                 # vector update 
-                Vt0UmeanVecHub = np.append(Vt0UmeanVecHub, Vt0Umean)
-                rDvecHub = np.append(rDvecHub, adimVec[0]) 
-                M0vecHub = np.append(M0vecHub, thermo0[-1])
-                M1vecHub = np.append(M1vecHub, thermo1[-1])
+                Vt0UmeanVecHub  = np.append(Vt0UmeanVecHub, Vt0Umean)
+                rDvecHub        = np.append(rDvecHub, adimVec[0]) 
+                alpha0vecHub    = np.append(alpha0vecHub, angleVec[0])
+                alpha1vecHub    = np.append(alpha1vecHub, angleVec[1])
+                beta0vecHub     = np.append(beta0vecHub, angleVec[2])
+                beta1vecHub     = np.append(beta1vecHub, angleVec[3])
+                M0vecHub        = np.append(M0vecHub, thermo0[-2])
+                M1vecHub        = np.append(M1vecHub, thermo1[-2])
+                Mr0vecHub       = np.append(Mr0vecHub, thermo0[-1])
+                Mr1vecHub       = np.append(Mr1vecHub, thermo1[-1])
 
                 ###### BLADE TIP STUDY ######
                 # data allocation for 'bladeStudy'
@@ -979,63 +1016,152 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, eta=1, rDmin=0.5, rDmax=0.73, V
                 Leu = L 
                 
                 # computing blade properties 
-                adimVec, rotationVec, _, _, _, _, _, thermo0, thermo1 = bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=eta, printout=False)
+                adimVec, rotationVec, _, _, _, _, angleVec, thermo0, thermo1 = bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=eta, printout=False)
 
                 # vector update
                 Vt0UmeanVecTip = np.append(Vt0UmeanVecTip, Vt0Umean)
-                rDvecTip = np.append(rDvecTip, adimVec[0])
-                M0vecTip = np.append(M0vecTip, thermo0[-1])
-                M1vecTip = np.append(M1vecTip, thermo1[-1])
+                rDvecTip       = np.append(rDvecTip, adimVec[0])
+                alpha0vecTip   = np.append(alpha0vecTip, angleVec[0])
+                alpha1vecTip   = np.append(alpha1vecTip, angleVec[1])
+                beta0vecTip    = np.append(beta0vecTip, angleVec[2])
+                beta1vecTip    = np.append(beta1vecTip, angleVec[3])
+                M0vecTip       = np.append(M0vecTip, thermo0[-2])
+                M1vecTip       = np.append(M1vecTip, thermo1[-2])
+                Mr0vecTip      = np.append(Mr0vecTip, thermo0[-1])
+                Mr1vecTip      = np.append(Mr1vecTip, thermo1[-1])
 
             except:
                 pass 
         
         # plotting results
-        ax0.plot(Vt0UmeanVecHub, rDvecHub, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
-        ax1.plot(Vt0UmeanVecTip, M0vecHub, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
-        ax2.plot(Vt0UmeanVecTip, M1vecHub, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
-        ax3.plot(Vt0UmeanVecHub, rDvecTip, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
-        ax4.plot(Vt0UmeanVecTip, M0vecTip, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
-        ax5.plot(Vt0UmeanVecTip, M1vecTip, label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        # hub plot 
+        ax1_11.plot(Vt0UmeanVecHub, rDvecHub,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_12.plot(Vt0UmeanVecTip, M0vecHub,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_13.plot(Vt0UmeanVecTip, M1vecHub,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_14.plot(Vt0UmeanVecTip, Mr0vecHub,                    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_15.plot(Vt0UmeanVecTip, Mr1vecHub,                    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_11.plot(Vt0UmeanVecTip, alpha0vecHub,                 )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_12.plot(Vt0UmeanVecTip, alpha1vecHub,                 )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_13.plot(Vt0UmeanVecTip, beta0vecHub,                  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_14.plot(Vt0UmeanVecTip, beta1vecHub,                  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_15.plot(Vt0UmeanVecTip, alpha1vecHub - alpha0vecHub,  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_16.plot(Vt0UmeanVecTip, beta1vecHub - beta0vecHub,    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        # tip plot
+        ax1_21.plot(Vt0UmeanVecHub, rDvecTip,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_22.plot(Vt0UmeanVecTip, M0vecTip,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_23.plot(Vt0UmeanVecTip, M1vecTip,                     )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_24.plot(Vt0UmeanVecTip, Mr0vecTip,                    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax1_25.plot(Vt0UmeanVecTip, Mr1vecTip,                    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_21.plot(Vt0UmeanVecTip, alpha0vecTip,                 )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_22.plot(Vt0UmeanVecTip, alpha1vecTip,                 )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_23.plot(Vt0UmeanVecTip, beta0vecTip,                  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_24.plot(Vt0UmeanVecTip, beta1vecTip,                  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_25.plot(Vt0UmeanVecTip, alpha1vecTip - alpha0vecTip,  )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
+        ax2_26.plot(Vt0UmeanVecTip, beta1vecTip - beta0vecTip,    )#label=r'$\chi_{{mean}} = {0:.2f}$'.format(rD))
 
-    # ax0 setup
-    ax0.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax0.set_ylabel(r'$\chi \ @ \ r_{{hub}}$')
-    ax0.grid(linestyle='--')
-    ax0.legend(loc='upper left', bbox_to_anchor=[1,1])
+    
+    ax1_11.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_11.set_ylabel(r'$\chi \ @ \ r_{{hub}}$')
+    ax1_11.grid(linestyle='--')
 
-    # ax1 setup
-    ax1.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax1.set_ylabel(r'$M_{{r0}} \ @ \ r_{{hub}}$')
-    ax1.grid(linestyle='--')
-    ax1.legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax1_12.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_12.set_ylabel(r'$M_{{0}} \ @ \ r_{{hub}}$')
+    ax1_12.grid(linestyle='--')
 
-    # ax2 setup
-    ax2.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax2.set_ylabel(r'$M_{{r1}} \ @ \ r_{{hub}}$')
-    ax2.grid(linestyle='--')
-    ax2.legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax1_13.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_13.set_ylabel(r'$M_{{1}} \ @ \ r_{{hub}}$')
+    ax1_13.grid(linestyle='--')
 
-    # ax3 setup
-    ax3.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax3.set_ylabel(r'$\chi \ @ \ r_{{tip}}$')
-    ax3.grid(linestyle='--')
-    ax3.legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax1_14.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_14.set_ylabel(r'$M_{{r0}} \ @ \ r_{{hub}}$')
+    ax1_14.grid(linestyle='--')
 
-    # ax4 setup
-    ax4.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax4.set_ylabel(r'$M_{{r0}} \ @ \ r_{{tip}}$')
-    ax4.grid(linestyle='--')
-    ax4.legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax1_15.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_15.set_ylabel(r'$M_{{r1}} \ @ \ r_{{hub}}$')
+    ax1_15.grid(linestyle='--')
 
-    # ax5 setup
-    ax5.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
-    ax5.set_ylabel(r'$M_{{r1}} \ @ \ r_{{tip}}$')
-    ax5.grid(linestyle='--')
-    ax5.legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax2_11.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_11.set_ylabel(r'$\alpha_{{0}} \ @ \ r_{{hub}}$')
+    ax2_11.grid(linestyle='--')
 
-    fig0.suptitle(r'$r_{{mean}} = {0:.3f} m$   $\dot{{m}} = {1:.2f} \frac{{kg}}{{s}}$    $\beta_{{T}} = {2:.2f}$'.format(rMean, mFlux, betaP))
+    ax2_12.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_12.set_ylabel(r'$\alpha_{{1}} \ @ \ r_{{hub}}$')
+    ax2_12.grid(linestyle='--')
+
+    ax2_13.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_13.set_ylabel(r'$\beta_{{0}} \ @ \ r_{{hub}}$')
+    ax2_13.grid(linestyle='--')
+
+    ax2_14.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_14.set_ylabel(r'$\beta_{{1}} \ @ \ r_{{hub}}$')
+    ax2_14.grid(linestyle='--')
+
+    ax2_15.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_15.set_ylabel(r'$\Delta \alpha \ @ \ r_{{hub}}$')
+    ax2_15.grid(linestyle='--')
+
+    ax2_16.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_16.set_ylabel(r'$\Delta \beta \ @ \ r_{{hub}}$')
+    ax2_16.grid(linestyle='--')
+
+    ax1_21.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_21.set_ylabel(r'$\chi \ @ \ r_{{tip}}$')
+    ax1_21.grid(linestyle='--')
+
+    ax1_22.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_22.set_ylabel(r'$M_{{0}} \ @ \ r_{{tip}}$')
+    ax1_22.grid(linestyle='--')
+
+    ax1_23.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_23.set_ylabel(r'$M_{{1}} \ @ \ r_{{tip}}$')
+    ax1_23.grid(linestyle='--')
+
+    ax1_24.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_24.set_ylabel(r'$M_{{r0}} \ @ \ r_{{tip}}$')
+    ax1_24.grid(linestyle='--')
+
+    ax1_25.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax1_25.set_ylabel(r'$M_{{r1}} \ @ \ r_{{tip}}$')
+    ax1_25.grid(linestyle='--')
+
+    ax2_21.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_21.set_ylabel(r'$\alpha_{{0}} \ @ \ r_{{tip}}$')
+    ax2_21.grid(linestyle='--')
+
+    ax2_22.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_22.set_ylabel(r'$\alpha_{{1}} \ @ \ r_{{tip}}$')
+    ax2_22.grid(linestyle='--')
+
+    ax2_23.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_23.set_ylabel(r'$\beta_{{0}} \ @ \ r_{{tip}}}$')
+    ax2_23.grid(linestyle='--')
+
+    ax2_24.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_24.set_ylabel(r'$\beta_{{1}} \ @ \ r_{{tip}}$')
+    ax2_24.grid(linestyle='--')
+
+    ax2_25.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_25.set_ylabel(r'$\Delta \alpha \ @ \ r_{{tip}}$')
+    ax2_25.grid(linestyle='--')
+
+    ax2_26.set_xlabel(r'$\frac{V_{t0}}{U_{{mean}}}$')
+    ax2_26.set_ylabel(r'$\Delta \beta \ @ \ r_{{tip}}$')
+    ax2_26.grid(linestyle='--')
+
+    #fig0.suptitle(r'$r_{{mean}} = {0:.3f} m$   $\dot{{m}} = {1:.2f} \frac{{kg}}{{s}}$    $\beta_{{T}} = {2:.2f}$'.format(rMean, mFlux, betaP))
+    #fig1.suptitle(r'$r_{{mean}} = {0:.3f} m$   $\dot{{m}} = {1:.2f} \frac{{kg}}{{s}}$    $\beta_{{T}} = {2:.2f}$'.format(rMean, mFlux, betaP))
+    fig0.suptitle(' ')
+    fig1.suptitle(' ')
+
+    leg = []
+    for ii in range(len(rDarray)):
+        leg.append(r'$\chi = {:.2f}$'.format(rDarray[ii]))
+
+    fig0.legend(leg, loc='upper center', ncol=len(leg))
+    fig1.legend(leg, loc='upper center', ncol=len(leg))
     fig0.tight_layout()
+    fig1.tight_layout()
+
     plt.show()
 
 # data
@@ -1051,4 +1177,3 @@ Tt0 = 300       # inlet total temperature  [K]
 rMean = 0.325   # mean balde radius        [m]
 
 reactionStudy(mFlux, betaP, rMean, Pt0, Tt0)
-stageStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.75, Vt0UmeanMin=0, Vt0UmeanMax=0.25, R=287.06, gamma=1.4)
