@@ -217,3 +217,8 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
     thermo1     = [T1, P1, rho1, Tt1, Pt1, rhot1, M1, Mr1]
 
     return adimVec, rotationVec, abs0Vec, rel0Vec, abs1Vec, rel1Vec, angleVec, thermo0, thermo1
+
+def optimalIncidence():
+    pass 
+
+
