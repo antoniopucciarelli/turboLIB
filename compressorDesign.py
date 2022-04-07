@@ -38,9 +38,16 @@ phi, psi = similarity.stagePerf(psi=psiTarget, rD=rD, plot=False, perc=0.98)
 eta = similarity.efficiency(phi=phi, rD=rD, plot=False)
 #similarity.stageStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.75, Vt0UmeanMin=0, Vt0UmeanMax=0.25, R=287.06, gamma=1.4)
 #similarity.reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf')
+#bladeStudy.optimalPlot(beta1, beta2, error=1e-4)
 
 # lieblein study 
-beta1 = 65
-beta2 = 50
-bladeStudy.optimalIncidence(beta1, beta2, error=1e-4)
+print('HUB')
+beta1 = 37
+beta2 = -15
+bladeStudy.optimalAngles(beta1, beta2, printout=True)
+
+print('TIP')
+beta1 = 58
+beta2 = 44 
+bladeStudy.optimalAngles(beta1, beta2, printout=True)
 

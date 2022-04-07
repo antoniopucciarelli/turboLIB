@@ -420,3 +420,7 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
 
     # file closure 
     file.close()
+
+
+
+

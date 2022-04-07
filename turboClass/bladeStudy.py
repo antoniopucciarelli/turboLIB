@@ -219,7 +219,7 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
 
     return adimVec, rotationVec, abs0Vec, rel0Vec, abs1Vec, rel1Vec, angleVec, thermo0, thermo1
 
-def optimalIncidence(beta1, beta2, error=1e-4):
+def optimalPlot(beta1, beta2, error=1e-4):
     '''
     This function computes the optimal incidence for a blade section given flow deflections.
     '''
@@ -298,3 +298,129 @@ def optimalIncidence(beta1, beta2, error=1e-4):
     fig0.tight_layout()
     fig1.tight_layout()
     plt.show()
+
+def iFunc(beta1, tbc, solidity, theta):
+    '''
+    This function computes the incidence angle following Leiblein model given as inputs:
+        inputs:
+            beta1       -- inlet relative flow angle 
+            tbc         -- tb/c thickness / chord 
+            solidity    -- blade solidity
+            theta       -- geometric blade deflection 
+    '''
+    
+    # importing libraries 
+    from turboCoeff import lieblein
+
+    Ksh = 1                                             # shape correction factor 
+    Kti = lieblein.KtiFunc(tbc, solidity, plot=False)   # i thickenss correction factor
+    i0  = lieblein.i0Func(beta1, solidity, plot=False)  # i0 computation 
+    n   = lieblein.nFunc(beta1, solidity, plot=False)   # n computation 
+
+    return Kti * Ksh * i0 + n * theta
+
+def deltaFunc(beta1, tbc, solidity, theta):
+    '''
+    This function computes the deflection angle following Leiblein model given as inputs:
+        inputs:
+            beta1       -- inlet relative flow angle 
+            tbc         -- tb/c thickness / chord 
+            solidity    -- blade solidity
+            theta       -- geometric blade deflection 
+    '''
+
+    # importing libraries 
+    from turboCoeff import lieblein
+
+    Ksh     = 1                                                 # shape correction factor 
+    Ktdelta = lieblein.KtdeltaFunc(tbc, solidity, plot=False)   # delta thickness correction factor
+    delta0  = lieblein.delta0Func(beta1, solidity, plot=False)  # delta 0 computation 
+    m       = lieblein.mFunc(beta1, solidity, plot=False)       # m computation 
+
+    return Ktdelta * Ksh * delta0 + m * theta
+
+def thetaFunc(beta1, beta2, i, delta):
+    '''
+    This function computes the blade geometric deflection angle given as inputs:
+        inputs:
+            beta1       -- inlet design flow angle 
+            beta2       -- outlet design flow angle 
+            i           -- incidence angle 
+            delta       -- deviation angle
+    '''
+
+    theta = beta1 - i - beta2 + delta 
+    
+    return theta
+
+def optimalAngles(beta1, beta2, printout=False):
+    '''
+    This function computes the optimal incidence angle and deviation angle for a blade section given flow deflections.
+        inputs: 
+            beta1       -- inlet flow angle 
+            beta2       -- outlet flow angle 
+            printout    -- boolean value for the printout of the results
+    '''
+
+    # importing libraries 
+    from scipy import optimize
+
+    def deltaTheta(x):
+        '''
+        This function computes the error made by the choosing theta, tbc, solidity as blade properties.
+            inputs:
+                theta       -- choosed geometrical deflection angle
+                tbc         -- thickness / chord 
+                solidity    -- chord / pitch 
+                beta1       -- inlet flow angle 
+                beta2       -- outlet flow angle 
+        '''
+
+        # variable definition
+        theta    = x[0] # theta allocation
+        solidity = x[1] # solidity allocation
+        tbc      = 0.1  # tb/c allocation -> x[2] || in this case set as 0.1 by default 
+
+        # incidence angle computation 
+        i = iFunc(beta1, tbc, solidity, theta)
+
+        # deflection angle computation 
+        delta = deltaFunc(beta1, tbc, solidity, theta)
+
+        # error computation
+        error = np.abs(thetaFunc(beta1, beta2, i, delta) - theta)
+
+        return error 
+
+    # bounds definition 
+    epsilon = beta1 - beta2
+    bounds = [(epsilon, None), (0.4, None)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
+ 
+    # setting up initial study point 
+    x0 = (epsilon*1.05, 0.45)# (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
+    # minimizing system 
+    res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
+
+    # results printout
+    if printout:
+        print('*' * 28)
+        print('converged = ', res.success)
+        print('error     = {0:>11.2e} deg'.format(deltaTheta(res.x)))
+        print('epsilon   = {0:>8.3f}    deg'.format(epsilon))
+        print('theta     = {0:>8.3f}    deg'.format(res.x[0]))
+        print('solidity  = {0:>8.3f}'.format(res.x[1]))
+        try:
+            print('tb/c      = {0:>8.3f}'.format(res.x[2]))
+            print('*' * 28)
+        except:
+            print('*' * 28)
+
+
+
+
+
+
+
+
+
+
