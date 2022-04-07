@@ -40,14 +40,15 @@ eta = similarity.efficiency(phi=phi, rD=rD, plot=False)
 #similarity.reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf')
 #bladeStudy.optimalPlot(beta1, beta2, error=1e-4)
 
-# lieblein study 
-print('HUB')
-beta1 = 37
-beta2 = -15
-bladeStudy.optimalAngles(beta1, beta2, printout=True)
+adimVec, bladeVec, rotationVec, V0vec, V1vec, _, _, _, _, thermo0, _, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, R=R, gamma=gamma)
 
-print('TIP')
-beta1 = 58
-beta2 = 44 
-bladeStudy.optimalAngles(beta1, beta2, printout=True)
+# values allocation 
+meanValues = [rMean, rotationVec[0],V0vec[0], V0vec[1], V1vec[1]]
+b0 = bladeVec[0]
+b1 = bladeVec[0]
+Leu = work[0]
+inletValues = [thermo0[3], thermo0[4], thermo0[0], thermo0[1]]
+nSections = 30
+nBlades = 40
+bladeStudy.bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=nBlades, pos='data/airfoils/naca65.txt')
 

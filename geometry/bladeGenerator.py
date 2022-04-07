@@ -32,6 +32,7 @@ class geometryData:
                 chord   -- airfoil chord
                 plot    -- showing airfoil coordinates
         '''
+
         # camber line computation
         yCamber = self.y * Cl * chord
         
@@ -43,6 +44,9 @@ class geometryData:
 
         # lower line computation 
         yLower = yCamber - t/2  
+
+        # extending chord 
+        self.x = self.x * chord 
 
         if plot:
             plt.figure()

@@ -9,8 +9,8 @@ PROGRAM DESCRIPTION
 // variables allocation 
 nRotorBlades1 = 40;                         // number of blades
 alphaRotor1 = floor(360/nRotorBlades1);     // computing distance angle between 2 blades
-rotorStaggerAngle1 = 10;                    // setting up hub blade stagger angle
-rotorOrigin1 = [0, 0, 4];                   // setting up rotor hub blade section origin
+rotorStaggerAngle1 = 0;                    // setting up hub blade stagger angle
+rotorOrigin1 = [0, 0, 0.2];                   // setting up rotor hub blade section origin
 
 // rotor generation 
 for(ii = [0:nRotorBlades1-1]){

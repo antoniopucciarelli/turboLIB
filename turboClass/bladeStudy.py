@@ -1,3 +1,4 @@
+from turtle import pos
 import numpy as np
 import matplotlib.pyplot as plt  
 
@@ -181,7 +182,7 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
         print('-- V0     = {0:>8.2f} m/s    -- V1     = {1:>8.2f} m/s'.format(V0, V1))
         nRelKin = int((printLength - len('KINETICS -- RELATIVE '))/2)
         print('*' * nRelKin + ' KINETICS -- RELATIVE ' + '*' * nRelKin)
-        print('-- 0                        -- 1                        -- 2')
+        print('-- 0                        -- 1')
         print('-- U0     = {0:>8.2f} m/s    -- U1     = {1:>8.2f} m/s'.format(U0, U1))
         print('-- beta0  = {0:>8.2f} deg    -- beta1  = {1:>8.2f} deg'.format(beta0, beta1))
         print('-- Wa0    = {0:>8.2f} m/s    -- Wa1    = {1:>8.2f} m/s'.format(Wa0, Wa1))
@@ -203,7 +204,7 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
         print('*' * nBlade + ' BLADE DIMENSIONS ' + '*' * nBlade)
         print('-- 0                        -- 1')
         print('-- rIn    = {0:>8.2f} cm     -- rOut   = {1:>8.2f} cm'.format(rIn*1e+2, rOut*1e+2))
-        print('-- rMean0 = {0:>8.2f} cm     -- rMean1 = {0:>8.2f} cm'.format(rMean))
+        print('-- rMean0 = {0:>8.2f} cm     -- rMean1 = {0:>8.2f} cm'.format(rMean*1e+2))
         print('*' * printLength) 
 
     # setting up output vectors 
@@ -339,6 +340,29 @@ def deltaFunc(beta1, tbc, solidity, theta):
 
     return Ktdelta * Ksh * delta0 + m * theta
 
+def alphaFunc(ac, solidity, theta, tbc):
+    '''
+    This function computes the optimal design angle of attach followin the Leiblein approach.
+        inputs:
+            ac          -- max(x_camber) / chord 
+            solidity    -- chord / pitch 
+            theta       -- geometrical deflection angle 
+            tbc         -- thichness / chord
+    '''
+    
+    # importing libraries
+    from turboCoeff import lieblein
+
+    # Ksh set to 0.1
+    Ksh = 0.1
+
+    # exponential value 
+    e = 0.65 - 0.002 * theta 
+
+    alpha = (3.6 * Ksh * lieblein.KtiFunc(tbc, plot=False) + 0.3532 * theta * ac**0.25) * solidity**e
+
+    return alpha 
+
 def thetaFunc(beta1, beta2, i, delta):
     '''
     This function computes the blade geometric deflection angle given as inputs:
@@ -397,30 +421,160 @@ def optimalAngles(beta1, beta2, printout=False):
     bounds = [(epsilon, None), (0.4, None)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
  
     # setting up initial study point 
-    x0 = (epsilon*1.05, 0.45)# (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
+    x0 = (epsilon*1.05, 0.45) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
     # minimizing system 
     res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
+
+    # data allocation
+    theta    = res.x[0]
+    solidity = res.x[1]
+    try:
+        tbc   = res.x[2]
+        i     = iFunc(beta1, res.x[2], res.x[1], res.x[0])
+        delta = deltaFunc(beta1, res.x[2], res.x[1], res.x[0])
+    except:
+        tbc   = 0.1
+        i     = iFunc(beta1, tbc, res.x[1], res.x[0])
+        delta = deltaFunc(beta1, tbc, res.x[1], res.x[0])
 
     # results printout
     if printout:
         print('*' * 28)
         print('converged = ', res.success)
         print('error     = {0:>11.2e} deg'.format(deltaTheta(res.x)))
+        print('-' * 28)
+        print('beta1     = {0:>8.3f}    deg'.format(beta1))
+        print('beta2     = {0:>8.3f}    deg'.format(beta2))
         print('epsilon   = {0:>8.3f}    deg'.format(epsilon))
-        print('theta     = {0:>8.3f}    deg'.format(res.x[0]))
-        print('solidity  = {0:>8.3f}'.format(res.x[1]))
+        print('-' * 28)
+        print('i         = {0:>8.3f}    deg'.format(i))
+        print('delta     = {0:>8.3f}    deg'.format(delta))
+        print('theta     = {0:>8.3f}    deg'.format(theta))
+        print('solidity  = {0:>8.3f}'.format(solidity))
+        print('tb/c      = {0:>8.3f}'.format(tbc))
+        print('*' * 28)
+
+    return i, delta, theta, solidity, tbc
+
+def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=0, pos='/data/airfoils/naca65.txt'):
+    '''
+    This function generates the blade parameters at different sections of the blade. 
+        inputs:
+            meanValues  -- array that stores main mean values.
+                        -- [rMean, Umean, VaMean, VtMeanIn, VtMeanOut]
+            b0          -- inlet blade height
+            b1          -- outlet blade height
+            Leu         -- work made at each blade section 
+            inletValues -- array that stores the main inlet values for the blade
+                        -- [Tt0, Pt0, T0, P0]
+            nSections   -- # of section to study for the blade 
+            etaVec      -- losses distribution along the blade span 
+            hubChord    -- blade chord dimensions at the hub 
+            nBlades     -- # of blades on the machine
+    '''
+
+    # importing libraries 
+    from geometry import bladeGenerator 
+    
+    # mean values allocation 
+    rMean     = meanValues[0]
+    Umean     = meanValues[1]
+    VaMean    = meanValues[2]
+    VtMeanIn  = meanValues[3]
+    VtMeanOut = meanValues[4]
+    omega     = Umean / rMean 
+    
+    # inlet values allocation 
+    Tt0 = inletValues[0]
+    Pt0 = inletValues[1]
+    T0  = inletValues[2]
+    P0  = inletValues[3]
+
+    # radial position generation 
+    # vector allocation 
+    r0Vec = np.zeros(nSections+1)
+    r1Vec = np.zeros(nSections+1)
+    # element computation 
+    for ii in range(nSections+1):
+        r0Vec[ii] = rMean - b0/2 + ii * b0/nSections
+        r1Vec[ii] = rMean - b1/2 + ii * b1/nSections
+
+    # generation of an object array 
+    blade = [] 
+
+    for ii in range(nSections+1):
+        # angle computation from a FREE VORTEX model 
+        _, _, _, _, _, _, angleVec, _, _ = bladeStudy(r0Vec[ii], r1Vec[ii], omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=1, printout=True, gamma=1.4, R=287.06)        
+        
+        # angle allocation
+        beta0 = -angleVec[2]
+        beta1 = -angleVec[3]
+
+        # print(beta0, beta1)
+
+        # optimal angles computation
+        i, delta, theta, solidity, tbc = optimalAngles(beta0, beta1, printout=False)
+        
+        #print(''.format(i, delta, theta, solidity, tbc))
+
+        # computing optimal alpha angle
+        ac = 0.5 # this is valid only for NACA-65
+        alpha = alphaFunc(ac, solidity, theta, tbc)
+
+        #print(alpha)
+
+        # computing stagger angle gamma 
+        gamma = beta0 - alpha
+        #gamma = np.abs(gamma)
+
+        #print(gamma)
+
+        # computing Cl 
+        # !!! changes due to the * -1 in beta?
+        Cl = ac * np.tan(np.deg2rad(theta)/4) / 0.0551515
+        #theta = np.abs(theta)
+        #Cl = np.abs(Cl)
+        #print(theta)
+
+        # pitch computation with nBlades 
+        pitch = 2 * np.pi * r0Vec[ii] / nBlades 
+
+        # chord computation from solidity
+        chord = pitch * solidity 
+
+        # computing blade inclination 
+        zeta = np.rad2deg(np.arctan2(r1Vec[ii]-r0Vec[ii], chord))
+        
+        print('r             = {0:.3f}'.format(r0Vec[ii]))
+        print('i             = {0:.3f}'.format(i))
+        print('delta         = {0:.3f}'.format(delta))
+        print('alpha         = {0:.3f}'.format(alpha))
+        print('beta0 - beta1 = {0:.3f}'.format(beta0 - beta1))
+        print('gamma         = {0:.3f}'.format(gamma))
+        print('theta         = {0:.3f}'.format(theta))
+        print('Cl            = {0:.3f}'.format(Cl))
+        print('s             = {0:.3f}'.format(pitch))
+        print('c             = {0:.3f}'.format(chord))
+        print('zeta          = {0:.3f}\n'.format(zeta))
+
+        # airfoil object generation 
+        airfoil = bladeGenerator.geometryData(pos)
+
+        # geometry fitting airfoil -> shape and chord dimensions
+        airfoil.geometryFitting(Cl=Cl, chord=chord, plot=False)
+
+        # airfoil 3D rotation
+        airfoil.geometryRotation(gamma, zeta, plot=False)
+
+        # translation of the airfoil with respect to the hub position 
         try:
-            print('tb/c      = {0:>8.3f}'.format(res.x[2]))
-            print('*' * 28)
+            height = r0Vec[ii] - r0Vec[0] + (r1Vec[ii] - r0Vec[ii]) / 2
+            airfoil.geometryTranslation(blade[0].middleChord(), height, plot=False)
         except:
-            print('*' * 28)
+            pass
 
+        # adding airfoil to blade object array
+        blade.append(airfoil)
 
-
-
-
-
-
-
-
-
+    # STL file generation 
+    bladeGenerator.STLsaving(blade, STLname='cad')
