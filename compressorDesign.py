@@ -42,13 +42,14 @@ eta = similarity.efficiency(phi=phi, rD=rD, plot=False)
 
 adimVec, bladeVec, rotationVec, V0vec, V1vec, _, _, _, _, thermo0, _, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, R=R, gamma=gamma)
 
+
 # values allocation 
 meanValues = [rMean, rotationVec[0],V0vec[0], V0vec[1], V1vec[1]]
 b0 = bladeVec[0]
-b1 = bladeVec[0]
+b1 = bladeVec[1]
 Leu = work[0]
 inletValues = [thermo0[3], thermo0[4], thermo0[0], thermo0[1]]
-nSections = 30
+nSections = 50
 nBlades = 40
 bladeStudy.bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=nBlades, pos='data/airfoils/naca65.txt')
 
