@@ -11,7 +11,7 @@ naca65_hub = geometryData(pos)
 naca65_hub.geometryFitting(Cl=2.586, chord=1, plot=False)
 
 # airfoil 3D rotation
-naca65_hub.geometryRotation(8.581, 0, plot=False)
+naca65_hub.geometryRotation(8.581, 10, plot=False)
 
 # airfoil 3D translation 
 #naca65_hub.geometryTranslation(naca65_hub.middleChord(), 0.20, plot=False)

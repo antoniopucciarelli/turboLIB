@@ -570,8 +570,9 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
         chord = pitch * solidity 
 
         # computing blade inclination 
-        zeta = np.rad2deg(np.arctan2(r1Vec[ii]-r0Vec[ii], chord))
-        
+        #zeta = np.rad2deg(np.arctan2(r1Vec[ii]-r0Vec[ii], chord))
+        zeta = np.rad2deg(np.arcsin((r1Vec[ii]-r0Vec[ii])/chord))
+
         if printout:
             print('r             = {0:.3f}'.format(r0Vec[ii]))
             print('i             = {0:.3f}'.format(i))
@@ -592,21 +593,30 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
         airfoil.geometryFitting(Cl=Cl, chord=chord, plot=False)
 
         # airfoil 3D rotation
-        airfoil.geometryRotation(gamma, -zeta, plot=False)
+        airfoil.geometryRotation(gamma, zeta, plot=False)
 
         # translation of the airfoil with respect to the hub position 
         if hubPos: 
             airfoilHub = airfoil 
             hubPos = False 
-            h0 = height = r0Vec[ii] - r0Vec[0] + r1Vec[ii] - r0Vec[ii]
+            translationHub = airfoilHub.middleChord()
+            translationHub[2] = 0.0
         
         # translation of profiles
-        height = r0Vec[ii] - r0Vec[0] + r1Vec[ii] - r0Vec[ii] - h0
-        airfoil.geometryTranslation(airfoilHub.middleChord(), height, plot=False)
+        # translation vector 
+        height = r0Vec[ii] - r0Vec[0]
+        # airfoil section center
+        translationSection = airfoil.middleChord()
+        translationSection[0] = 0 
+        translationSection[1] = 0
+        # translation vector  
+        translationVec = translationHub + translationSection
+        # translation procedure 
+        airfoil.geometryTranslation(translationVec, height, plot=False)
 
         if plot:
-            ax.plot3D(airfoil.upper[0,:], airfoil.upper[1,:], airfoil.upper[2,:], color=color[ii], label=str(ii))
-            ax.plot3D(airfoil.lower[0,:], airfoil.lower[1,:], airfoil.lower[2,:], color=color[ii])
+            ax.plot3D(airfoil.upper[:,0], airfoil.upper[:,1], airfoil.upper[:,2], color=color[ii], label=str(ii))
+            ax.plot3D(airfoil.lower[:,0], airfoil.lower[:,1], airfoil.lower[:,2], color=color[ii])
 
         # adding airfoil to blade object array
         blade.append(airfoil)
@@ -621,7 +631,7 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
     bladeGenerator.STLsaving(blade, STLname=STLname)
 
     # settin up return values 
-    inlet = [blade[0].chord, blade[0].x[0], blade[0].yUpper[0], blade[0].zUpper[0], blade[0].x[-1], blade[0].yUpper[-1], blade[0].zUpper[-1]]
-    outlet = [blade[-1].chord, blade[-1].x[0], blade[-1].yUpper[0], blade[-1].zUpper[0], blade[-1].x[-1], blade[-1].yUpper[-1], blade[-1].zUpper[-1]]
+    inlet = [blade[0].chord, blade[0].camber[0,0], blade[0].camber[0,1], blade[0].camber[0,2], blade[0].camber[-1,0], blade[0].camber[-1,1], blade[0].camber[-1,2]]
+    outlet = [blade[-1].chord, blade[-1].upper[0,0], blade[-1].upper[0,1], blade[-1].upper[0,2], blade[-1].upper[-1,0], blade[-1].upper[-1,1], blade[-1].upper[-1,2]]
 
     return inlet, outlet 
