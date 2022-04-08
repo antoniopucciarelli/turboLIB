@@ -40,10 +40,16 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
     U0 = omega * rIn
 
     # phi computation 
-    phi = Va0 / U0
+    if U0 != 0:
+        phi = Va0 / U0
+    else: 
+        phi = 0
 
     # psi computation 
-    psi = Leu / U0**2 
+    if Leu != 0:
+        psi = Leu / U0**2 
+    else: 
+        psi = 0 
 
     # lam computation 
     lam = psi * 2 
@@ -152,7 +158,10 @@ def bladeStudy(rIn, rOut, omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T
     rhot1 = Pt1 / (R * Tt1)
 
     # reaction degree computation 
-    rD = cP * (T1 - T0) / Leu 
+    if Leu != 0:
+        rD = cP * (T1 - T0) / Leu 
+    else: 
+        rD = 0
 
     if printout:
         printLength = 54
@@ -456,10 +465,12 @@ def optimalAngles(beta1, beta2, printout=False):
 
     return i, delta, theta, solidity, tbc
 
-def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=0, pos='/data/airfoils/naca65.txt', printout=False, plot=False):
+def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=0, STLname='cad', pos='/data/airfoils/naca65.txt', printout=False, plot=False):
     '''
     This function generates the blade parameters at different sections of the blade. 
         inputs:
+            kind        -- string value that defines rotor or stator 
+                        -- stator/rotor
             meanValues  -- array that stores main mean values.
                         -- [rMean, Umean, VaMean, VtMeanIn, VtMeanOut]
             b0          -- inlet blade height
@@ -471,6 +482,7 @@ def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hu
             etaVec      -- losses distribution along the blade span 
             hubChord    -- blade chord dimensions at the hub 
             nBlades     -- # of blades on the machine
+            STLname     -- name for the .stl file 
             printout    -- boolean value for the printing of the main parameters 
             plot        -- boolean value for the plotting of the blade --> simple line composition plot -> for a better plot open in paraview/openscad the .stl model
     '''
@@ -503,8 +515,11 @@ def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hu
         r1Vec[ii] = rMean - b1/2 + ii * b1/nSections
 
     if plot:
+        import random
         fig = plt.figure()
         ax = plt.axes(projection ='3d')
+        number_of_colors = nSections+1
+        color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(number_of_colors)]
 
     # generation of an object array 
     blade = [] 
@@ -512,21 +527,27 @@ def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hu
     # boolean value for checkin if the studying the hub airfoil section --> needed for the span-wise discretization 
     hubPos = True 
 
-    import random
-
-    number_of_colors = nSections+1
-
-    color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
-                for i in range(number_of_colors)]
-
-
     for ii in range(nSections+1):
         # angle computation from a FREE VORTEX model 
         _, _, _, _, _, _, angleVec, _, _ = bladeStudy(r0Vec[ii], r1Vec[ii], omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=1, printout=False, gamma=1.4, R=287.06)        
         
-        # angle allocation
-        beta0 = -angleVec[2]
-        beta1 = -angleVec[3]
+        if kind == 'rotor':
+            # angle allocation
+            beta0 = angleVec[2]
+            beta1 = angleVec[3]
+            # chech on angle sign for adopting Lieblein model
+            if beta0 < 0:
+                beta0 = - beta0
+                beta1 = - beta1
+
+        elif kind == 'stator':
+            # angle allocation 
+            beta0 = angleVec[0]
+            beta1 = angleVec[1]
+            # chech on angle sign for adopting Lieblein model
+            if beta0 < 0:
+                beta0 = - beta0
+                beta1 = - beta1
 
         # optimal angles computation
         i, delta, theta, solidity, tbc = optimalAngles(beta0, beta1, printout=False)
@@ -597,4 +618,10 @@ def bladeGenerator(meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hu
         plt.show()
 
     # STL file generation 
-    bladeGenerator.STLsaving(blade, STLname='cad')
+    bladeGenerator.STLsaving(blade, STLname=STLname)
+
+    # settin up return values 
+    inlet = [blade[0].chord, blade[0].x[0], blade[0].yUpper[0], blade[0].zUpper[0], blade[0].x[-1], blade[0].yUpper[-1], blade[0].zUpper[-1]]
+    outlet = [blade[-1].chord, blade[-1].x[0], blade[-1].yUpper[0], blade[-1].zUpper[0], blade[-1].x[-1], blade[-1].yUpper[-1], blade[-1].zUpper[-1]]
+
+    return inlet, outlet 

@@ -33,6 +33,9 @@ class geometryData:
                 plot    -- showing airfoil coordinates
         '''
 
+        # chord dimension allocation 
+        self.chord = chord 
+
         # camber line computation
         yCamber = self.y * Cl * chord
         
@@ -215,6 +218,10 @@ class geometryData:
         zCamber = zCamber + translationVec[2]
 
         # data reallocation 
+        self.yUpper = yUpper
+        self.zUpper = zUpper
+        self.yLower = yLower
+        self.zLower = zLower
         self.upper  = np.array([x, yUpper, zUpper])
         self.lower  = np.array([x, yLower, zLower]) 
         self.camber = np.array([x, yCamber, zCamber])
@@ -424,7 +431,3 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
 
     # file closure 
     file.close()
-
-
-
-
