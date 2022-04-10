@@ -5,6 +5,7 @@
 #   CONTENT: engineering coefficient functions related to Lieblein blade modeling approach
 #  
 
+# importing libraries 
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -392,3 +393,85 @@ def KtdeltaFunc(tbc=0, tb=0, c=0, plot=False, save=False, position='Kti.pgf'):
 
     if tbc !=0:
         return Ktdeltafunc(tbc)
+
+def oFunc(gamma=0, tbc=0, solidity=0, pitch=0, Cl=0, plot=False, save=False, pos='o.pgf'):
+    '''
+    This function computes the minimum opening between 2 blades in a cascade row for NACA-65 blade type. 
+        inputs:
+            gamma       -- stagger angle 
+            tbc         -- tb / c 
+            solidity    -- section solidity 
+            pitch       -- distance between 2 consecutive blades
+            Cl          -- lift coefficient of the blade at 0 AOA 
+            plot        -- boolean value for the plotting of the results
+            save        -- boolean value for the saving of the figure in .pgf format 
+            position    -- path where to save the figure 
+    '''
+
+    # value used for the opening computation
+    def phifunc(gamma, Cl):
+        '''
+        This function computes phi.
+        '''
+
+        return gamma * (1 - 0.05 * Cl**1.5) + 5 * Cl**1.5 - 2 
+
+    # opening computation 
+    def ofunc(pitch, solidity, phi, tbc):
+        '''
+        This function computes the opening, o.
+        '''
+
+        return pitch * ((1 - tbc * np.sqrt(solidity)) * np.cos(np.deg2rad(phi)))**(np.sqrt(solidity))
+
+    if Cl != 0:
+        o = ofunc(pitch, solidity, phifunc(gamma, Cl), tbc)
+
+    if plot: 
+        gammaVec = np.arange(10, 70, 10)
+        ClVec = np.linspace(0.4, 1.4, 300)
+
+        fig = plt.figure(figsize=(9,9))
+        for ii in range(len(gammaVec)):
+            plt.plot(ClVec, ofunc(pitch, solidity, phifunc(gammaVec[ii], ClVec), tbc)/pitch, linewidth=1, label=r'$\gamma = {0:.2f}$'.format(gammaVec[ii]))
+        
+        if Cl != 0:
+            plt.plot(ClVec, ofunc(pitch, solidity, phifunc(gamma, ClVec), tbc)/pitch, 'k', linewidth=2, label=r'$\gamma = {0:.2f}$'.format(gamma))
+            plt.plot(Cl, o/pitch, linestyle='', marker='o', markersize=8, color='g', markeredgecolor='k', markeredgewidth=1.5, label=r'$Cl_0 = {0:.2f}, \gamma = {1:.2f}$'.format(Cl, gamma))
+
+        plt.xlabel(r'$Cl_0$')
+        plt.ylabel(r'$\frac{{o}}{{s}}$')
+        plt.grid(linestyle='--')
+        plt.legend()
+        plt.show()
+
+    elif save:
+        # setting matplotlib LaTeX export 
+        import matplotlib
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
+
+        gammaVec = np.arange(10, 70, 10)
+        ClVec = np.linspace(0.4, 1.4, 300)
+
+        fig = plt.figure(figsize=(9,9))
+        for ii in range(len(gammaVec)):
+            plt.plot(ClVec, ofunc(pitch, solidity, phifunc(gammaVec[ii], ClVec), tbc)/pitch, linewidth=1, label=r'$\gamma = {0:.2f}$'.format(gammaVec[ii]))
+        
+        if Cl != 0:
+            plt.plot(ClVec, ofunc(pitch, solidity, phifunc(gamma, ClVec), tbc)/pitch, 'k', linewidth=2, label=r'$\gamma = {0:.2f}$'.format(gamma))
+            plt.plot(Cl, o/pitch, linestyle='', marker='o', markersize=8, color='g', markeredgecolor='k', markeredgewidth=1.5, label=r'$Cl_0 = {0:.2f}, \gamma = {1:.2f}$'.format(Cl, gamma))
+
+        plt.xlabel(r'$Cl_0$')
+        plt.ylabel(r'$\frac{{o}}{{s}}$')
+        plt.grid(linestyle='--')
+        plt.legend()
+        plt.savefig(position)
+    
+    if Cl != 0:
+        return o   

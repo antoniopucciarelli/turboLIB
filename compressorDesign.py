@@ -1,7 +1,5 @@
 # importing libraries 
-import numpy as np
 from geometry import bladeGenerator
-from turboClass.turboBlade import blade 
 from turboCoeff import similarity
 from turboClass import bladeStudy
 

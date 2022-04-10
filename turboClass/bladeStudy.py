@@ -1,4 +1,10 @@
-from mpl_toolkits import mplot3d
+# TURBOMACHINERY -- BLADE GENERATION 
+# AUTHOR: antonio pucciarelli 
+#
+# PROGRAM DESCRIPTION
+#   CONTENT: functions that allow to compute the airfoil sections in a blade 
+#  
+
 import numpy as np
 import matplotlib.pyplot as plt  
 
@@ -531,6 +537,12 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
         # angle computation from a FREE VORTEX model 
         _, _, _, _, _, _, angleVec, _, _ = bladeStudy(r0Vec[ii], r1Vec[ii], omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=1, printout=False, gamma=1.4, R=287.06)        
         
+        # this modeling approach works with beta0 >= 0 and beta1 >= 0
+        # -- in order to adopt this model to each blade modeling a boolean 
+        #       value for the change is generated and then used later for the 
+        #       blade geoemetry generation
+        checkAngle = False  
+
         if kind == 'rotor':
             # angle allocation
             beta0 = angleVec[2]
@@ -539,6 +551,7 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
             if beta0 < 0:
                 beta0 = - beta0
                 beta1 = - beta1
+                checkAngle = True 
 
         elif kind == 'stator':
             # angle allocation 
@@ -548,6 +561,7 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
             if beta0 < 0:
                 beta0 = - beta0
                 beta1 = - beta1
+                checkAngle = True 
 
         # optimal angles computation
         i, delta, theta, solidity, tbc = optimalAngles(beta0, beta1, printout=False)
@@ -559,8 +573,15 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
         # computing stagger angle gamma 
         gamma = beta0 - alpha
 
+        # checking angles sign 
+        if checkAngle:
+            i = - i 
+            delta = - delta 
+            theta = - theta
+            alpha = - alpha 
+            gamma = - gamma 
+
         # computing Cl 
-        # !!! changes due to the * -1 in beta?
         Cl = ac * np.tan(np.deg2rad(theta)/4) / 0.0551515
 
         # pitch computation with nBlades 
@@ -572,19 +593,6 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
         # computing blade inclination 
         #zeta = np.rad2deg(np.arctan2(r1Vec[ii]-r0Vec[ii], chord))
         zeta = np.rad2deg(np.arcsin((r1Vec[ii]-r0Vec[ii])/chord))
-
-        if printout:
-            print('r             = {0:.3f}'.format(r0Vec[ii]))
-            print('i             = {0:.3f}'.format(i))
-            print('delta         = {0:.3f}'.format(delta))
-            print('alpha         = {0:.3f}'.format(alpha))
-            print('beta0 - beta1 = {0:.3f}'.format(beta0 - beta1))
-            print('gamma         = {0:.3f}'.format(gamma))
-            print('theta         = {0:.3f}'.format(theta))
-            print('Cl            = {0:.3f}'.format(Cl))
-            print('s             = {0:.3f}'.format(pitch))
-            print('c             = {0:.3f}'.format(chord))
-            print('zeta          = {0:.3f}\n'.format(zeta))
 
         # airfoil object generation 
         airfoil = bladeGenerator.geometryData(pos)
@@ -620,6 +628,24 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
 
         # adding airfoil to blade object array
         blade.append(airfoil)
+
+        # printout 
+        if printout:
+            starDim = 50
+            bladeDim = (starDim - len(' BLADE ANGLES '))/2 
+            print('*' * bladeDim + ' BLADE ANGLES ' + '*' * bladeDim)
+            print('r             = {0:.3f}'.format(r0Vec[ii]))
+            print('i             = {0:.3f}'.format(i))
+            print('delta         = {0:.3f}'.format(delta))
+            print('alpha         = {0:.3f}'.format(alpha))
+            print('beta0 - beta1 = {0:.3f}'.format(beta0 - beta1))
+            print('gamma         = {0:.3f}'.format(gamma))
+            print('theta         = {0:.3f}'.format(theta))
+            print('Cl            = {0:.3f}'.format(np.abs(Cl)))
+            print('s             = {0:.3f}'.format(pitch))
+            print('c             = {0:.3f}'.format(chord))
+            print('zeta          = {0:.3f}\n'.format(zeta))
+            print('*' * starDim + '\n')
 
     if plot:
         if nSections < 10:

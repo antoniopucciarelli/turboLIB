@@ -1,37 +1,62 @@
-include <rotorCoords.scad>
-include <statorCoords.scad>
+/*
+TURBOMACHINERY -- LIBRARY FOR THE INITIAL TURBOMACHINERY DESIGN
+AUTHOR: antonio pucciarelli 
 
-nRotorBlades1 = 40; 
-alphaRotor1 = floor(360/nRotorBlades1);
-rotorStaggerAngle1 = 60;
-rotorOrigin1 = [0, 0, 4];
-rotorBladeHeight1 = 2;
+PROGRAM DESCRIPTION
+    TURBOMACHINERY 3D GEOMETRY GENERATION WITH OPENSCAD 
+*/
 
-for(ii = [0:nRotorBlades1-1]){
-    color("LightGrey", 1.0){
-        rotate(a = ii * alphaRotor1, v = [1, 0, 0]){
-            translate(rotorOrigin1){
-                linear_extrude(height=rotorBladeHeight1)
-                    rotate(rotorStaggerAngle1)
-                    polygon(points = rotor1);
+// VARIABLES ALLOCATION
+include <data.scad> 
+
+//nRotorBlades = 1;
+//nStatorBlades = 1;
+
+// ROTOR PRINT
+// variables computation
+alphaRotor = floor(360/nRotorBlades); // computing distance angle between 2 blades
+rotorStaggerAngle = 0; // setting up hub blade stagger angle
+rotorOrigin = [0, 0, 0.995*rotorHubInletCoords[2]]; // setting up rotor hub blade section origin
+
+// rotor generation 
+for(ii = [0:nRotorBlades-1]){
+    color("LightGrey", 1){
+        rotate(a = ii * alphaRotor, v = [1, 0, 0]){
+            translate(rotorOrigin){
+                rotate(rotorStaggerAngle){
+                    import(rotorName);
+                };
             };
         };
     };
 };
 
-nStatorBlades1 = 30; 
-alphaStator1 = floor(360/nStatorBlades1);
-statorStaggerAngle1 = 10;
-statorOrigin1 = [2, 0, 4];
-statorBladeHeight1 = 2;
+// STATOR PRINT
+// variables computation
+alphaStator = floor(360/nStatorBlades); // computing distance angle between 2 blades
+statorStaggerAngle = 0; // setting up hub blade stagger angle
+statorOrigin = [0.1, 0, 0.99*statorHubInletCoords[2]]; // setting up rotor hub blade section origin
 
-for(ii = [0:nStatorBlades1-1]){
-    color("SlateGrey", 1.0){
-        rotate(a = ii * alphaStator1, v = [1, 0, 0]){
-            translate(statorOrigin1){
-                linear_extrude(height=statorBladeHeight1)
-                    rotate(statorStaggerAngle1)
-                    polygon(points = stator1);
+// stator generation 
+for(ii = [0:nStatorBlades-1]){
+    color("Grey", 1.0){
+        rotate(a = ii * alphaStator, v = [1, 0, 0]){
+            translate(statorOrigin){
+                rotate(statorStaggerAngle){
+                    import(statorName);
+                };
+            };
+        };
+    };
+};
+
+// HUB PRINT
+// hub generation
+rotate([0,90,0]){
+    color("Blue", 0.5){
+        rotate_extrude(angle=360, $fn=200){
+            rotate([0,0,90]){          
+                polygon(points = [[0, 0], [rotorHubInletCoords[0], rotorHubInletCoords[2]], [rotorHubOutletCoords[0], rotorHubOutletCoords[2]], [statorOrigin[0], statorHubInletCoords[2]], [statorOrigin[0] + statorHubOutletCoords[0], statorHubOutletCoords[2]], [statorOrigin[0] + statorHubOutletCoords[0], 0]]);
             };
         };
     };
