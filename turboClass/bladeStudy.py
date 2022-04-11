@@ -5,6 +5,7 @@
 #   CONTENT: functions that allow to compute the airfoil sections in a blade 
 #  
 
+# importing libraries
 import numpy as np
 import matplotlib.pyplot as plt  
 

@@ -9,6 +9,8 @@
 # importing libraries
 import numpy as np 
 import matplotlib.pyplot as plt 
+from geometry import bladeGenerator
+from turboClass.bladeSection import section
 import warnings
 
 class blade:
@@ -19,145 +21,177 @@ class blade:
             --- blade thermodynamics 
     '''
 
-    def __init__(self, ID, turboType, turboAim, angle = np.NaN, pitch = np.NaN, chord = np.NaN, absVelocity = np.array([[0,0],[0,0]]), relVelocity = np.array([[0,0],[0,0]]), revVelocity = 0, airfoilName = 'NoName', position=np.NaN):
+    def __init__(self, ID, turboType, nSection, omega, inletBladeHeight, outletBladeHeight, inletHubRadius, outletHubRadius):
         '''
         Rotor object declaration: 
             variables:
-                ID          --- blade identifier
-                turboType   --- blade type: stator/rotor
-                turboAim    --- blade aim: compressor/turbine
-                angle       --- angle between the chord and the axial direction 
-                pitch       --- distance between 2 vanes/blades
-                chord       --- vane/blade aerodynamic chord
-                airfoilName --- name of the airfoil used in the rotor/stator
-                posiiton    --- blade leading edge position 
-                absVelocity --- 2x2 vector that stores the absolute velocity at the leading edge and the trailing edge of the blade
-                            --- e.g. velocity = | V1x, V1y |
-                            ---                 | V2x, V2y |
-                relVelocity --- 2x2 vector that store the relative velocity at the leading edge and the trailing edge of the blade 
-                            --- e.g. velocity = | W1x, W1y |
-                            ---                 | W2x, W2y |
-                revVelocity --- revolution velocity only if the blade is a rotor
-                            --- e.g. velocity = U
+                ID                  -- blade identifier
+                turboType           -- blade type: stator/rotor
+                nSection            -- # of blade sections 
+                inletBladeHeight    -- blade inlet height
+                outletBladeHeight   -- blade outlet height 
+                inletHubRadius      -- inlet hub radius 
+                outletHubRadius     -- outlet hub radius 
+                airfoilPath         -- path where are stored the airfoil properties 
         '''
-        
-        if turboType != 'stator' or turboType != 'rotor':
-            raise ValueError('Invalid blade.turboType -> it should be rotor or stator')
-        if turboAim != 'compressor' or turboAim != 'turbine':
-            raise ValueError('Invalid blade.turboAim -> it should be compressor or turbine')
-        if turboType == 'stator' and revVelocity != 0:
-            raise ValueError('Invalid blade.relVelocity -> for a stator the revVelocity == 0')
 
         self.ID             = ID
         self.turboType      = turboType
-        self.angle          = angle
-        self.pitch          = pitch
-        self.chord          = chord
-        self.absVelocity    = absVelocity
-        self.relVelocity    = relVelocity
-        self.revVelocity    = revVelocity
-        self.airfoilName    = airfoilName
-        self.position       = position
-        self.setSolidity()
-    
-    def print(self):
-        ''' 
-        Blade properties printout
-        '''
-            
-        print('\tID:           {0:>10d}'.format(self.ID))
-        print('\ttype:         {0:>10s}'.format(self.turboType))
-        print('\taim:          {0:>10s}'.format(self.turboAim))
-        print('\tairfoil name: {0:>10s}'.format(self.airfoilName))
-        print('\tangle:        {0:>10.2f}'.format(self.angle))
-        print('\tchord:        {0:>10.2f}'.format(self.chord))
-        print('\tpitch:        {0:>10.2f}'.format(self.pitch))
-        print('\tLE position:  {0:>10.2f}'.format(self.position))
-        print('\tvelocity:')
-        print('\trotation')
-        print('\t-- U =    {0:4.3f}'.format(self.revVelocity))
-        print('\tabsolute')
-        print('\t-- V1 = [ {0:4.3f} {1:4.3f}]'.format(self.absVelocity[0,0], self.absVelocity[0,1]))
-        print('\t-- V2 = [ {0:4.3f} {1:4.3f}]'.format(self.absVelocity[1,0], self.absVelocity[1,1]))
-        print('\trelative')
-        print('\t-- W1 = [ {0:4.3f} {1:4.3f}]'.format(self.relVelocity[0,0], self.relVelocity[0,1]))
-        print('\t-- W2 = [ {0:4.3f} {1:4.3f}]'.format(self.relVelocity[1,0], self.relVelocity[1,1]))
-    
-    def setAngle(self, angle):
-        '''
-        Rotor aerodynamic angle with respect to the axial flow direction
-        '''
-        self.angle = angle 
+        self.nSection       = nSection
+        self.omega          = omega
+        
+        # section objects allocation 
+        self.inletSection = self.allocateSection(hubRadius=inletHubRadius, bladeHeight=inletBladeHeight, nSection=nSection)
+        self.outletSection = self.allocateSection(hubRadius=outletHubRadius, bladeHeight=outletBladeHeight, nSection=nSection)
 
-    def setSolidity(self):
+    def allocateSection(self, hubRadius=0, tipRadius=0, bladeHeight=0, nSection=0, plot=False):
         '''
-        Rotor solidity computation
+        This function allocates the section vector in the blade object.
+            inputs:
+                hubRadius   -- radius of the hub 
+                tipRadius   -- radius of the tip 
+                bladeHeight -- blade height 
+                nSection    -- # of sections the blade is composed of 
         '''
 
-        if self.chord != np.NaN and self.pitch != np.NaN:
-            self.solidity = self.chord * self.pitch
-        else:
-            self.solidity = np.NaN
-                
-    def setVelocity(self, velocity):
-        ''' 
-        Rotor velocity vector allocation 
-        '''
+        # computing main quantities 
+        sectionVec = []
+        height = bladeHeight/nSection
 
-        if velocity.shape == (2,2):
-            self.velocity = velocity
-        else:
-            raise ValueError('Input error: velVec dimension is wrong.')
+        # loop generation for the section generation
+        for ii in range(nSection):
+            if hubRadius != 0:
+                midpoint = hubRadius + ii * height + height / 2 
+                bottom = hubRadius + ii * height
+                tip = hubRadius + (ii+1) * height
+            elif tipRadius != 0:
+                midpoint = tipRadius - ii * height - height/2
+                bottom = tipRadius - (ii+1) * height
+                tip = tipRadius - ii * height 
 
-    def setFoil(self, foilName, plot=False):
-        '''
-        Rotor blade airfoil shape setting
-            foil generation tip: 
-                --- "foilName.txt" file should be made with xFoil
-                --- each airfoil "foilName.txt" file should be stored in /data/airfoils/ 
-        '''
-
-        self.foil = np.loadtxt(foilName, skiprows=1)
+            # appending section object to the vector 
+            sectionVec.append(section(midpoint, bottom, tip, height))
 
         if plot:
-            plt.figure()
-            plt.plot(self.foil[:,0], self.foil[:,1], 'b')
-            plt.title('{0:s}.ID = {1:d}\n{0:s}.chord = {2:2.2f}'.format(self.turboType, self.ID, self.chord))
-            plt.axis('equal')
+            fig = plt.figure(figsize=(8,8))
+            for ii in range(len(sectionVec)):
+                plt.plot(0, sectionVec[ii].midpoint, 'r*')
+                plt.plot(0, sectionVec[ii].tip, 'ob')
+                plt.plot(0, sectionVec[ii].bottom, 'ok')
+                plt.grid(linestyle='--')
             plt.show()
 
-    def foilRotation(self, unit='deg'):
+        return sectionVec 
+
+    def allocateDynamics(self, rMean, VtMean, VaMean, omega, section='inlet'):
         '''
-        Airfoil rotation function
-
-            function needs:
-                self.foil       -- airfoil coordinates data
-                                -- expressed in [x, y] numpy array format
-                self.angle      -- airfoil angle with respect to the axial direction of the 
-                                -- in radiant
-                unit            -- defines angle units
-                                -- if == deg the foil angle will be converted in radiants
-        '''
-
-        # profile rotation due to stagger angle
-        gamma = self.angle
-        if unit == 'deg':
-            gamma = np.deg2rad(gamma)
-
-        rotMatrix = np.matrix([[np.cos(gamma), -np.sin(gamma)],[np.sin(gamma), np.cos(gamma)]])
-
-        # coordinate rotation
-        for ii in range(self.foil.shape[0]):
-            self.foil[ii,:] = np.matmul(rotMatrix, self.foil[ii,:])
-
-    def plot(self):
-        '''
-        Rotor airfoil plot
+        This function allocates the velocity vectors at each section points using the FREE VORTEX model.
+            inputs:
+                rMean   -- mean radius
+                VtMean  -- tangential mean velocity 
+                VaMean  -- axial mean velocity 
+                omega   -- angular velocity
+                section -- inlet/outlet section 
         '''
 
-        plt.figure()
-        plt.plot(self.foil[:,0], self.foil[:,1], 'b')
-        plt.title('{0:s}.ID = {1:d}\n{0:s}.chord = {2:2.2f}'.format(self.turboType, self.ID, self.chord))
-        plt.axis('equal')
-        plt.show()
+        if section == 'inlet':
+            for ii in range(self.nSection):
+                # tangential speed computation with respect to the FREE VORTEX model 
+                Vt = VtMean * rMean / self.inletSection[ii].midpoint
+                # rotation speed 
+                U = self.inletSection[ii].midpoint * omega 
+
+                # data allocation in section object
+                self.inletSection[ii].allocateDynamics(VaMean, Vt, U)
+        elif section == 'outlet':
+            for ii in range(self.nSection):
+                # tangential speed computation with respect to the FREE VORTEX model 
+                Vt = VtMean * rMean / self.outletSection[ii].midpoint
+                # rotation speed 
+                U = self.outletSection[ii].midpoint * omega 
+                
+                # data allocation in section object
+                self.outletSection[ii].allocateDynamics(VaMean, Vt, U)
+
+    def allocateThermodynamics(self, Tt0, Pt0, Leu, eta, R=287.06, gamma=1.4):
+        '''
+        This function allocates the thermodynamic properties to each section.
+            inputs:
+                Tt0     -- inlet total temperature 
+                Pt0     -- inlet total pressure 
+                Leu     -- real euler work  
+                eta     -- stage efficiency   
+        '''
+
+        # cP computation
+        cP = gamma / (gamma - 1) * R
+
+        for ii in range(self.nSection):
+            # temperature computation 
+            T0 = Tt0 - self.inletSection[ii].V**2 / (2 * cP)
+
+            # pressure computation
+            P0 = Pt0 * (T0/Tt0)**(gamma/(gamma-1))
+
+            # density computation 
+            rho0 = P0 / (R * T0)
+
+            # total density computation
+            rhot0 = Pt0 / (R * Tt0)
+
+            # total temperature computation
+            Tt1 = Leu / cP + Tt0
+
+            # ideal temperature computation if the process is completely 
+            # isentropic without losses but the work produced is related 
+            # to a process that takes into account losses in the stage  
+            T1 = Tt1 - self.outletSection[ii].V**2 / (2 * cP)
+
+            # T1 isoentropic computation 
+            #   this correction activates only is eta != 1
+            T1 = T0 + eta * (T1 - T0)
+
+            # pressure computation
+            P1 = P0 * (T1/T0)**(gamma/(gamma-1))
+
+            # total pressure computation
+            Pt1 = P1 * (Tt1/T1)**(gamma/(gamma-1))
+
+            # density computation 
+            rho1 = P1 / (R * T1)
+
+            # total density computation
+            rhot1 = Pt1 / (R * Tt1)
+
+            # variable allocation in seection objects            
+            self.inletSection[ii].allocateThermodynamics(T=T0, P=P0, Tt=Tt0, Pt=Pt0, rho=rho0, rhot=rhot0, s=0)
+            self.outletSection[ii].allocateThermodynamics(T=T1, P=P1, Tt=Tt1, Pt=Pt1, rho=rho1, rhot=rhot1, s=0)
+
+    def radialEquilibrium(self, R=287.06, gamma=1.4):
+        '''
+        This function computes the radial equilibrium of the section taking into account losses. 
+            inputs:
+        ''' 
+    
+        # cP computation
+        cP = gamma / (gamma - 1) * R
+
+        for ii in range(self.nSection):
+            # variable allocation
+            ht0 = self.inletSection[ii].ht
+            Vt0 = self.inletSection[ii].Vt
+            U0 = self.inletSection[ii].U
+            s0 = self.inletSection[ii].s
+            Vt1 = self.outletSection[ii].Vt
+            U1 = self.outletSection[ii].U 
+            s1 = self.outletSection[ii].s 
+
+            # total enthalpy computation 
+            ht1 = ht0 + U1 * Vt1 - U0 * Vt0
+            self.outletSection[ii].ht = ht1 
+            
+            # total temperature computation
+            self.outletSection[ii].Tt = (ht1 - ht0) / cP + self.inletSection[ii].Tt
+
+
 

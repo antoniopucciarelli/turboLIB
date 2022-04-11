@@ -8,8 +8,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt 
-from turboRotor import rotor
-from turboStator import stator
+from turboBlade import blade
 import warnings
 
 class stage:

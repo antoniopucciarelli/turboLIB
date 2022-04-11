@@ -394,7 +394,7 @@ def KtdeltaFunc(tbc=0, tb=0, c=0, plot=False, save=False, position='Kti.pgf'):
     if tbc !=0:
         return Ktdeltafunc(tbc)
 
-def oFunc(gamma=0, tbc=0, solidity=0, pitch=0, Cl=0, plot=False, save=False, pos='o.pgf'):
+def oFunc(gamma=0, tbc=0, solidity=0, pitch=0, Cl=0, plot=False, save=False, position='o.pgf'):
     '''
     This function computes the minimum opening between 2 blades in a cascade row for NACA-65 blade type. 
         inputs:
