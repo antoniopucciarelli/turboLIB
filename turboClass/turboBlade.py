@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from geometry import bladeGenerator
 from turboClass.bladeSection import section
+from scipy import integrate 
+from scipy import interpolate 
 import warnings
 
 class blade:
@@ -82,6 +84,59 @@ class blade:
             plt.show()
 
         return sectionVec 
+
+    def plotMeridional(self):
+        '''
+        This function plots the blade sections in the meridional plane.
+        '''
+
+        from matplotlib.cm import ScalarMappable
+        from matplotlib.colors import Normalize
+        import matplotlib.colors as mcolors
+
+        # getting max and minimum axial velocity
+        Vmax = 0 
+        Vmin = self.outletSection[0].Va
+        for ii in range(self.nSection):
+            if Vmax < self.outletSection[ii].Va: 
+                Vmax = self.outletSection[ii].Va
+            if Vmin > self.outletSection[ii].Va:
+                Vmin = self.outletSection[ii].Va
+
+        nSection = self.nSection
+
+        def sectionFill(inletSection, outletSection, color):
+            '''
+            This function plots a streamtube section.
+            '''
+
+            x = [0, 0, 0, 1, 1, 1]
+            y = [inletSection.tip, inletSection.midpoint, inletSection.bottom, outletSection.bottom, outletSection.midpoint, outletSection.tip]
+
+            plt.fill(x, y, color=color)
+
+            if nSection < 15:
+                plt.plot(0, self.inletSection[ii].midpoint, 'r*')
+                plt.plot(0, self.inletSection[ii].tip, 'ob')
+                plt.plot(0, self.inletSection[ii].bottom, 'ob')
+                plt.plot(1, self.outletSection[ii].midpoint, 'r*')
+                plt.plot(1, self.outletSection[ii].tip, 'ok')
+                plt.plot(1, self.outletSection[ii].bottom, 'ok')
+
+        fig = plt.figure(figsize=(8,8))
+        for ii in range(nSection):
+            sectionFill(self.inletSection[ii], self.outletSection[ii], [self.outletSection[ii].Va/Vmax, 0.2, 0.35])
+
+        color_list = [(self.outletSection[nSection-1-ii].Va/Vmax, 0.2, 0.35) for ii in range(nSection)]
+        cmap = mcolors.LinearSegmentedColormap.from_list("my_colormap", color_list)
+        cmappable = ScalarMappable(norm=Normalize(Vmin, Vmax), cmap=cmap)
+
+        plt.grid(linestyle='--')
+        plt.title('Axial velocity')
+        plt.xlabel('chord')
+        plt.ylabel('r')
+        plt.colorbar(cmappable, label=r'$\frac{m}{s}$')
+        plt.show()
 
     def allocateDynamics(self, rMean, VtMean, VaMean, omega, section='inlet'):
         '''
@@ -176,22 +231,19 @@ class blade:
         # cP computation
         cP = gamma / (gamma - 1) * R
 
-        for ii in range(self.nSection):
-            # variable allocation
-            ht0 = self.inletSection[ii].ht
-            Vt0 = self.inletSection[ii].Vt
-            U0 = self.inletSection[ii].U
-            s0 = self.inletSection[ii].s
-            Vt1 = self.outletSection[ii].Vt
-            U1 = self.outletSection[ii].U 
-            s1 = self.outletSection[ii].s 
+        # s0 function generation --> blade inlet 
+        
 
-            # total enthalpy computation 
-            ht1 = ht0 + U1 * Vt1 - U0 * Vt0
-            self.outletSection[ii].ht = ht1 
-            
-            # total temperature computation
-            self.outletSection[ii].Tt = (ht1 - ht0) / cP + self.inletSection[ii].Tt
+        # s1 function generation --> blade outlet 
+
+        # Va0 function generation --> blade inlet 
+
+        # Vt0 function generation --> blade inlet 
+
+        # Vt1 function generation --> blade outlet 
+
+        # Va1 computation 
+
 
 
 
