@@ -251,7 +251,7 @@ class blade:
                 # data allocation in section object
                 self.outletSection[ii].allocateDynamics(VaMean, Vt, U)
 
-    def allocateThermodynamics(self, Tt0, Pt0, eta, R=287.06, gamma=1.4, printout=False):
+    def allocateThermodynamics(self, Tt0, Pt0, eta, R=287.06, gamma=1.4):
         '''
         This function allocates the thermodynamic properties to each section.
             inputs:
@@ -320,36 +320,11 @@ class blade:
             # total density computation
             rhot1 = Pt1 / (R * Tt1)
 
-            if printout:
-                print('midpont = ', self.inletSection[ii].midpoint)
-                print('Uin  = ', self.inletSection[ii].U)
-                print('Vain = ', self.inletSection[ii].Va)
-                print('Vtin  = ', self.inletSection[ii].Vt)
-                print('Vin = ', self.inletSection[ii].V)
-                print('Uout = ', self.outletSection[ii].U)
-                print('Vaout = ', self.outletSection[ii].Va)
-                print('Vtout = ', self.outletSection[ii].Vt)
-                print('Vout = ', self.outletSection[ii].V)
-                print('Leu  = ', Leu)
-                print('T0 = ', T0)
-                print('P0 = ', P0)
-                print('Tt0 = ', Tt0)
-                print('Pt0 = ', Pt0)
-                print('Tt0r = ', Tt0r)
-                print('Pt0r = ', Pt0r)
-                print('T1 = ', T1)
-                print('P1 = ', P1)
-                print('Tt1 = ', Tt1)
-                print('Pt1 = ', Pt1)
-                print('Tt1r = ', Tt1r)
-                print('Pt1r = ', Pt1r)
-                print('')
-
             # variable allocation in seection objects            
             self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, s=0)
             self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, s=0)
 
-    def radialEquilibrium(self, Pt0, Tt0, eta, mFlux, plot=False, R=287.06, gamma=1.4):
+    def radialEquilibrium(self, Pt0, Tt0, mFlux, plot=False, save=False, position0='inOut.pgf', position1='betaInbetaOut.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -357,6 +332,7 @@ class blade:
                 Tt0     -- inlet total temperature 
                 eta     -- stage efficiency 
                 plot    -- boolean value for the plotting of the results
+                save    -- boolean value for the saving of the results
                 R       -- gas constant 
                 gamma   -- specific heat ratio 
         ''' 
@@ -366,6 +342,9 @@ class blade:
 
         # omega 
         omega = self.omega 
+
+        # saving initial beta2 angle for plotting 
+        beta2start = [self.outletSection[ii].beta for ii in range(self.nSection)]
 
         # INLET VARIABLES INTERPOLATION 
         # these variables do not change so they are set once in all the process
@@ -511,7 +490,7 @@ class blade:
                 s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
 
             # loss error computation 
-            relErrorS = np.abs(np.sum(s2old) - np.sum(s2new)) / np.max(s2new)
+            relErrorS = np.abs(np.sum(s2old) - np.sum(s2new)) 
         
             # getting info on s 
             s2Vec = [self.outletSection[ii].s for ii in range(self.nSection)]
@@ -579,26 +558,37 @@ class blade:
         # computing change in total pressure due to losses 
         for ii in range(self.nSection):
             # total pressure compuation -- wrong
-            self.outletSection[ii].Pt = self.inletSection[ii].Pt * np.exp((self.inletSection[ii].s - self.outletSection[ii].s) / R) 
+            self.outletSection[ii].Pt = self.outletSection[ii].Pt * np.exp((self.inletSection[ii].s - self.outletSection[ii].s) / R) 
             # static temperature computation 
             self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
             # total relative temperature computation
             self.outletSection[ii].Ttr = self.outletSection[ii].Tt - self.outletSection[ii].W**2 / (2 * cP)
             # static pressure computation
-            self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].Tt/self.outletSection[ii].T)**(gamma/(gamma-1))
+            self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
             # static density computation
             self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
             # total density computation
             self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
 
         # plotting interpolated functions 
-        if plot:
+        if plot or save:
+            if save:
+                # setting matplotlib LaTeX export 
+                import matplotlib
+                matplotlib.use("pgf")
+                matplotlib.rcParams.update({
+                    "pgf.texsystem": "pdflatex",
+                    'font.family': 'serif',
+                    'text.usetex': True,
+                    'pgf.rcfonts': False,
+                })
+
             midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
             midpointOutlet = [self.outletSection[ii].midpoint for ii in range(self.nSection)]    
 
-            fig, ax = plt.subplots(ncols=2, nrows=1)
-            fig.set_figwidth(18)
-            fig.set_figheight(9.5)
+            fig0, ax = plt.subplots(ncols=2, nrows=1)
+            fig0.set_figwidth(18)
+            fig0.set_figheight(9.5)
 
             # inlet section plot 
             twiny1 = ax[0].twiny()
@@ -612,20 +602,21 @@ class blade:
             # Vt1 allocation 
             Vt1 = [self.inletSection[ii].Vt for ii in range(self.nSection)]
             # Pt1 allocation 
-            Pt1 = [self.inletSection[ii].Pt for ii in range(self.nSection)]
+            Pt1 = [self.inletSection[ii].Pt/1e+5 for ii in range(self.nSection)]
 
+            # plotting data
             p0, = ax[0].plot(Va1(midpointInlet), midpointInlet, 'ko-', label=r'$V_a$')
             p1, = twiny1.plot(Vt1, midpointInlet, 'm*-', label=r'$V_t$')
             p2, = twiny2.plot(s1(midpointInlet), midpointInlet, 'r--', label=r'$s$')
-            p3, = twiny2.plot(Pt1, midpointInlet, 'b-o', label=r'$P_t$')
+            p3, = twiny3.plot(Pt1, midpointInlet, 'b-o', label=r'$P_t$')
             ax[0].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
-            ax[0].set_ylabel('r')
-            ax[0].set_xlabel(r'$V_a$')
-            twiny1.set_xlabel(r'$V_t$')
-            twiny2.set_xlabel(r'$s$')
-            twiny3.set_xlabel(r'$P_t$')
+            ax[0].set_ylabel(r'$r$')
+            ax[0].set_xlabel(r'$V_a \ \frac{{m}}{{s}}$')
+            twiny1.set_xlabel(r'$V_t \ \frac{{m}}{{s}}$')
+            twiny2.set_xlabel(r'$s \ \frac{{J}}{{kg}}$')
+            twiny3.set_xlabel(r'$P_t \ bar$')
 
-            ax[0].legend(handles=[p0,p1,p2,p3], loc='lower right')
+            ax[0].legend(handles=[p0,p1,p2,p3], loc='center right')
             ax[0].set_title('Inlet')
 
             # inlet section plot 
@@ -640,74 +631,67 @@ class blade:
             # Vt2 allocation 
             Vt2 = [self.outletSection[ii].Vt for ii in range(self.nSection)]
             # Pt2 allocation 
-            Pt2 = [self.outletSection[ii].Pt for ii in range(self.nSection)]
+            Pt2 = [self.outletSection[ii].Pt/1e+5 for ii in range(self.nSection)]
 
-            p0, = ax[1].plot(Va2, midpointInlet, 'ko-', label=r'$V_a$')
-            p1, = twiny1.plot(Vt2, midpointInlet, 'm*-', label=r'$V_t$')
-            p2, = twiny2.plot(s2(midpointOutlet), midpointInlet, 'r--', label=r'$s$')
+            # plotting data
+            p0, = ax[1].plot(Va2, midpointOutlet, 'ko-', label=r'$V_a$')
+            p1, = twiny1.plot(Vt2, midpointOutlet, 'm*-', label=r'$V_t$')
+            p2, = twiny2.plot(s2(midpointOutlet), midpointOutlet, 'r--', label=r'$s$')
             p3, = twiny3.plot(Pt2, midpointOutlet, 'b-o', label=r'$P_t$')
-            ax[1].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
-            ax[1].set_ylabel('r')
-            ax[1].set_xlabel(r'$V_a$')
-            twiny1.set_xlabel(r'$V_t$')
-            twiny2.set_xlabel(r'$s$')
-            twiny3.set_xlabel(r'$P_t$')
+            ax[1].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
+            ax[1].set_ylabel(r'$r$')
+            ax[1].set_xlabel(r'$V_a \ \frac{{m}}{{s}}$')
+            twiny1.set_xlabel(r'$V_t \ \frac{{m}}{{s}}$')
+            twiny2.set_xlabel(r'$s \ \frac{{J}}{{kg}}$')
+            twiny3.set_xlabel(r'$P_t \ bar$')
 
-            ax[1].legend(handles=[p0,p1,p2,p3], loc='lower right')
+            ax[1].legend(handles=[p0,p1,p2,p3], loc='center right')
             ax[1].set_title('Outlet')
 
             plt.tight_layout()
-            plt.show()
 
-#    # outlet thermodynamics computation
-#    self.allocateThermodynamics(Tt0, Pt0, eta)
-#    # LOSSES COMPUTATION 
-#    # computing pressure losses 
-#    lossVec = np.zeros(self.nSection)
-#
-#    for ii in range(self.nSection):
-#        # variables allocation
-#        # velocity 
-#        W1 = self.inletSection[ii].W
-#        W2 = self.outletSection[ii].W
-#
-#        # angles
-#        beta1 = self.inletSection[ii].beta
-#        beta2 =  self.outletSection[ii].beta
-#        
-#        # angles check -> the Leiblein model treats with positive angle for beta1 
-#        # this implies changing the angle sign with respect to beta1 sign angle  
-#        if beta1 < 0:
-#            beta1 = - beta1 
-#            beta2 = - beta2
-#
-#        # solidity allocation    
-#        solidity = 1
-#
-#        # loss computation -> Lieblein model 
-#        lossVec[ii], _ = losses.lossCoeff(W1, W2, beta1, beta2, solidity)
-#
-#    # computing change in total pressure due to losses 
-#    for ii in range(self.nSection):
-#        # new outlet pressure computation -> using losses
-#        self.outletSection[ii].Ptr = self.inletSection[ii].Ptr - lossVec[ii] * (self.inletSection[ii].Ptr - self.inletSection[ii].P)
-#        # entropy computation
-#        self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Ptr / self.inletSection[ii].Ptr)
-#        # total pressure compuation 
-#        print('delta s / R =', (self.inletSection[ii].s - self.outletSection[ii].s) / R)
-#        print(- self.outletSection[ii].s)
-#        print('inlet ptr',self.inletSection[ii].Ptr)
-#        print('outlet ptr',self.outletSection[ii].Ptr)
-#        self.outletSection[ii].Pt = self.inletSection[ii].Pt * np.exp((self.inletSection[ii].s - self.outletSection[ii].s) / R) 
-#        # static temperature computation 
-#        self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
-#        # total relative temperature computation
-#        self.outletSection[ii].Ttr = self.outletSection[ii].Tt - self.outletSection[ii].W**2 / (2 * cP)
-#        # static pressure computation
-#        self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].Tt/self.outletSection[ii].T)**(gamma/(gamma-1))
-#        # static density computation
-#        self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
-#        # total density computation
-#        self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
-#
-#
+            # new figure 
+            fig1, ax1 = plt.subplots(ncols=1, nrows=1)
+            fig1.set_figwidth(10)
+            fig1.set_figheight(8)
+            
+            # collecting new beta2 
+            beta2new = [self.outletSection[ii].beta for ii in range(self.nSection)]
+            # collecting beta1 
+            beta1 = [self.inletSection[ii].beta for ii in range(self.nSection)]
+            # collecting pressure 
+            P2 = [self.outletSection[ii].P/1e+5 for ii in range(self.nSection)]
+
+            # subdividing data 
+            twiny1 = ax1.twiny()
+            twiny2 = ax1.twiny() 
+            twiny3 = ax1.twiny()
+            # moving axis position
+            twiny1.spines["top"].set_position(("axes", 1))
+            twiny2.spines["top"].set_position(("axes", 1.1))
+            twiny3.spines["top"].set_position(("axes", 1.2))
+            
+            # plotting data
+            p20, = ax1.plot(Va2, midpointOutlet, 'k-*', label=r'$V_{{a \ 2}}$')
+            p21, = twiny1.plot(Vt2, midpointOutlet, 'm-*', label=r'$V_{{t \ 2}}$')
+            p22, = twiny2.plot(beta2start, midpointOutlet, 'r--', linewidth=2, label=r'$\beta_{{2 \ start}}$')
+            p23, = twiny2.plot(beta2new, midpointOutlet, 'c', linewidth=2, label=r'$\beta_{{2 \ new}}$')
+            p24, = twiny2.plot(beta1, midpointOutlet, 'g', linewidth=2, label=r'$\beta_{{1 }}$')
+            p25, = twiny3.plot(P2, midpointOutlet, 'y-o', label=r'$P_{{2 }}$')
+            p26, = twiny3.plot(Pt2, midpointOutlet, 'b-o', label=r'$P_{{t \ 2}}$')
+            ax1.set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
+            ax1.set_ylabel(r'$r$')
+            ax1.set_xlabel(r'$V_{{a \ 2}} \ \frac{{m}}{{s}}$')
+            twiny1.set_xlabel(r'$V_{{t \ 2}} \ \frac{{m}}{{s}}$')
+            twiny2.set_xlabel(r'$\beta_{{2 }} \ - \ \beta_{{1 }} \ ^\circ$')
+            twiny3.set_xlabel(r'$P_{{2 }} \ - \ P_{{t \ 2}} \ bar$')
+
+            ax1.legend(handles=[p20,p21,p22,p23,p24,p25,p26], loc='center left')
+            
+            plt.tight_layout()
+
+            if save:
+                fig0.savefig(position0)
+                fig1.savefig(position1)
+            else:
+                plt.show()
