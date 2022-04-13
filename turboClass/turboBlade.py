@@ -353,13 +353,23 @@ class blade:
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
+                Pt0     -- inlet total pressure 
+                Tt0     -- inlet total temperature 
+                eta     -- stage efficiency 
+                plot    -- boolean value for the plotting of the results
+                R       -- gas constant 
+                gamma   -- specific heat ratio 
         ''' 
     
         # cP computation
         cP = gamma / (gamma - 1) * R
 
-        # INLET VARIABLES INTERPOLATION -> they do not change so there is not the necessity to change them in the while loop
-        # inlet midpoint generation 
+        # omega 
+        omega = self.omega 
+
+        # INLET VARIABLES INTERPOLATION 
+        # these variables do not change so they are set once in all the process
+        # midpoint --> blade inlet  
         midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
 
         # s1 function generation --> blade inlet 
@@ -378,8 +388,9 @@ class blade:
         Tt1 = [self.inletSection[ii].Tt for ii in range(self.nSection)]
         Tt1 = interpolate.interp1d(midpointInlet, Tt1, kind='linear', bounds_error=False, fill_value='extrapolate')
 
-        # OUTLET VARIABLES -> they do not change in the while loop so there is not the necessity to change them
-        # outlet midpoint generation 
+        # OUTLET VARIABLES 
+        # these variables do not change so they are set once in all the process 
+        # midpoint --> blade outlet
         midpointOutlet = [self.outletSection[ii].midpoint for ii in range(self.nSection)]
 
         # rVt2 function generation --> blade outlet 
@@ -390,117 +401,72 @@ class blade:
         Vt2 = [self.outletSection[ii].Vt for ii in range(self.nSection)]
         Vt2 = interpolate.interp1d(midpointOutlet, Vt2, kind='linear', bounds_error=False, fill_value='extrapolate')
 
-        # ODE function necessary tools
-        # omega 
-        omega = self.omega 
-
-        # Va2 function generation 
-        def radialFunc(y, t, s2):
-            '''
-            Radial equilibrium ODE. 
-                y = Va2**2
-                t = r 
-            '''
-
-            # derivative step setup
-            dx = 1e-3
-            # derivative computation 
-            dTt1 = derivative(Tt1, t, dx=dx, n=1, order=3)
-            drVt2 = derivative(rVt2, t, dx=dx, n=1, order=3)
-            drVt1 = derivative(rVt1, t, dx=dx, n=1, order=3)
-            ds2 = derivative(s2, t, dx=dx, n=1, order=3)
-
-            # y derivative computation
-            dydt = - 2 * (- y/(2*cP) * ds2 - cP * dTt1 - omega * drVt2 + omega * drVt1 + Tt1(t) * ds2 + omega / cP * rVt2(t) * ds2 - omega / cP * rVt1(t) * ds2 - Vt2(t)**2 / (2*cP) * ds2 + Vt2(t) / t * drVt2)
-
-            return dydt 
-        
-        # radius vector allocation 
-        t = midpointOutlet #np.linspace(midpointOutlet[0], midpointOutlet[-1], 1000)
-
-        # setting up boundary condition
-        y0 = self.outletSection[0].Va**2
-
-        # setting up tolerances
-        relError = 1 
-        tol      = 1e-2
-        nMax     = 100 
-        counter  = 0
+        # setting up entropy tolerances
+        counterS = 0
+        nMaxS    = 100 
+        # mass flux 
+        relErrorS = 1 
+        tolS      = 1e-2
 
         # initialize print
         lineLenght = 80
         iterativeLenght = np.int16((lineLenght - len(' RADIAL EQ. '))/2)
         print('\n' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
         
-        # LOOP
-        while relError > tol and counter < nMax:
-            # updating counter 
-            counter = counter + 1
-              
-            # OUTLET VARIABLES INTERPOLATION 
+        # entropy outer loop 
+        while relErrorS > tolS and counterS < nMaxS: 
+            # updating entropy loop counter 
+            counterS = counterS + 1
+
+            # print
+            outerIterativeLenght = np.int16((lineLenght - len(' OUTER ITERATION   '))/2)
+            print('\n' + '*' * outerIterativeLenght + ' OUTER ITERATION {0:d} '.format(counterS) + '*' * outerIterativeLenght)
+
+            # ODE function necessary tools
+            # OUTLET VARIABLES INTERPOLATION => this function changes with respect to the Va2 changes 
+            # s2 is updated with as soon as Va2 reached convergence
             # s2 function generation --> blade outlet 
             s2 = [self.outletSection[ii].s for ii in range(self.nSection)]
             s2 = interpolate.interp1d(midpointOutlet, s2, kind='linear', bounds_error=False, fill_value='extrapolate')
+            
+            # Va2 function generation 
+            def radialFunc(y, t):
+                '''
+                Radial equilibrium ODE. 
+                    y = Va2**2
+                    t = r 
+                '''
 
-            # computing solution 
-            Va2_squared = integrate.odeint(radialFunc, y0, t, args=(s2,))
+                # derivative step setup
+                dx = 1e-3
 
-            # setting up Va2 vector 
-            Va2 = np.zeros(self.nSection)
-            for ii in range(self.nSection):
-                Va2[ii] = np.sqrt(Va2_squared[ii])
+                # derivative computation
+                # dTt1 / dr  
+                dTt1 = derivative(Tt1, t, dx=dx, n=1, order=3)
+                # drVt2 / dr 
+                drVt2 = derivative(rVt2, t, dx=dx, n=1, order=3)
+                # drVt1 / dr
+                drVt1 = derivative(rVt1, t, dx=dx, n=1, order=3)
+                # ds2 / dr
+                ds2 = derivative(s2, t, dx=dx, n=1, order=3)
 
-            # outlet section dynamics allocation
-            for ii in range(self.nSection):
-                self.outletSection[ii].allocateDynamics(Va2[ii], self.outletSection[ii].Vt, self.outletSection[ii].U)
+                # y derivative computation
+                dydt = - 2 * (- y / (2*cP) * ds2 - cP * dTt1 - omega * drVt2 + omega * drVt1 + Tt1(t) * ds2 + omega / cP * rVt2(t) * ds2 - omega / cP * rVt1(t) * ds2 - Vt2(t)**2 / (2*cP) * ds2 + Vt2(t) / t * drVt2)
 
-            # getting info on s 
-            s2Vec = [self.outletSection[ii].s for ii in range(self.nSection)]
-            s2Min = np.min(s2Vec)
-            s2Max = np.max(s2Vec)
-            s2Ave = np.sum(s2Vec)/self.nSection
+                return dydt 
+            
+            # radius vector allocation 
+            t = midpointOutlet 
 
-            # getting info on Pt
-            Pt2Vec = [self.outletSection[ii].Pt for ii in range(self.nSection)]
-            Pt2Min = np.min(Pt2Vec)
-            Pt2Max = np.max(Pt2Vec)
-            Pt2Ave = np.sum(Pt2Vec)/self.nSection
+            # setting up boundary condition
+            y0 = self.outletSection[0].Va**2
 
-            # getting info on losses 
-            try:
-                lossMax = np.max(lossVec)
-                lossMin = np.min(lossVec)
-                lossAve = np.sum(lossVec)/self.nSection
-            except:
-                pass
-
-            # computing rho for the mass flux 
-            self.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=1)
-
-            # check mass flux 
-            newFlux = 0
-            for ii in range(self.nSection):
-                newFlux = newFlux + self.outletSection[ii].mFlux()
-
-            # relative mass flux error
-            relError = np.abs(newFlux - mFlux)/mFlux
-
-            # setting up initial velocity for the new ODE 
-            if newFlux > mFlux:
-                y0 = y0 * (1 - relError)
-            else: 
-                y0 = y0 * (1 + relError)
-
-            # printing main values
-            iterativeLenght = np.int16((lineLenght - len(' ITERATION   '))/2)
-            print('*' * iterativeLenght + ' ITERATION {0:d} '.format(counter) + '*' * iterativeLenght)
-            print('-- mFlux   {0:>8.2f} kg/s -- iterFlux {1:>8.2f} kg/s -- rel. error {2:>8.2f}'.format(mFlux,newFlux,relError))
-            try:
-                print('-- lossMin {0:>8.2f}      -- lossAve  {1:>8.2f}      -- lossMax    {2:>8.2f}'.format(lossMin,lossAve,lossMax))
-            except: 
-                pass
-            print('-- s2_min  {0:>8.2f} J/kg -- s2_ave   {1:>8.2f} J/kg -- s2_max     {2:>8.2f} J/kg'.format(s2Min,s2Ave,s2Max))
-            print('-- Pt2_min {0:>8.2f} bar  -- Pt2_ave  {1:>8.2f} bar  -- Pt2_max    {2:>8.2f} bar'.format(Pt2Min/1e+5,Pt2Ave/1e+5,Pt2Max/1e+5))
+            # setting up tolerances
+            counterFlux = 0
+            nMaxFlux    = 100 
+            # mass flux 
+            relErrorFlux = 1 
+            tolFlux      = 1e-2
 
             # computing losses for the new loop cycle (used if relError > tol) 
             # target s2
@@ -532,12 +498,98 @@ class blade:
 
             # computing entropy generation through losses 
             for ii in range(self.nSection):
+                # storing s2 old 
+                s2old = [self.outletSection[ii].s for ii in range(self.nSection)]
+                
+                # COMPUTING NEW s VALUES
                 # new outlet pressure computation -> using losses
                 self.outletSection[ii].Ptr = self.inletSection[ii].Ptr - lossVec[ii] * (self.inletSection[ii].Ptr - self.inletSection[ii].P)
                 # entropy computation
                 self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Ptr / self.inletSection[ii].Ptr)                        
+                
+                # storing new s2 
+                s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
 
-        print('*' * lineLenght)
+            # loss error computation 
+            relErrorS = np.abs(np.sum(s2old) - np.sum(s2new)) / np.max(s2new)
+        
+            # getting info on s 
+            s2Vec = [self.outletSection[ii].s for ii in range(self.nSection)]
+            s2Min = np.min(s2Vec)
+            s2Max = np.max(s2Vec)
+
+            # getting info on losses 
+            try:
+                lossMax = np.max(lossVec)
+                lossMin = np.min(lossVec)
+                lossAve = np.sum(lossVec)/self.nSection
+            except:
+                pass
+
+            # continuity inner loop
+            while relErrorFlux > tolFlux and counterFlux < nMaxFlux:
+                # updating counter 
+                counterFlux = counterFlux + 1
+
+                # computing solution 
+                Va2_squared = integrate.odeint(radialFunc, y0, t)
+
+                # setting up Va2 vector 
+                Va2 = np.zeros(self.nSection)
+                for ii in range(self.nSection):
+                    Va2[ii] = np.sqrt(Va2_squared[ii])
+
+                # outlet section dynamics allocation
+                for ii in range(self.nSection):
+                    self.outletSection[ii].allocateDynamics(Va2[ii], self.outletSection[ii].Vt, self.outletSection[ii].U)
+
+                # computing rho for the mass flux 
+                self.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=1)
+
+                # check mass flux 
+                newFlux = 0
+                for ii in range(self.nSection):
+                    newFlux = newFlux + self.outletSection[ii].mFlux()
+
+                # relative mass flux error
+                relErrorFlux = np.abs(newFlux - mFlux)/mFlux
+
+                # setting up initial velocity for the new ODE 
+                if newFlux > mFlux:
+                    y0 = y0 * (1 - relErrorFlux)
+                else: 
+                    y0 = y0 * (1 + relErrorFlux)
+
+                # printing main values
+                innerIterativeLenght = np.int16((lineLenght - len(' INNER ITERATION   '))/2)
+                print('*' * innerIterativeLenght + ' INNER ITERATION {0:d} '.format(counterFlux) + '*' * innerIterativeLenght)
+                print('-- mFlux   {0:>8.2f} kg/s -- iterFlux {1:>8.2f} kg/s -- rel. error flux {2:>2.4f}'.format(mFlux,newFlux,relErrorFlux))
+                try:
+                    print('-- lossMin {0:>8.2f}      -- lossAve  {1:>8.2f}      -- lossMax         {2:>2.2f}'.format(lossMin,lossAve,lossMax))
+                    print('-- s2_min  {0:>8.2f} J/kg -- s2_max   {1:>8.2f} J/kg -- rel. error s    {2:>2.4f}'.format(s2Min,s2Max,relErrorS))
+                except: 
+                    pass
+            
+            print('*' * lineLenght)
+            # reallocating the entropy for the next iteration 
+            for ii in range(self.nSection):
+                self.outletSection[ii].s = s2new[ii]
+
+        # computing all the new thermodynamic quantities after the radial equilibrium is satisfied
+        # computing change in total pressure due to losses 
+        for ii in range(self.nSection):
+            # total pressure compuation -- wrong
+            self.outletSection[ii].Pt = self.inletSection[ii].Pt * np.exp((self.inletSection[ii].s - self.outletSection[ii].s) / R) 
+            # static temperature computation 
+            self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
+            # total relative temperature computation
+            self.outletSection[ii].Ttr = self.outletSection[ii].Tt - self.outletSection[ii].W**2 / (2 * cP)
+            # static pressure computation
+            self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].Tt/self.outletSection[ii].T)**(gamma/(gamma-1))
+            # static density computation
+            self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
+            # total density computation
+            self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
 
         # plotting interpolated functions 
         if plot:
@@ -551,23 +603,29 @@ class blade:
             # inlet section plot 
             twiny1 = ax[0].twiny()
             twiny2 = ax[0].twiny() 
+            twiny3 = ax[0].twiny()
             # moving axis position
             twiny1.spines["top"].set_position(("axes", 1))
             twiny2.spines["top"].set_position(("axes", 1.1))
+            twiny3.spines["top"].set_position(("axes", 1.2))
 
             # Vt1 allocation 
             Vt1 = [self.inletSection[ii].Vt for ii in range(self.nSection)]
+            # Pt1 allocation 
+            Pt1 = [self.inletSection[ii].Pt for ii in range(self.nSection)]
 
             p0, = ax[0].plot(Va1(midpointInlet), midpointInlet, 'ko-', label=r'$V_a$')
             p1, = twiny1.plot(Vt1, midpointInlet, 'm*-', label=r'$V_t$')
             p2, = twiny2.plot(s1(midpointInlet), midpointInlet, 'r--', label=r'$s$')
+            p3, = twiny2.plot(Pt1, midpointInlet, 'b-o', label=r'$P_t$')
             ax[0].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
             ax[0].set_ylabel('r')
             ax[0].set_xlabel(r'$V_a$')
             twiny1.set_xlabel(r'$V_t$')
             twiny2.set_xlabel(r'$s$')
+            twiny3.set_xlabel(r'$P_t$')
 
-            ax[0].legend(handles=[p0,p1,p2])
+            ax[0].legend(handles=[p0,p1,p2,p3], loc='lower right')
             ax[0].set_title('Inlet')
 
             # inlet section plot 
@@ -595,7 +653,7 @@ class blade:
             twiny2.set_xlabel(r'$s$')
             twiny3.set_xlabel(r'$P_t$')
 
-            ax[1].legend(handles=[p0,p1,p2], loc='lower left')
+            ax[1].legend(handles=[p0,p1,p2,p3], loc='lower right')
             ax[1].set_title('Outlet')
 
             plt.tight_layout()
