@@ -61,7 +61,7 @@ class section:
         self.W    = np.sqrt(self.Wa**2 + self.Wt**2)
         self.beta = np.rad2deg(np.arctan(self.Wt/self.Wa))
 
-    def allocateThermodynamics(self, Tt, Pt, T, P, rho, rhot, s, R=287.06, gamma=1.4):
+    def allocateThermodynamics(self, Tt, Pt, T, P, Ttr, Ptr, rho, rhot, s, R=287.06, gamma=1.4):
         '''
         This function computes the thermodynamic properties of a specific point in the blade.
             inputs:
@@ -74,6 +74,7 @@ class section:
 
         # thermodynamic properties computation
         self.Tt = Tt
+        self.Ttr = Ttr
         self.T  = T 
         self.Tr = Tt - self.W**2/(2 * cP)
         self.a  = np.sqrt(gamma * R * self.T)
@@ -81,6 +82,17 @@ class section:
         self.Mr = self.W / self.a 
         self.P  = P 
         self.Pt = Pt 
+        self.Ptr = Ptr
         self.rho = rho 
         self.rhot = rhot 
         self.s = s 
+
+    def mFlux(self):
+        '''
+        This function computes the mass flux in the stream tube.
+            -- the axial fluid speed and the density are considered constant in the stream tube.
+        '''
+
+        massFlux = np.pi * (self.tip**2 - self.bottom**2) * self.rho * self.Va
+
+        return massFlux 

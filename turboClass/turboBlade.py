@@ -8,11 +8,13 @@
 
 # importing libraries
 import numpy as np 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 from geometry import bladeGenerator
 from turboClass.bladeSection import section
 from scipy import integrate 
 from scipy import interpolate 
+from scipy.misc import derivative
+from turboCoeff import losses
 import warnings
 
 class blade:
@@ -138,6 +140,87 @@ class blade:
         plt.colorbar(cmappable, label=r'$\frac{m}{s}$')
         plt.show()
 
+    def printMeridional(self):
+        '''
+        This function plots the main inlet and outlet quantities of the blade.
+        '''
+
+        fig, ax = plt.subplots(ncols=2, nrows=1)
+        fig.set_figwidth(18)
+        fig.set_figheight(9.5)
+
+        # inlet section plot 
+        twiny1 = ax[0].twiny()
+        twiny2 = ax[0].twiny() 
+        twiny3 = ax[0].twiny()
+        # moving axis position
+        twiny1.spines["top"].set_position(("axes", 1))
+        twiny2.spines["top"].set_position(("axes", 1.2))
+        twiny3.spines["top"].set_position(("axes", 1.1))
+        
+        # vector declaration
+        midpoint = np.zeros(self.nSection)
+        Va = np.zeros(self.nSection)
+        Vt = np.zeros(self.nSection)
+        Pt = np.zeros(self.nSection)
+        s = np.zeros(self.nSection)
+
+        # vector allocation
+        for ii in range(self.nSection):
+            midpoint[ii] = self.inletSection[ii].midpoint 
+            Va[ii]       = self.inletSection[ii].Va 
+            Vt[ii]       = self.inletSection[ii].Vt 
+            Pt[ii]       = self.inletSection[ii].Pt / 1e+5
+            s[ii]        = self.inletSection[ii].s 
+
+        p0, = ax[0].plot(Va, midpoint, 'k', label=r'$V_a$')
+        p1, = twiny1.plot(Vt, midpoint, 'm', label=r'$V_t$')
+        p2, = twiny2.plot(Pt, midpoint, 'b--', label=r'$P_t$')
+        p3, = twiny3.plot(s, midpoint, 'r--', label=r'$s$')
+        ax[0].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
+        ax[0].set_ylabel('r')
+        ax[0].set_xlabel(r'$V_a$')
+        twiny1.set_xlabel(r'$V_t$')
+        twiny2.set_xlabel(r'$P_t$')
+        twiny3.set_xlabel(r'$s$')
+
+        ax[0].legend(handles=[p0,p1,p2,p3])
+        ax[0].set_title('Inlet')
+
+        # outlet section plot 
+        twiny21 = ax[1].twiny()
+        twiny22 = ax[1].twiny() 
+        twiny23 = ax[1].twiny()
+        # moving axis position
+        twiny21.spines["top"].set_position(("axes", 1))
+        twiny22.spines["top"].set_position(("axes", 1.2))
+        twiny23.spines["top"].set_position(("axes", 1.1))
+
+        # vector allocation
+        for ii in range(self.nSection):
+            midpoint[ii] = self.outletSection[ii].midpoint 
+            Va[ii]       = self.outletSection[ii].Va 
+            Vt[ii]       = self.outletSection[ii].Vt 
+            Pt[ii]       = self.outletSection[ii].Pt / 1e+5
+            s[ii]        = self.outletSection[ii].s 
+
+        p20, = ax[1].plot(Va, midpoint, 'k', label=r'$V_a$')
+        p21, = twiny21.plot(Vt, midpoint, 'm', label=r'$V_t$')
+        p22, = twiny22.plot(Pt, midpoint, 'b--', label=r'$P_t$')
+        p23, = twiny23.plot(s, midpoint, 'r--', label=r'$s$')
+        ax[1].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
+        ax[1].set_ylabel('r')
+        ax[1].set_xlabel(r'$V_a$')
+        twiny21.set_xlabel(r'$V_t$')
+        twiny22.set_xlabel(r'$P_t$')
+        twiny23.set_xlabel(r'$s$')
+
+        ax[1].legend(handles=[p20,p21,p22,p23])
+        ax[1].set_title('Outlet')
+
+        plt.tight_layout()
+        plt.show()
+
     def allocateDynamics(self, rMean, VtMean, VaMean, omega, section='inlet'):
         '''
         This function allocates the velocity vectors at each section points using the FREE VORTEX model.
@@ -168,7 +251,7 @@ class blade:
                 # data allocation in section object
                 self.outletSection[ii].allocateDynamics(VaMean, Vt, U)
 
-    def allocateThermodynamics(self, Tt0, Pt0, Leu, eta, R=287.06, gamma=1.4):
+    def allocateThermodynamics(self, Tt0, Pt0, eta, R=287.06, gamma=1.4, printout=False):
         '''
         This function allocates the thermodynamic properties to each section.
             inputs:
@@ -194,6 +277,18 @@ class blade:
             # total density computation
             rhot0 = Pt0 / (R * Tt0)
 
+            # Tt0r computation
+            Tt0r = Tt0 - self.inletSection[ii].V**2 / (2 * cP) + self.inletSection[ii].W**2 / (2 * cP)
+
+            # relative total pressure computation
+            Pt0r = Pt0 * (Tt0r / Tt0)**(gamma/gamma-1)
+
+            # euler work computation 
+            if self.turboType == 'stator':
+                Leu = 0 
+            else: 
+                Leu = self.outletSection[ii].U * self.outletSection[ii].Vt - self.inletSection[ii].U * self.inletSection[ii].Vt
+
             # total temperature computation
             Tt1 = Leu / cP + Tt0
 
@@ -202,15 +297,22 @@ class blade:
             # to a process that takes into account losses in the stage  
             T1 = Tt1 - self.outletSection[ii].V**2 / (2 * cP)
 
-            # T1 isoentropic computation 
-            #   this correction activates only is eta != 1
-            T1 = T0 + eta * (T1 - T0)
+            # T1/Tt1 isentropic computation 
+            #   this correction activates only if eta != 1
+            T1iso = T0 + eta * (T1 - T0)
+            Tt1iso = Tt0 + eta * (Tt1 - Tt0)
 
             # pressure computation
-            P1 = P0 * (T1/T0)**(gamma/(gamma-1))
+            P1 = Pt0 * (T1iso/Tt0)**(gamma/(gamma-1))
 
             # total pressure computation
-            Pt1 = P1 * (Tt1/T1)**(gamma/(gamma-1))
+            Pt1 = Pt0 * (Tt1iso/Tt0)**(gamma/(gamma-1))
+
+            # Ttr1 computation
+            Tt1r = Tt1 - self.outletSection[ii].V**2 / (2 * cP) + self.outletSection[ii].W**2 / (2 * cP)
+
+            # relative total pressure computation
+            Pt1r = Pt1 * (Tt1r / Tt1)**(gamma/gamma-1)
 
             # density computation 
             rho1 = P1 / (R * T1)
@@ -218,11 +320,36 @@ class blade:
             # total density computation
             rhot1 = Pt1 / (R * Tt1)
 
-            # variable allocation in seection objects            
-            self.inletSection[ii].allocateThermodynamics(T=T0, P=P0, Tt=Tt0, Pt=Pt0, rho=rho0, rhot=rhot0, s=0)
-            self.outletSection[ii].allocateThermodynamics(T=T1, P=P1, Tt=Tt1, Pt=Pt1, rho=rho1, rhot=rhot1, s=0)
+            if printout:
+                print('midpont = ', self.inletSection[ii].midpoint)
+                print('Uin  = ', self.inletSection[ii].U)
+                print('Vain = ', self.inletSection[ii].Va)
+                print('Vtin  = ', self.inletSection[ii].Vt)
+                print('Vin = ', self.inletSection[ii].V)
+                print('Uout = ', self.outletSection[ii].U)
+                print('Vaout = ', self.outletSection[ii].Va)
+                print('Vtout = ', self.outletSection[ii].Vt)
+                print('Vout = ', self.outletSection[ii].V)
+                print('Leu  = ', Leu)
+                print('T0 = ', T0)
+                print('P0 = ', P0)
+                print('Tt0 = ', Tt0)
+                print('Pt0 = ', Pt0)
+                print('Tt0r = ', Tt0r)
+                print('Pt0r = ', Pt0r)
+                print('T1 = ', T1)
+                print('P1 = ', P1)
+                print('Tt1 = ', Tt1)
+                print('Pt1 = ', Pt1)
+                print('Tt1r = ', Tt1r)
+                print('Pt1r = ', Pt1r)
+                print('')
 
-    def radialEquilibrium(self, R=287.06, gamma=1.4):
+            # variable allocation in seection objects            
+            self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, s=0)
+            self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, s=0)
+
+    def radialEquilibrium(self, Pt0, Tt0, eta, mFlux, plot=False, R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -231,19 +358,214 @@ class blade:
         # cP computation
         cP = gamma / (gamma - 1) * R
 
-        # s0 function generation --> blade inlet 
+        # INLET VARIABLES INTERPOLATION -> they do not change so there is not the necessity to change them in the while loop
+        # inlet midpoint generation 
+        midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
+
+        # s1 function generation --> blade inlet 
+        s1 = [self.inletSection[ii].s for ii in range(self.nSection)]
+        s1 = interpolate.interp1d(midpointInlet, s1, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # Va1 function generation --> blade inlet 
+        Va1 = [self.inletSection[ii].Va for ii in range(self.nSection)]
+        Va1 = interpolate.interp1d(midpointInlet, Va1, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # Vt1 function generation --> blade inlet 
+        rVt1 = [self.inletSection[ii].Vt * self.inletSection[ii].midpoint for ii in range(self.nSection)]
+        rVt1 = interpolate.interp1d(midpointInlet, rVt1, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # Tt1 function generation --> blade inlet 
+        Tt1 = [self.inletSection[ii].Tt for ii in range(self.nSection)]
+        Tt1 = interpolate.interp1d(midpointInlet, Tt1, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # OUTLET VARIABLES -> they do not change in the while loop so there is not the necessity to change them
+        # outlet midpoint generation 
+        midpointOutlet = [self.outletSection[ii].midpoint for ii in range(self.nSection)]
+
+        # rVt2 function generation --> blade outlet 
+        rVt2 = [self.outletSection[ii].Vt * self.outletSection[ii].midpoint for ii in range(self.nSection)]
+        rVt2 = interpolate.interp1d(midpointOutlet, rVt2, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # Vt2 function generation --> blade outlet 
+        Vt2 = [self.outletSection[ii].Vt for ii in range(self.nSection)]
+        Vt2 = interpolate.interp1d(midpointOutlet, Vt2, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # ODE function necessary tools
+        # omega 
+        omega = self.omega 
+
+        # Va2 function generation 
+        def radialFunc(y, t):
+            '''
+            Radial equilibrium ODE. 
+                y = Va2**2
+                t = r 
+            '''
+
+            # derivative step setup
+            dx = 1e-3
+            # derivative computation 
+            dTt1 = derivative(Tt1, t, dx=dx, n=1, order=3)
+            drVt2 = derivative(rVt2, t, dx=dx, n=1, order=3)
+            drVt1 = derivative(rVt1, t, dx=dx, n=1, order=3)
+            ds2 = derivative(s2, t, dx=dx, n=1, order=3)
+
+            # y derivative computation
+            dydt = - 2 * (- y/(2*cP) * ds2 - cP * dTt1 - omega * drVt2 + omega * drVt1 + Tt1(t) * ds2 + omega / cP * rVt2(t) * ds2 - omega / cP * rVt1(t) * ds2 - Vt2(t)**2 / (2*cP) * ds2 + Vt2(t) / t * drVt2)
+
+            return dydt 
         
+        # radius vector allocation 
+        t = midpointOutlet #np.linspace(midpointOutlet[0], midpointOutlet[-1], 1000)
 
-        # s1 function generation --> blade outlet 
+        # setting up boundary condition
+        y0 = self.outletSection[0].Va**2
 
-        # Va0 function generation --> blade inlet 
+        # setting up tolerances
+        relError = 1 
+        tol = 1e-2
+        nMax = 100 
+        counter = 0
 
-        # Vt0 function generation --> blade inlet 
+        while relError > tol and counter < nMax:
+            # updating counter 
+            counter = counter + 1 
 
-        # Vt1 function generation --> blade outlet 
+            # OUTLET VARIABLES INTERPOLATION 
+            # s2 function generation --> blade outlet 
+            s2 = [self.outletSection[ii].s for ii in range(self.nSection)]
+            s2 = interpolate.interp1d(midpointOutlet, s2, kind='linear', bounds_error=False, fill_value='extrapolate')
 
-        # Va1 computation 
+            # Va2 function generation --> blade outlet 
+            Va2 = [self.outletSection[ii].Va for ii in range(self.nSection)]
+            Va2 = interpolate.interp1d(midpointOutlet, Va2, kind='linear', bounds_error=False, fill_value='extrapolate')
+        
+            # computing solution 
+            Va2_squared = integrate.odeint(radialFunc, y0, t)
+
+            # setting up Va2 vector 
+            Va2 = np.zeros(self.nSection)
+            for ii in range(self.nSection):
+                Va2[ii] = np.sqrt(Va2_squared[ii])
+
+            # Va allocation
+            for ii in range(self.nSection):
+                self.outletSection[ii].allocateDynamics(Va2[ii], self.outletSection[ii].Vt, self.outletSection[ii].U)
+
+            # outlet thermodynamics computation
+            self.allocateThermodynamics(Tt0, Pt0, eta)
+
+            # check mass flux 
+            newFlux = 0
+            for ii in range(self.nSection):
+                newFlux = newFlux + self.outletSection[ii].mFlux()
+
+            # relative mass flux error
+            relError = np.abs(newFlux - mFlux)/mFlux
+
+            # setting up initial velocity for the new ODE 
+            if newFlux > mFlux:
+                y0 = y0 * (1 - relError)
+            else: 
+                y0 = y0 * (1 + relError)
+
+            # printing main values
+            #print('iteration: ', counter)
+            #print('newFlux = ', newFlux)
+            #print('massFlux = ', mFlux)
+            #print('relError = ', relError)
+            #print('')
+
+            # computing pressure losses 
+            lossVec = np.zeros(self.nSection)
+
+            for ii in range(self.nSection):
+                # variables allocation
+                # velocity 
+                W1 = self.inletSection[ii].W
+                W2 = self.outletSection[ii].W
+                # angles
+                beta1 = self.inletSection[ii].beta
+                beta2 =  self.outletSection[ii].beta
+                # angles check 
+                if beta1 < 0:
+                    beta1 = - beta1 
+                    beta2 = - beta2
+                # solidity allocation    
+                solidity = 1
+
+                #print(W1)
+                #print(W2)
+                #print(beta1)
+                #print(beta2)
+
+                # loss computation -> Lieblein model 
+                lossVec[ii], _ = losses.lossCoeff(W1, W2, beta1, beta2, solidity)
+
+            # computing change in total pressure due to losses 
+            for ii in range(self.nSection):
+                # new outlet pressure computation
+                self.outletSection[ii].Ptr = self.inletSection[ii].Ptr - lossVec[ii] * (self.inletSection[ii].Ptr - self.inletSection[ii].P)
+                # entropy computation
+                self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Ptr/self.inletSection[ii].Ptr)
 
 
+            
+
+            #for ii in range(self.nSection):
+            #    print('Va2 = ', self.outletSection[ii].Va)
+            #    print('Pt2 = ', self.outletSection[ii].Pt)
+            #    print('rho2 = ', self.outletSection[ii].rho)
+            #    print('')
 
 
+#        plotting interpolated functions 
+#
+#                if plot:
+#                midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
+#                midpointOutlet = [self.outletSection[ii].midpoint for ii in range(self.nSection)]    
+#
+#                fig, ax = plt.subplots(ncols=2, nrows=1)
+#                fig.set_figwidth(18)
+#                fig.set_figheight(9.5)
+#
+#                # inlet section plot 
+#                twiny1 = ax[0].twiny()
+#                twiny2 = ax[0].twiny() 
+#                # moving axis position
+#                twiny1.spines["top"].set_position(("axes", 1))
+#                twiny2.spines["top"].set_position(("axes", 1.1))
+#
+#                p0, = ax[0].plot(Va0(midpointInlet), midpointInlet, 'k*', label=r'$V_a$')
+#                p1, = twiny1.plot(Vt0(midpointInlet), midpointInlet, 'm*-', label=r'$V_t$')
+#                p2, = twiny2.plot(s0(midpointInlet), midpointInlet, 'r--', label=r'$s$')
+#                ax[0].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
+#                ax[0].set_ylabel('r')
+#                ax[0].set_xlabel(r'$V_a$')
+#                twiny1.set_xlabel(r'$V_t$')
+#                twiny2.set_xlabel(r'$s$')
+#
+#                ax[0].legend(handles=[p0,p1,p2])
+#                ax[0].set_title('Inlet')
+#
+#                # inlet section plot 
+#                twiny1 = ax[1].twiny()
+#                twiny2 = ax[1].twiny() 
+#                # moving axis position
+#                twiny1.spines["top"].set_position(("axes", 1))
+#                twiny2.spines["top"].set_position(("axes", 1.1))
+#
+#                p0, = ax[1].plot(Va1(midpointOutlet), midpointInlet, 'k*', label=r'$V_a$')
+#                p1, = twiny1.plot(Vt1(midpointOutlet), midpointInlet, 'm*-', label=r'$V_t$')
+#                p2, = twiny2.plot(s1(midpointOutlet), midpointInlet, 'r--', label=r'$s$')
+#                ax[1].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
+#                ax[1].set_ylabel('r')
+#                ax[1].set_xlabel(r'$V_a$')
+#                twiny1.set_xlabel(r'$V_t$')
+#                twiny2.set_xlabel(r'$s$')
+#
+#                ax[1].legend(handles=[p0,p1,p2])
+#                ax[1].set_title('Outlet')
+#
+#                plt.tight_layout()
+#                plt.show()
