@@ -53,7 +53,7 @@ rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
 #rotorBlade.printMeridional()
 
 # blade design through iterative process on radial equilibrium 
-rotorBlade.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, eta=eta, mFlux=mFlux ,plot=False)
+rotorBlade.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, eta=eta, mFlux=mFlux ,plot=True)
 
 # plotting data 
-rotorBlade.printMeridional()
+#rotorBlade.printMeridional()
