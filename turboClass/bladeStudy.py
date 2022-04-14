@@ -434,10 +434,12 @@ def optimalAngles(beta1, beta2, printout=False):
 
     # bounds definition 
     epsilon = beta1 - beta2
-    bounds = [(epsilon, None), (0.4, None)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
+    solidityMin = 0.2
+    solidityMax = 3
+    bounds = [(epsilon, None), (solidityMin, solidityMax)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
  
     # setting up initial study point 
-    x0 = (epsilon*1.05, 0.45) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
+    x0 = (epsilon*1.05, solidityMin*1.05) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
     # minimizing system 
     res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
 
@@ -455,20 +457,21 @@ def optimalAngles(beta1, beta2, printout=False):
 
     # results printout
     if printout:
-        print('*' * 28)
-        print('converged = ', res.success)
-        print('error     = {0:>11.2e} deg'.format(deltaTheta(res.x)))
-        print('-' * 28)
-        print('beta1     = {0:>8.3f}    deg'.format(beta1))
-        print('beta2     = {0:>8.3f}    deg'.format(beta2))
-        print('epsilon   = {0:>8.3f}    deg'.format(epsilon))
-        print('-' * 28)
-        print('i         = {0:>8.3f}    deg'.format(i))
-        print('delta     = {0:>8.3f}    deg'.format(delta))
-        print('theta     = {0:>8.3f}    deg'.format(theta))
-        print('solidity  = {0:>8.3f}'.format(solidity))
-        print('tb/c      = {0:>8.3f}'.format(tbc))
-        print('*' * 28)
+        starDim = 34
+        bladeDim = np.int16((starDim - len(' ANGLE LOOP '))/2)
+        print('*' * bladeDim + ' ANGLE LOOP ' + '*' * bladeDim)
+        print('-- converged = ', res.success)
+        print('-- error     = {0:>11.2e} deg'.format(deltaTheta(res.x)))
+        print('.' * starDim)
+        print('-- beta1     = {0:>8.3f}    deg'.format(beta1))
+        print('-- beta2     = {0:>8.3f}    deg'.format(beta2))
+        print('-- epsilon   = {0:>8.3f}    deg'.format(epsilon))
+        print('.' * starDim)
+        print('-- i         = {0:>8.3f}    deg'.format(i))
+        print('-- delta     = {0:>8.3f}    deg'.format(delta))
+        print('-- theta     = {0:>8.3f}    deg'.format(theta))
+        print('-- solidity  = {0:>8.3f}'.format(solidity))
+        print('-- tb/c      = {0:>8.3f}'.format(tbc))
 
     return i, delta, theta, solidity, tbc
 

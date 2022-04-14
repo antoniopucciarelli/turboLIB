@@ -99,7 +99,17 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
         # loss computation 
         loss = lossFunc(D, beta2, solidity, kind)
 
-    if plot:
+    if plot or save:
+        if save:
+            # setting matplotlib LaTeX export 
+            import matplotlib
+            matplotlib.use("pgf")
+            matplotlib.rcParams.update({
+                "pgf.texsystem": "pdflatex",
+                'font.family': 'serif',
+                'text.usetex': True,
+                'pgf.rcfonts': False,
+            })
         fig = plt.figure(figsize=(9,9))
         if kind == 'std':
             Dvec = np.linspace(0, 0.6, 300) 
@@ -122,49 +132,19 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
             pass 
         
         plt.grid(linestyle='--')
-        plt.show()
-
-    elif save:
-        # setting matplotlib LaTeX export 
-        import matplotlib
-        matplotlib.use("pgf")
-        matplotlib.rcParams.update({
-            "pgf.texsystem": "pdflatex",
-            'font.family': 'serif',
-            'text.usetex': True,
-            'pgf.rcfonts': False,
-        })
-
-        fig = plt.figure(figsize=(9,9))
-        if kind == 'std':
-            Dvec = np.linspace(0, 0.6, 300) 
-            plt.plot(Dvec, lossFunc(Dvec, beta2, solidity, kind)*np.cos(np.deg2rad(beta2)) / (2*solidity), 'k', linewidth=2)
-            plt.ylabel(r'$\omega^{{*}} \ \frac{{cos(\beta_2)}}{{2 \ \sigma}}$')
-            plt.xlabel(r'$D^{{*}}$')
-        elif kind == 'equivalent':
-            Dvec = np.linspace(1, 2, 300)
-            plt.plot(Dvec, lossFunc(Dvec, beta2, solidity, kind)*np.cos(np.deg2rad(beta2)) * (W1 / W2)**2 / (2*solidity), 'k', linewidth=2)
-            plt.ylabel(r'$\omega^{{*}} \ \frac{{cos(\beta_2)}}{{2 \ \sigma}} \ \frac{{W_1}}{{W_2}}$')
-            plt.xlabel(r'$D^{{*}}_{{eq}}$')
-
-        try:
-            if kind == 'std':
-                plt.plot(D, loss*np.cos(np.deg2rad(beta2)) / (2*solidity), linestyle='', marker='o', color='g', markeredgewidth=1.5, markersize=8, markeredgecolor='k', label=r'$D^{{*}} = {0:.2f}, \omega^{{*}} \ \frac{{cos(\beta_2)}}{{2 \ \sigma}} = {1:.2f}$'.format(D, loss))
-            elif kind == 'equivalent':
-                plt.plot(D, loss*np.cos(np.deg2rad(beta2)) * (W1 / W2)**2 / (2*solidity), linestyle='', marker='o', color='g', markeredgewidth=1.5, markersize=8, markeredgecolor='k', label=r'$D^{{*}}_{{eq}} = {0:.2f}, \omega^{{*}} \ \frac{{cos(\beta_2)}}{{2 \ \sigma}} \ \frac{{W_1}}{{W_2}} = {1:.2f}$'.format(D, loss))
-            plt.legend()
-        except:
-            pass 
         
-        plt.grid(linestyle='--')
-        plt.savefig(position)
+        if save:
+            fig.savefig(position)
+        else:  
+            plt.show()
 
     if D != 0 and loss != 0:
+        #print(loss)
         return loss, D
 
-def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, endWall=False):
+def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, Cl=0, endWall=False):
     '''
-    This function computes the section lossses due to the 3D phenomena of the blade cascade.
+    This function computes the section losses due to the 3D phenomena of the blade cascade.
         inputs:
             beta1       -- inlet relative velocity flow angle; for the stator beta1 == alpha1
             beta2       -- outlet relative velocitu flow angle; for the stator beta2 == alpha2
@@ -175,21 +155,27 @@ def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, endWall=Fal
     ''' 
     
     # computing average flow angle deflection 
-    beta_ = np.arctan(np.tan(np.deg2rad(beta1)) + np.tan(np.deg2rad(beta2))) / 2
+    beta_ = np.arctan( ( np.tan(np.deg2rad(beta1)) + np.tan(np.deg2rad(beta2)) ) / 2)
 
     # checking if the section in consideration is close to the wall 
     if endWall:
         # if close to the wall 
         # Cd computation 
-        Cd = 0.2 * pitch / bladeHeight
+        Cd = 0.02 * pitch / bladeHeight
     else:
         # if not close to the wall
         # Cl computation  
-        Cl = 2 * np.cos(np.deg2rad(beta_)) * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2))) / solidity
+        if beta1 < 0:
+            beta1 = - beta1 
+            beta2 = - beta2 
+
+        #Cl = 2 * np.cos(beta_) * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2))) / solidity
         # Cd computation with respect to Cl
-        Cd = 0.18 * Cl**2 
+        Cd = (0.18 * Cl)**2 
 
     # losses computation
-    loss = Cd * solidity * np.cos(np.deg2rad(beta1))**2 / np.cos(np.deg2rad(beta_))**3
-
+    loss = Cd * solidity * np.cos(np.deg2rad(beta1))**2 / np.cos(beta_)**3
+    print('Cl = ', Cl)
+    print('solidity = ', solidity)
+    print(loss)
     return loss

@@ -8,9 +8,6 @@
 
 # importing libraries
 import numpy as np 
-import matplotlib.pyplot as plt 
-from geometry import bladeGenerator
-import warnings
 
 class section:
     '''
@@ -20,7 +17,7 @@ class section:
             --- blade thermodynamics 
     '''
 
-    def __init__(self, midpoint, bottom, tip, height):
+    def __init__(self, midpoint, bottom, tip, height, pitch):
         '''
         Rotor object declaration: 
             variables:
@@ -36,8 +33,11 @@ class section:
         self.bottom   = bottom 
         self.tip      = tip 
         self.height   = height 
+        self.pitch    = pitch
+        self.solidity = 1
+        self.Cl       = 0
 
-    def allocateDynamics(self, Va, Vt, U):
+    def allocateKinetics(self, Va, Vt, U):
         '''
         This function allocates the velocity vector for the section object.
             inputs:
@@ -86,6 +86,27 @@ class section:
         self.rho = rho 
         self.rhot = rhot 
         self.s = s 
+
+    def allocateQuantities(self, i, delta, solidity, chord, pitch, gamma, Cl):
+        '''
+        This function allocates the blade angles.
+            inputs:
+                i           -- incidence angle 
+                delta       -- deviation angle 
+                solidity    -- section solidity
+                chord       -- section chord 
+                pitch       -- section pitch  
+                gamma       -- stagger angle
+                Cl          -- lift coefficient
+        '''
+
+        self.i          = i 
+        self.delta      = delta
+        self.solidity   = solidity
+        self.chord      = chord 
+        self.pitch      = pitch
+        self.gamma      = gamma 
+        self.Cl         = Cl
 
     def mFlux(self):
         '''

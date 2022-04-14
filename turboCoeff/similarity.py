@@ -460,7 +460,7 @@ def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printo
 
     if printout:
         # print data 
-        printLength = 82
+        printLength = 84
         print('*' * printLength)
         if T1real:
             print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO ISENTROPIC\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
@@ -511,8 +511,8 @@ def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printo
         print('-- Pt0    = {0:>8.2f} bar    -- Pt1    = {1:>8.2f} bar    -- Pt2    = {2:>8.2f} bar   '.format(Pt0/1e+5, Pt1/1e+5, Pt2/1e+5))
         print('-- rho0   = {0:>8.2f} kg/m3  -- rho1   = {1:>8.2f} kg/m3  -- rho2   = {2:>8.2f} kg/m3'.format(rho0,rho1,rho2))
         print('-- rhot0  = {0:>8.2f} kg/m3  -- rhot1  = {1:>8.2f} kg/m3  -- rhot2  = {2:>8.2f} kg/m3'.format(rhot0,rhot1,rhot2))
-        nBlade = int((printLength - len(' BLADE DIMENSIONS '))/2)
-        print('*' * nBlade + ' BLADE DIMENSIONS ' + '*' * nBlade)
+        nBlade = int((printLength - len(' BLADE DIMENSIONS -- FLARING '))/2)
+        print('*' * nBlade + ' BLADE DIMENSIONS -- FLARING  ' + '*' * nBlade)
         print('-- 0                        -- 1                        -- 2')
         print('-- b0     = {0:>8.2f} cm     -- b1     = {1:>8.2f} cm     -- b2     = {2:>8.2f} cm'.format(b0*1e+2, b1*1e+2, b2*1e+2))
         print('-- rTip0  = {0:>8.2f} cm     -- rTip1  = {1:>8.2f} cm     -- rTip2  = {2:>8.2f} cm'.format((rMean + b0/2)*1e+2, (rMean + b1/2)*1e+2, (rMean + b2/2)*1e+2))

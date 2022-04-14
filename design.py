@@ -1,6 +1,8 @@
 # importing libraries
+import numpy as np 
 from turboClass import turboBlade
 from turboCoeff import similarity
+import contextlib
 
 # data
 # constraints
@@ -26,9 +28,12 @@ Vt0Umean = 0
 lam = (1 - rD - Vt0Umean) * 4 
 psiTarget = lam / 2
 
+#file_path = 'output.txt'
+#with open(file_path, "w") as file:
+#    with contextlib.redirect_stdout(file):
 # generation of mean line properties to be used for the blade assembly 
 adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, _, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True)
- 
+
 # values allocation 
 nSection     = 50
 eta          = adimVec[2]
@@ -42,17 +47,16 @@ VtMeanOutlet = V1vec[1]
 
 # objects generation 
 rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=40)
-#statorBlade = turboBlade.blade(ID=1, turboType='stator', nSection=10, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=0)
 
-# blade dimensions allocation -> dynamics
-rotorBlade.allocateDynamics(rMean=rMean, VtMean=VtMeanInlet, VaMean=VaMeanInlet, omega=omega, section='inlet')
-rotorBlade.allocateDynamics(rMean=rMean, VtMean=VtMeanOutlet, VaMean=VaMeanOutlet, omega=omega, section='outlet')
-# blade dimensions allocation -> thermodynamics 
+# blade dimensions allocation -> dynamics inlet
+rotorBlade.allocateKinetics(rMean=rMean, VtMean=VtMeanInlet, VaMean=VaMeanInlet, omega=omega, section='inlet')
+# blade dimensions allocation -> dynamics outlet
+rotorBlade.allocateKinetics(rMean=rMean, VtMean=VtMeanOutlet, VaMean=VaMeanOutlet, omega=omega, section='outlet')
+# blade dimensions allocation -> thermodynamics inlet/outlet
 rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
 
-# blade design through iterative process on radial equilibrium 
-rotorBlade.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=False)
-
 # rotor blade geometry allocation
-rotorBlade.generateShape(pos='data/airfoils/naca65.txt', STLname='cadTest', plot=True, printout=False)
+rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='cadTest', plot=False, printout=False)
 
+# computing the best shape 
+rotorBlade.geometryGenerator(Pt0, Tt0, mFlux)
