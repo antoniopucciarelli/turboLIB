@@ -7,6 +7,8 @@
 #       
 
 # importing libraries
+from __future__ import nested_scopes
+from tkinter import NS
 import numpy as np 
 import matplotlib.pyplot as plt
 from geometry import bladeGenerator
@@ -25,13 +27,15 @@ class blade:
             --- blade thermodynamics 
     '''
 
-    def __init__(self, ID, turboType, nSection, omega, inletBladeHeight, outletBladeHeight, inletHubRadius, outletHubRadius):
+    def __init__(self, ID, turboType, nSection, omega, nBlade, inletBladeHeight, outletBladeHeight, inletHubRadius, outletHubRadius):
         '''
         Rotor object declaration: 
             variables:
                 ID                  -- blade identifier
                 turboType           -- blade type: stator/rotor
                 nSection            -- # of blade sections 
+                omega               -- angular velocity 
+                nBlade              -- # of blades 
                 inletBladeHeight    -- blade inlet height
                 outletBladeHeight   -- blade outlet height 
                 inletHubRadius      -- inlet hub radius 
@@ -43,6 +47,7 @@ class blade:
         self.turboType      = turboType
         self.nSection       = nSection
         self.omega          = omega
+        self.nBlade         = nBlade
         
         # section objects allocation 
         self.inletSection = self.allocateSection(hubRadius=inletHubRadius, bladeHeight=inletBladeHeight, nSection=nSection)
@@ -695,3 +700,184 @@ class blade:
                 fig1.savefig(position1)
             else:
                 plt.show()
+
+    def generateShape(self, pos='/data/airfoils/naca65.txt', STLname='cad', plot=False, printout=False):
+        '''
+        This function generates the blade shape given already computed flow angles.
+            * the geometry sections will be the midsections relative to the streamtubes. 
+            * the only exception made is relative to the hub and tip streamtubes; in this case
+                the section considered are no more the midsections but the tip section (tip streamtube)
+                and the bottom section (hub streamtube).
+        '''
+
+        # importing libraries
+        from turboClass import bladeStudy
+        from geometry import bladeGenerator
+
+        # plotting definition
+        if plot:
+            import random
+            fig = plt.figure()
+            ax = plt.axes(projection ='3d')
+            number_of_colors = self.nSection + 1
+            color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(number_of_colors)]
+
+        # allocation of space for the blade geometry 
+        self.blade = [] 
+
+        for jj in range(self.nSection+1):
+            # converting counter into needed counter 
+            ii = jj - 1
+
+            # this modeling approach works with beta0 >= 0 and beta1 >= 0
+            # -- in order to adopt this model to each blade modeling a boolean 
+            #       value for the change is generated and then used later for the 
+            #       blade geoemetry generation
+            checkAngle = False  
+
+            if self.turboType == 'rotor':
+                # angle allocation
+                if ii == - 1: 
+                    beta0 = self.inletSection[0].beta
+                    beta1 = self.outletSection[0].beta
+                elif ii == self.nSection:
+                    beta0 = self.inletSection[-1].beta
+                    beta1 = self.outletSection[-1].beta
+                else: 
+                    beta0 = self.inletSection[ii].beta
+                    beta1 = self.outletSection[ii].beta
+                # chech on angle sign for adopting Lieblein model
+                if beta0 < 0:
+                    beta0 = - beta0
+                    beta1 = - beta1
+                    checkAngle = True 
+
+            elif self.turboType == 'stator':
+                # angle allocation 
+                if ii == - 1: 
+                    beta0 = self.inletSection[0].alpha
+                    beta1 = self.outletSection[0].alpha
+                elif ii == self.nSection:
+                    beta0 = self.inletSection[-1].alpha
+                    beta1 = self.outletSection[-1].alpha
+                else: 
+                    beta0 = self.inletSection[ii].alpha
+                    beta1 = self.outletSection[ii].alpha
+                # chech on angle sign for adopting Lieblein model
+                if beta0 < 0:
+                    beta0 = - beta0
+                    beta1 = - beta1
+                    checkAngle = True 
+
+            # optimal angles computation
+            i, delta, theta, solidity, tbc = bladeStudy.optimalAngles(beta0, beta1, printout=False)
+
+            # computing optimal alpha angle
+            ac = 0.5 # this is valid only for NACA-65
+            alpha = bladeStudy.alphaFunc(ac, solidity, theta, tbc)
+
+            # computing stagger angle gamma 
+            gamma = beta0 - alpha
+
+            # checking angles sign 
+            if checkAngle:
+                i = - i 
+                delta = - delta 
+                theta = - theta
+                alpha = - alpha 
+                gamma = - gamma 
+
+            # computing Cl 
+            Cl = ac * np.tan(np.deg2rad(theta)/4) / 0.0551515
+
+            # pitch computation with nBlades 
+            if ii == -1:
+                pitch = 2 * np.pi * self.inletSection[0].bottom / self.nBlade
+            elif ii == self.nSection:
+                pitch = 2 * np.pi * self.inletSection[-1].tip / self.nBlade
+            else: 
+                pitch = 2 * np.pi * self.inletSection[ii].midpoint / self.nBlade
+     
+            # chord computation from solidity
+            chord = pitch * solidity 
+
+            # computing blade inclination 
+            if ii == -1:
+                zeta = np.rad2deg(np.arcsin((self.inletSection[0].bottom-self.outletSection[0].bottom)/chord))
+            elif ii == self.nSection:
+                zeta = np.rad2deg(np.arcsin((self.inletSection[-1].tip-self.outletSection[-1].tip)/chord))
+            else:
+                zeta = np.rad2deg(np.arcsin((self.inletSection[ii].midpoint-self.outletSection[ii].midpoint)/chord))
+            
+            # airfoil object generation 
+            airfoil = bladeGenerator.geometryData(pos)
+
+            # geometry fitting airfoil -> shape and chord dimensions
+            airfoil.geometryFitting(Cl=Cl, chord=chord, plot=False)
+
+            # airfoil 3D rotation
+            airfoil.geometryRotation(gamma, zeta, plot=False)
+
+            # translation of the airfoil with respect to the hub position 
+            if ii == -1: 
+                airfoilHub = airfoil 
+                hubPos = False 
+                translationHub = airfoilHub.middleChord()
+                translationHub[2] = 0.0
+            
+            # translation of profiles
+            # translation vector 
+            if ii == -1:
+                height = self.inletSection[0].bottom - self.inletSection[0].bottom
+            elif ii == self.nSection:
+                height = self.inletSection[-1].tip - self.inletSection[0].bottom
+            else:
+                height = self.inletSection[ii].midpoint - self.inletSection[0].bottom
+
+            # airfoil section center
+            translationSection = airfoil.middleChord()
+            translationSection[0] = 0 
+            translationSection[1] = 0
+            # translation vector  
+            translationVec = translationHub + translationSection
+            # translation procedure 
+            airfoil.geometryTranslation(translationVec, height, plot=False)
+
+            if plot:
+                ax.plot3D(airfoil.upper[:,0], airfoil.upper[:,1], airfoil.upper[:,2], color=color[ii], label=str(ii))
+                ax.plot3D(airfoil.lower[:,0], airfoil.lower[:,1], airfoil.lower[:,2], color=color[ii])
+
+            # adding airfoil to blade object array
+            self.blade.append(airfoil)
+
+            # printout 
+            if printout:
+                starDim = 50
+                bladeDim = (starDim - len(' BLADE ANGLES '))/2 
+                print('*' * bladeDim + ' BLADE ANGLES ' + '*' * bladeDim)
+                if ii == 0:
+                    print('r             = {0:.3f}'.format(self.inletSection[ii].bottom))
+                elif ii == self.nSection - 1:
+                    print('r             = {0:.3f}'.format(self.inletSection[ii].tip))
+                else:
+                    print('r             = {0:.3f}'.format(self.inletSection[ii].midpoint))
+                print('i             = {0:.3f}'.format(i))
+                print('delta         = {0:.3f}'.format(delta))
+                print('alpha         = {0:.3f}'.format(alpha))
+                print('beta0 - beta1 = {0:.3f}'.format(beta0 - beta1))
+                print('gamma         = {0:.3f}'.format(gamma))
+                print('theta         = {0:.3f}'.format(theta))
+                print('Cl            = {0:.3f}'.format(np.abs(Cl)))
+                print('s             = {0:.3f}'.format(pitch))
+                print('c             = {0:.3f}'.format(chord))
+                print('zeta          = {0:.3f}\n'.format(zeta))
+                print('*' * starDim + '\n')
+
+        if plot:
+            if self.nSection < 10:
+                plt.legend()
+            plt.title('Blade')
+            plt.show()
+
+        # STL file generation 
+        bladeGenerator.STLsaving(self.blade, STLname=STLname)

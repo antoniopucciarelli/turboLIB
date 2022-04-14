@@ -41,7 +41,7 @@ VaMeanOutlet = V1vec[0]
 VtMeanOutlet = V1vec[1]
 
 # objects generation 
-rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega)
+rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=40)
 #statorBlade = turboBlade.blade(ID=1, turboType='stator', nSection=10, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=0)
 
 # blade dimensions allocation -> dynamics
@@ -51,5 +51,8 @@ rotorBlade.allocateDynamics(rMean=rMean, VtMean=VtMeanOutlet, VaMean=VaMeanOutle
 rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
 
 # blade design through iterative process on radial equilibrium 
-rotorBlade.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=True)
+rotorBlade.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=False)
+
+# rotor blade geometry allocation
+rotorBlade.generateShape(pos='data/airfoils/naca65.txt', STLname='cadTest', plot=True, printout=False)
 
