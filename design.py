@@ -46,7 +46,7 @@ VaMeanOutlet = V1vec[0]
 VtMeanOutlet = V1vec[1]
 
 # objects generation 
-rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=28)
+rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=35)
 
 # blade dimensions allocation -> dynamics inlet
 rotorBlade.allocateKinetics(rMean=rMean, VtMean=VtMeanInlet, VaMean=VaMeanInlet, omega=omega, section='inlet')

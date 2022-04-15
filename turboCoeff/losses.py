@@ -34,7 +34,7 @@ def Dfactor(W1, W2, beta1, beta2, solidity):
 
     return D 
 
-def DeqFactor(W1, W2, beta1, beta2, solidity):
+def DeqFactor(W1=0, W2=0, beta1=0, beta2=0, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, solidity=0):
     '''
     This function computes the equivalent diffusion factor parameter used for the computation of the aerodynamics losses in the system. 
         inputs:
@@ -42,18 +42,26 @@ def DeqFactor(W1, W2, beta1, beta2, solidity):
             W2          -- outlet relative velocity; for the stator W2 == V2
             beta1       -- inlet relative velocity flow angle; for the stator beta1 == alpha1
             beta2       -- outlet relative velocitu flow angle; for the stator beta2 == alpha2
+            r1          -- inlet section radius 
+            r2          -- outlet section radius 
+            Vt1         -- inlet absolute tangential speed 
+            Vt2         -- outlet absolute tangential speed
+            Va1         -- inlet absolute/relative axial speed 
             solidity    -- blade solidity 
     '''
 
     # Deq uses the Wmax / W1 value 
-    WmaxW1 = 1.12 + 0.61 * np.cos(np.deg2rad(beta1))**2 / solidity * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2)))
+    if r1 == 0 or r2 == 0:     
+        WmaxW1 = 1.12 + 0.61 * np.cos(np.deg2rad(beta1))**2 / solidity * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2)))
+    else:
+        WmaxW1 = 1.12 + 0.61 * np.cos(np.deg2rad(beta1))**2 / solidity * (r1 * Vt1 - r2 * Vt2) / (r1 * Va1)
 
     # Deq computation 
     Deq = WmaxW1 * W1 / W2 
 
     return Deq
 
-def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', plot=False, save=False, position='losses.pgf'):
+def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, kind='equivalent', plot=False, save=False, position='losses.pgf'):
     '''
     This function computes the loss coefficient in a blade section (2D) relating it to a diffusor section (3D). It ONLY applies for design incidence angles.
         inputs:
@@ -61,6 +69,11 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
             W2          -- outlet relative velocity; for the stator W2 == V2
             beta1       -- inlet relative velocity flow angle; for the stator beta1 == alpha1
             beta2       -- outlet relative velocitu flow angle; for the stator beta2 == alpha2
+            r1          -- inlet section radius 
+            r2          -- outlet section radius 
+            Vt1         -- inlet absolute tangential speed 
+            Vt2         -- outlet absolute tangential speed
+            Va1         -- inlet absolute/relative axial speed 
             solidity    -- blade solidity
             D           -- diffusion factor 
             kind        -- selector for the type of loss coefficient vs diffusion coefficiente relaction 
@@ -92,7 +105,7 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
         if kind == 'std':
             D = Dfactor(W1, W2, beta1, beta2, solidity)
         elif kind == 'equivalent':
-            D = DeqFactor(W1, W2, beta1, beta2, solidity)
+            D = DeqFactor(W1, W2, beta1, beta2, r1, r2, Vt1, Vt2, Va1, solidity)
         # loss computation 
         loss = lossFunc(D, beta2, solidity, kind)
     elif D != 0:
@@ -110,6 +123,7 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
                 'text.usetex': True,
                 'pgf.rcfonts': False,
             })
+
         fig = plt.figure(figsize=(9,9))
         if kind == 'std':
             Dvec = np.linspace(0, 0.6, 300) 
@@ -142,7 +156,7 @@ def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, kind='equivalent', 
         #print(loss)
         return loss, D
 
-def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, Cl=0, endWall=False):
+def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, endWall=False):
     '''
     This function computes the section losses due to the 3D phenomena of the blade cascade.
         inputs:
@@ -153,9 +167,14 @@ def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, Cl=0, endWa
             bladeHeight -- height of the blade 
             endWall     -- boolean value for identify if the studied section is close to the wall 
     ''' 
+
+    # beta angle check -> beta1 > 0 following ASME 
+    if beta1 < 0:
+        beta1 = - beta1 
+        beta2 = - beta2 
     
     # computing average flow angle deflection 
-    beta_ = np.arctan( ( np.tan(np.deg2rad(beta1)) + np.tan(np.deg2rad(beta2)) ) / 2)
+    beta_ = np.arctan( ( np.tan(np.deg2rad(beta1)) + np.tan(np.deg2rad(beta2)) ) / 2)    
 
     # checking if the section in consideration is close to the wall 
     if endWall:
@@ -165,17 +184,12 @@ def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, Cl=0, endWa
     else:
         # if not close to the wall
         # Cl computation  
-        if beta1 < 0:
-            beta1 = - beta1 
-            beta2 = - beta2 
+        Cl = 2 * np.cos(beta_) * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2))) / solidity
 
-        #Cl = 2 * np.cos(beta_) * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2))) / solidity
         # Cd computation with respect to Cl
-        Cd = (0.18 * Cl)**2 
+        Cd = 0.18 * Cl**2 
 
     # losses computation
     loss = Cd * solidity * np.cos(np.deg2rad(beta1))**2 / np.cos(beta_)**3
-    print('Cl = ', Cl)
-    print('solidity = ', solidity)
-    print(loss)
+
     return loss

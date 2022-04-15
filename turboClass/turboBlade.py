@@ -402,7 +402,7 @@ class blade:
         lineLenght = 80
         iterativeLenght = np.int16((lineLenght - len(' RADIAL EQ. '))/2)
         print('' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
-        
+
         # entropy outer loop 
         while relErrorS > tolS and counterS < nMaxS: 
             # updating entropy loop counter 
@@ -460,51 +460,8 @@ class blade:
             # computing losses for the new loop cycle (used if relError > tol) 
             # LOSSES COMPUTATION => target s2
             # computing pressure losses 
-            lossVec = np.zeros(self.nSection)
+            lossVec = self.computeLosses()
 
-            # computing losses at each section
-            for ii in range(self.nSection):
-                # PROFILE LOSSES
-                # variables allocation -> these variables are already updated with the previous self.allocateDynamics() function call 
-                # for stators V == W and alpha == beta
-                # velocity 
-                W1 = self.inletSection[ii].W
-                W2 = self.outletSection[ii].W
-
-                # angles
-                beta1 = self.inletSection[ii].beta
-                beta2 = self.outletSection[ii].beta
-                
-                # angles check -> the Leiblein model treats with positive angle for beta1 
-                # this implies changing the angle sign with respect to beta1 sign angle  
-                if beta1 < 0:
-                    beta1 = - beta1 
-                    beta2 = - beta2
-
-                # solidity allocation    
-                solidity = self.inletSection[ii].solidity
-
-                # loss computation -> Lieblein model 
-                lossVec[ii], _ = losses.lossCoeff(W1, W2, beta1, beta2, solidity)
-
-                # TIP LOSSES
-                # computing if the rotor blade is close to the tip
-                #if np.abs(self.inletSection[-1].midpoint - self.inletSection[ii].midpoint) / (self.inletBladeHeight) < 0.3:
-                #    print('top')
-                #    endWall = True 
-                #elif np.abs(self.inletSection[ii].midpoint - self.inletSection[0].midpoint) / (self.inletBladeHeight) < 0.3:
-                #    print('bottom')
-                #    endWall = True
-                #else:
-                #    endWall = False 
-
-                #print(endWall)
-                #endWall = False
-
-                # loss computation -> Howel additional loss model 
-                #if endWall == True:
-                #    lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=self.inletSection[ii].solidity, pitch=self.inletSection[ii].pitch, bladeHeight=self.inletBladeHeight, endWall=endWall, Cl=self.inletSection[ii].Cl)
-                
             # computing entropy generation through losses 
             for ii in range(self.nSection):
                 # storing s2 old 
@@ -515,7 +472,7 @@ class blade:
                 self.outletSection[ii].Ptr = self.inletSection[ii].Ptr - lossVec[ii] * (self.inletSection[ii].Ptr - self.inletSection[ii].P)
                 # entropy computation
                 self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Ptr / self.inletSection[ii].Ptr)                        
-                
+
                 # storing new s2 
                 s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
 
@@ -924,6 +881,8 @@ class blade:
 
         # initializing throat vector 
         oVec = np.zeros(self.nSection)
+        rhotrVec = np.zeros(self.nSection)
+        WrVec = np.zeros(self.nSection)
 
         # check on all the blade sections 
         for ii in range(self.nSection):
@@ -933,14 +892,14 @@ class blade:
             pitch = self.inletSection[ii].pitch 
             beta  = self.inletSection[ii].beta 
             # allocating total relative quantities
-            rhotr = self.inletSection[ii].rhot
-            Wr    = np.sqrt(2 * gamma / (gamma + 1) * R * self.inletSection[ii].Ttr)
+            rhotrVec[ii] = self.inletSection[ii].rhot
+            WrVec[ii]    = np.sqrt(2 * gamma / (gamma + 1) * R * self.inletSection[ii].Ttr)
 
             # computing minumum throat 
             oVec[ii] = lieblein.oFunc(gamma=self.inletSection[ii].gamma, tbc=0.1, solidity=self.inletSection[ii].solidity, pitch=self.inletSection[ii].pitch, Cl=self.inletSection[ii].Cl)
 
             # chocking check condition
-            if rho * W * pitch * np.cos(np.deg2rad(beta)) > rhotr * oVec[ii] * Wr:
+            if rho * W * pitch * np.cos(np.deg2rad(beta)) > rhotrVec[ii] * oVec[ii] * WrVec[ii]:
                 chokedFlow = True
 
         # printing results
@@ -951,11 +910,11 @@ class blade:
         print('-- choked                  = {0}'.format(chokedFlow))
         print('-- minimum throat position = {0:d}'.format(np.argmin(oVec)))
         print('-- minimum throat diameter = {0:>8.3f} m'.format(np.min(oVec)))
-        print('-- rho*                    = {0:>8.3f} kg/m3'.format(rhotr))
-        print('-- W*                      = {0:>8.3f} m/s'.format(Wr))
+        print('-- minimum rho*            = {0:>8.3f} kg/m3'.format(np.min(rhotrVec)))
+        print('-- minimum W*              = {0:>8.3f} m/s'.format(np.min(WrVec)))
         print('*' * starDim)
 
-    def bladeGenerator(self, Pt0, Tt0, mFlux, STLname='cad', relTolShape=1e-3):
+    def bladeGenerator(self, Pt0, Tt0, mFlux, STLname='cad', relTolShape=1e-3, nMaxShape=100):
         '''
         This function computes the final shape of a blade given blade number and total inlet quantites.
             inputs:
@@ -976,7 +935,7 @@ class blade:
         starDim = 80
         geometryDim = np.int16(np.floor(starDim - len(' SHAPE LOOP   '))/2)
 
-        while errorShape > relTolShape:
+        while errorShape > relTolShape and counterShape < nMaxShape:
             # updating counter 
             counterShape = counterShape + 1
 
@@ -984,7 +943,7 @@ class blade:
             print('-' * geometryDim + ' SHAPE LOOP {0:d} '.format(counterShape) + '-' * geometryDim)
 
             # blade design through iterative process on radial equilibrium 
-            self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=False)
+            self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=True)
 
             # rotor blade geometry allocation
             self.generateGeometry(pos='data/airfoils/naca65.txt', STLname=STLname, plot=False, printout=False)
@@ -1006,3 +965,65 @@ class blade:
 
         # check flow chockin in flow passages
         self.checkChoking()
+
+    def computeLosses(self, variableSpeed=False):
+        '''
+        This function computes the losses for the blade.
+            inputs:
+                variableSpeed   -- determines the loss coefficient with respect to Leiblein model that relates to variable axial speed for each streamtube
+
+        '''
+
+        # losse vector allocation
+        lossVec = np.zeros(self.nSection)
+
+        # computing losses at each section
+        for ii in range(self.nSection):
+            # PROFILE LOSSES
+            # variables allocation -> these variables are already updated with the previous self.allocateDynamics() function call 
+            # for stators V == W and alpha == beta
+            # velocity 
+            W1 = self.inletSection[ii].W
+            W2 = self.outletSection[ii].W
+
+            # angles
+            beta1 = self.inletSection[ii].beta
+            beta2 = self.outletSection[ii].beta
+            
+            # angles check -> the Leiblein model treats with positive angle for beta1 
+            # this implies changing the angle sign with respect to beta1 sign angle  
+            if beta1 < 0:
+                beta1 = - beta1 
+                beta2 = - beta2
+
+            # solidity allocation    
+            solidity = self.inletSection[ii].solidity
+
+            # the Lieblein losses model dependes also on the change of axial speed along the blade section
+            r1  = self.inletSection[ii].midpoint
+            r2  = self.outletSection[ii].midpoint
+            Vt1 = self.inletSection[ii].Vt
+            Vt2 = self.outletSection[ii].Vt
+            Va1 = self.inletSection[ii].Va
+
+            # loss computation -> Lieblein model 
+            if variableSpeed:
+                lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0)
+            else:
+                lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, solidity=solidity, D=0)
+
+            # TIP LOSSES & SECONDARY LOSSES
+            # computing if the rotor blade is close to the tip
+            if np.abs(self.inletSection[-1].midpoint - self.inletSection[ii].midpoint) / self.inletBladeHeight < 0.3:
+                endWall = True 
+            elif np.abs(self.inletSection[ii].midpoint - self.inletSection[0].midpoint) / self.inletBladeHeight < 0.3:
+                endWall = True
+            else:
+                endWall = False 
+            
+            # !!! set to True because with False getting too high losses
+            endWall = True
+            # loss computation -> Howel additional loss model 
+            lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=solidity, pitch=self.inletSection[ii].pitch, bladeHeight=self.inletBladeHeight, endWall=endWall)
+                
+        return lossVec
