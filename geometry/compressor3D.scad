@@ -14,9 +14,9 @@ include <data.scad>
 
 // ROTOR PRINT
 // variables computation
-alphaRotor = floor(360/nRotorBlades); // computing distance angle between 2 blades
+alphaRotor = 360/nRotorBlades; // computing distance angle between 2 blades
 rotorStaggerAngle = 0; // setting up hub blade stagger angle
-rotorOrigin = [0, 0, 0.995*rotorHubInletCoords[2]]; // setting up rotor hub blade section origin
+rotorOrigin = [0, 0, 0.99*rotorHubInletCoords[2]]; // setting up rotor hub blade section origin
 
 // rotor generation 
 for(ii = [0:nRotorBlades-1]){
@@ -33,9 +33,9 @@ for(ii = [0:nRotorBlades-1]){
 
 // STATOR PRINT
 // variables computation
-alphaStator = floor(360/nStatorBlades); // computing distance angle between 2 blades
+alphaStator = 360/nStatorBlades; // computing distance angle between 2 blades
 statorStaggerAngle = 0; // setting up hub blade stagger angle
-statorOrigin = [0.1, 0, 0.99*statorHubInletCoords[2]]; // setting up rotor hub blade section origin
+statorOrigin = [0.1, 0, 0.97*statorHubInletCoords[2]]; // setting up rotor hub blade section origin
 
 // stator generation 
 for(ii = [0:nStatorBlades-1]){

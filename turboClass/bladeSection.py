@@ -36,6 +36,7 @@ class section:
         self.pitch    = pitch
         self.solidity = 1
         self.Cl       = 0
+        self.s        = 0
 
     def allocateKinetics(self, Va, Vt, U):
         '''
@@ -73,20 +74,20 @@ class section:
         cP = gamma / (gamma - 1) * R
 
         # thermodynamic properties computation
-        self.Tt = Tt
-        self.Ttr = Ttr
-        self.T  = T 
-        self.Tr = Tt - self.W**2/(2 * cP)
-        self.a  = np.sqrt(gamma * R * self.T)
-        self.M  = self.V / self.a  
-        self.Mr = self.W / self.a 
-        self.P  = P 
-        self.Pt = Pt 
-        self.Ptr = Ptr
-        self.rho = rho 
-        self.rhot = rhot 
+        self.s     = s 
+        self.T     = T 
+        self.Tr    = Tt - self.W**2/(2 * cP)
+        self.Tt    = Tt
+        self.Ttr   = Ttr
+        self.a     = np.sqrt(gamma * R * self.T)
+        self.M     = self.V / self.a  
+        self.Mr    = self.W / self.a 
+        self.P     = P 
+        self.Pt    = Pt 
+        self.Ptr   = Ptr
+        self.rho   = rho 
+        self.rhot  = rhot 
         self.rhotr = rhotr
-        self.s = s 
 
     def allocateQuantities(self, i, delta, solidity, chord, pitch, gamma, Cl, tbc):
         '''

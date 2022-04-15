@@ -671,7 +671,7 @@ def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec
     # STL file generation 
     bladeGenerator.STLsaving(blade, STLname=STLname)
 
-    # settin up return values 
+    # setting up return values 
     inlet = [blade[0].chord, blade[0].camber[0,0], blade[0].camber[0,1], blade[0].camber[0,2], blade[0].camber[-1,0], blade[0].camber[-1,1], blade[0].camber[-1,2]]
     outlet = [blade[-1].chord, blade[-1].upper[0,0], blade[-1].upper[0,1], blade[-1].upper[0,2], blade[-1].upper[-1,0], blade[-1].upper[-1,1], blade[-1].upper[-1,2]]
 
