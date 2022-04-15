@@ -29,6 +29,7 @@ Vt0Umean = 0
 lam = (1 - rD - Vt0Umean) * 4 
 psiTarget = lam / 2
 
+
 #file_path = 'output.txt'
 #with open(file_path, "w") as file:
 #    with contextlib.redirect_stdout(file):
@@ -52,6 +53,8 @@ statorVtMeanOutlet = V2vec[1]
 Tt1                = thermo1[3]
 Pt1                = thermo1[4]
 
+# rotor study 
+print('\n\n-- ROTOR STUDY')
 # rotor object generation 
 rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=35)
 # blade dimensions allocation -> kinetics inlet
@@ -63,8 +66,10 @@ rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
 # rotor blade geometry allocation
 rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
 # computing the best shape 
-rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, STLname='rotor', plot=False)
+rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, STLname='rotor', plot=False, nMaxShape=3)
 
+# stator study 
+print('\n\n-- STATOR STUDY')
 # stator object generation
 statorBlade = turboBlade.blade(ID=2, turboType='stator', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=0, nBlade=35)
 # blade dimensions allocation -> kinetics inlet 
