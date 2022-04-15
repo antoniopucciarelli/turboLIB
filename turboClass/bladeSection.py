@@ -61,7 +61,7 @@ class section:
         self.W    = np.sqrt(self.Wa**2 + self.Wt**2)
         self.beta = np.rad2deg(np.arctan(self.Wt/self.Wa))
 
-    def allocateThermodynamics(self, Tt, Pt, T, P, Ttr, Ptr, rho, rhot, s, R=287.06, gamma=1.4):
+    def allocateThermodynamics(self, Tt, Pt, T, P, Ttr, Ptr, rho, rhot, rhotr, s, R=287.06, gamma=1.4):
         '''
         This function computes the thermodynamic properties of a specific point in the blade.
             inputs:
@@ -85,9 +85,10 @@ class section:
         self.Ptr = Ptr
         self.rho = rho 
         self.rhot = rhot 
+        self.rhotr = rhotr
         self.s = s 
 
-    def allocateQuantities(self, i, delta, solidity, chord, pitch, gamma, Cl):
+    def allocateQuantities(self, i, delta, solidity, chord, pitch, gamma, Cl, tbc):
         '''
         This function allocates the blade angles.
             inputs:
@@ -98,6 +99,7 @@ class section:
                 pitch       -- section pitch  
                 gamma       -- stagger angle
                 Cl          -- lift coefficient
+                tbc         -- thickness / chord
         '''
 
         self.i          = i 
@@ -107,6 +109,7 @@ class section:
         self.pitch      = pitch
         self.gamma      = gamma 
         self.Cl         = Cl
+        self.tbc        = tbc
 
     def mFlux(self):
         '''

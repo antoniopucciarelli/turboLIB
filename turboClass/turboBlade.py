@@ -7,7 +7,6 @@
 #       
 
 # importing libraries
-from certifi import where
 import numpy as np 
 import matplotlib.pyplot as plt
 from turboClass.bladeSection import section
@@ -288,7 +287,10 @@ class blade:
             Tt0r = Tt0 - self.inletSection[ii].V**2 / (2 * cP) + self.inletSection[ii].W**2 / (2 * cP)
 
             # relative total pressure computation
-            Pt0r = Pt0 * (Tt0r / Tt0)**(gamma/gamma-1)
+            Pt0r = Pt0 * (Tt0r / Tt0)**(gamma/(gamma-1))
+
+            # computing total relative density 
+            rhot0r = Pt0r / (R * Tt0r)
 
             # euler work computation 
             if self.turboType == 'stator':
@@ -319,7 +321,7 @@ class blade:
             Tt1r = Tt1 - self.outletSection[ii].V**2 / (2 * cP) + self.outletSection[ii].W**2 / (2 * cP)
 
             # relative total pressure computation
-            Pt1r = Pt1 * (Tt1r / Tt1)**(gamma/gamma-1)
+            Pt1r = Pt1 * (Tt1r / Tt1)**(gamma/(gamma-1))
 
             # density computation 
             rho1 = P1 / (R * T1)
@@ -327,9 +329,12 @@ class blade:
             # total density computation
             rhot1 = Pt1 / (R * Tt1)
 
+            # computing total relative density 
+            rhot1r = Pt1r / (R * Tt1r)
+
             # variable allocation in seection objects            
-            self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, s=0)
-            self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, s=0)
+            self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, rhotr=rhot0r, s=0)
+            self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, rhotr=rhot1r, s=0)
 
     def radialEquilibrium(self, Pt0, Tt0, mFlux, plot=False, save=False, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, position0='inOut.pgf', position1='betaInbetaOut.pgf', R=287.06, gamma=1.4):
         '''
@@ -587,13 +592,15 @@ class blade:
             # static temperature computation 
             self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
             # total relative temperature computation
-            self.outletSection[ii].Ttr = self.outletSection[ii].Tt - self.outletSection[ii].W**2 / (2 * cP)
+            self.outletSection[ii].Ttr = self.outletSection[ii].Tt - (self.outletSection[ii].V**2 - self.outletSection[ii].W**2) / (2 * cP)
             # static pressure computation
             self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
             # static density computation
             self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
             # total density computation
             self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
+            # total relative density computation 
+            self.outletSection[ii].rhotr = self.outletSection[ii].Ptr / (R * self.outletSection[ii].Ttr)
 
         # plotting interpolated functions 
         if plot or save:
@@ -841,7 +848,6 @@ class blade:
             # translation of the airfoil with respect to the hub position 
             if ii == -1: 
                 airfoilHub = airfoil 
-                hubPos = False 
                 translationHub = airfoilHub.middleChord()
                 translationHub[2] = 0.0
             
@@ -872,8 +878,8 @@ class blade:
 
             # allocate section data 
             if ii != -1 and ii != self.nSection:
-                self.inletSection[ii].allocateQuantities(i, delta, solidity, chord, pitch, gamma, Cl)
-                self.outletSection[ii].allocateQuantities(i, delta, solidity, chord, pitch, gamma, Cl)
+                self.inletSection[ii].allocateQuantities(i, delta, solidity, chord, pitch, gamma, Cl, tbc)
+                self.outletSection[ii].allocateQuantities(i, delta, solidity, chord, pitch, gamma, Cl, tbc)
 
             # printout 
             if printout:
@@ -894,6 +900,7 @@ class blade:
                 print('-- theta         = {0:>7.3f} deg'.format(theta))
                 print('-- zeta          = {0:>7.3f} deg'.format(zeta))
                 print('-- Cl            = {0:>7.3f}'.format(np.abs(Cl)))
+                print('-- tbc           = {0:>7.3f}'.format(tbc))
                 print('-- s             = {0:>7.3f} cm'.format(pitch*1e+2))
                 print('-- c             = {0:>7.3f} cm'.format(chord*1e+2))
                 print('*' * starDim + '\n')
@@ -918,33 +925,37 @@ class blade:
         # initializing throat vector 
         oVec = np.zeros(self.nSection)
 
+        # check on all the blade sections 
         for ii in range(self.nSection):
             # allocating quantities 
-            rho = self.inletSection[ii].rho 
-            W = self.inletSection[ii].W
+            rho   = self.inletSection[ii].rho 
+            W     = self.inletSection[ii].W
             pitch = self.inletSection[ii].pitch 
-            beta = self.inletSection[ii].beta 
+            beta  = self.inletSection[ii].beta 
             # allocating total relative quantities
             rhotr = self.inletSection[ii].rhot
-            Wr = np.sqrt(2 * gamma / (gamma + 1) * R * self.inletSection[ii].Ttr)
+            Wr    = np.sqrt(2 * gamma / (gamma + 1) * R * self.inletSection[ii].Ttr)
 
             # computing minumum throat 
             oVec[ii] = lieblein.oFunc(gamma=self.inletSection[ii].gamma, tbc=0.1, solidity=self.inletSection[ii].solidity, pitch=self.inletSection[ii].pitch, Cl=self.inletSection[ii].Cl)
 
+            # chocking check condition
             if rho * W * pitch * np.cos(np.deg2rad(beta)) > rhotr * oVec[ii] * Wr:
                 chokedFlow = True
 
-        starDim = 47
-        chokingDim = np.int16(np.floor(starDim - len(' CHOKING STUDY '))/2)
-        print('*' * chokingDim + ' CHOKING STUDY ' + '*' * chokingDim)
+        # printing results
+        starDim = 45
+        chokingDim = np.int16(np.floor(starDim - len(' CHOKING CHECK '))/2)
+        print('*' * chokingDim + ' CHOKING CHECK ' + '*' * chokingDim)
+        print('-- rho1*W1*pitch*cos(beta1) < rho* W* o')
         print('-- choked                  = {0}'.format(chokedFlow))
         print('-- minimum throat position = {0:d}'.format(np.argmin(oVec)))
         print('-- minimum throat diameter = {0:>8.3f} m'.format(np.min(oVec)))
-        print('-- rho*                    = {0:>8.3f} kg/m**3'.format(rhotr))
+        print('-- rho*                    = {0:>8.3f} kg/m3'.format(rhotr))
         print('-- W*                      = {0:>8.3f} m/s'.format(Wr))
         print('*' * starDim)
 
-    def geometryGenerator(self, Pt0, Tt0, mFlux):
+    def bladeGenerator(self, Pt0, Tt0, mFlux, STLname='cad', relTolShape=1e-3):
         '''
         This function computes the final shape of a blade given blade number and total inlet quantites.
             inputs:
@@ -959,7 +970,6 @@ class blade:
 
         # loop on the geometry variation of the blade with radial equilibrium and entropy equilibrium 
         errorShape = 1 
-        relTolShape = 1e-3
         counterShape = 0
 
         # printing properties 
@@ -977,7 +987,7 @@ class blade:
             self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux ,plot=False)
 
             # rotor blade geometry allocation
-            self.generateGeometry(pos='data/airfoils/naca65.txt', STLname='cadTest', plot=False, printout=False)
+            self.generateGeometry(pos='data/airfoils/naca65.txt', STLname=STLname, plot=False, printout=False)
 
             # allocating Cl vector 
             for ii in range(self.nSection):
@@ -988,8 +998,9 @@ class blade:
 
             # reallocation Old vector to New vector 
             ClVecOld = ClVecNew 
+
             # printing 
-            print('-- error shape = {0:.4f}'.format(errorShape))
+            print('-- rel. error shape = {0:.4f}'.format(errorShape))
 
         print('-' * starDim + '\n') 
 

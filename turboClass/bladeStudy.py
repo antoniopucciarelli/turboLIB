@@ -393,7 +393,7 @@ def thetaFunc(beta1, beta2, i, delta):
     
     return theta
 
-def optimalAngles(beta1, beta2, printout=False):
+def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
     '''
     This function computes the optimal incidence angle and deviation angle for a blade section given flow deflections.
         inputs: 
@@ -419,13 +419,16 @@ def optimalAngles(beta1, beta2, printout=False):
         # variable definition
         theta    = x[0] # theta allocation
         solidity = x[1] # solidity allocation
-        tbc      = 0.1  # tb/c allocation -> x[2] || in this case set as 0.1 by default 
+        if tbc != 0.1:
+            tbc_ = x[2]  # tb/c allocation -> x[2] || in this case set as 0.1 by default 
+        else:
+            tbc_ = 0.1   # tb/c allocation -> if len(x) == 2 -> tbc set to 0.1 
 
         # incidence angle computation 
-        i = iFunc(beta1, tbc, solidity, theta)
+        i = iFunc(beta1, tbc_, solidity, theta)
 
         # deflection angle computation 
-        delta = deltaFunc(beta1, tbc, solidity, theta)
+        delta = deltaFunc(beta1, tbc_, solidity, theta)
 
         # error computation
         error = np.abs(thetaFunc(beta1, beta2, i, delta) - theta)
@@ -436,10 +439,18 @@ def optimalAngles(beta1, beta2, printout=False):
     epsilon = beta1 - beta2
     solidityMin = 0.2
     solidityMax = 3
-    bounds = [(epsilon, None), (solidityMin, solidityMax)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
- 
+    if tbc != 0.1:
+        tbcMin = 0.1
+        tbcMax = tbc * 1.5
+        bounds = [(epsilon, None), (solidityMin, solidityMax), (tbcMin, tbcMax)] # [theta, solitidy, tb/c] 
+    else:
+        bounds = [(epsilon, None), (solidityMin, solidityMax)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
+    
     # setting up initial study point 
-    x0 = (epsilon*1.05, solidityMin*1.05) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
+    if tbc != 0.1:
+        x0 = (epsilon*1.05, solidityMin*1.05, tbc*1.05) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
+    else:
+        x0 = (epsilon*1.05, solidityMin*1.05)
     # minimizing system 
     res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
 
