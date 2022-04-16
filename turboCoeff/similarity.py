@@ -34,10 +34,10 @@ def efficiency(phi=0, rD=0, plot=False, save=False, position='efficiency.pgf'):
     etaVec = np.array([0.926, 0.92, 0.91, 0.90, 0.88, 0.86])
 
     # radius vs Xorigin interpolation 
-    origin2radius = interpolate.interp1d(originVec[:,0], radiusVec, kind='linear')
+    origin2radius = interpolate.interp1d(originVec[:,0], radiusVec, kind='linear', fill_value='extrapolate', bounds_error=False)
 
     # radius vs efficiency intepolation
-    radius2eta = interpolate.interp1d(radiusVec, etaVec, kind='linear')
+    radius2eta = interpolate.interp1d(radiusVec, etaVec, kind='linear', fill_value='extrapolate', bounds_error=False)
 
     # computing efficiency from input data 
     if rD != 0 and phi != 0:

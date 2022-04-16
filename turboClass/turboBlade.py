@@ -7,13 +7,10 @@
 #       
 
 # importing libraries
-from time import time_ns
 import numpy                 as np 
 import matplotlib.pyplot     as plt
-from pexpect import TIMEOUT
 from scipy                   import integrate, interpolate
 from scipy.misc              import derivative
-from ufl import k
 from turboCoeff              import lieblein, losses
 from turboClass.bladeSection import section
 
@@ -148,7 +145,7 @@ class blade:
         plt.colorbar(cmappable, label=r'$\frac{m}{s}$')
         plt.show()
 
-    def printMeridional(self, save=False):
+    def printMeridional(self, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf'):
         '''
         This function plots the main inlet and outlet quantities of the blade.
         '''
@@ -271,11 +268,15 @@ class blade:
         # inlet section plot 
         twiny31 = ax1[0].twiny()
         twiny32 = ax1[0].twiny()
-        twiny33 = ax1[0].twiny() 
         # moving axis position
         twiny31.spines["top"].set_position(("axes", 1))
         twiny32.spines["top"].set_position(("axes", 1.1))
-        twiny33.spines["top"].set_position(("axes", 1.2))
+        if self.turboType == 'rotor':
+            # this axes is related to reaction degree that for a stator is put as 0 in the computation
+            #   so it is avoided to print it in the final plot
+            twiny33 = ax1[0].twiny() 
+            twiny33.spines["top"].set_position(("axes", 1.2))
+            twiny33.set_xlim(0,1)
         
         # vector declaration
         midpoint = np.zeros(self.nSection)
@@ -288,8 +289,14 @@ class blade:
         s        = np.zeros(self.nSection)
         Pin      = np.zeros(self.nSection)
         Pout     = np.zeros(self.nSection)
+        Ptin     = np.zeros(self.nSection)
+        Ptout    = np.zeros(self.nSection)
         Tin      = np.zeros(self.nSection)
         Tout     = np.zeros(self.nSection)
+        Ttin     = np.zeros(self.nSection)
+        Ttout    = np.zeros(self.nSection)
+        MrIn     = np.zeros(self.nSection)
+        MrOut    = np.zeros(self.nSection)
 
         # vector allocation
         for ii in range(self.nSection):
@@ -303,23 +310,35 @@ class blade:
             s[ii]        = self.inletSection[ii].s 
             Pin[ii]      = self.inletSection[ii].P / 1e+5
             Pout[ii]     = self.outletSection[ii].P / 1e+5
+            Ptin[ii]     = self.inletSection[ii].Pt / 1e+5
+            Ptout[ii]    = self.outletSection[ii].Pt / 1e+5
             Tin[ii]      = self.inletSection[ii].T 
             Tout[ii]     = self.outletSection[ii].T 
+            Ttin[ii]     = self.inletSection[ii].Tt 
+            Ttout[ii]    = self.outletSection[ii].Tt 
+            if self.turboType == 'stator':
+                MrIn[ii]     = self.inletSection[ii].M
+                MrOut[ii]    = self.outletSection[ii].M
+            elif self.turboType == 'rotor':
+                MrIn[ii]     = self.inletSection[ii].Mr
+                MrOut[ii]    = self.outletSection[ii].Mr
 
         # plotting ax0
         p30, = ax1[0].plot(betaIn,    midpoint, linestyle='-',  linewidth=2, marker='o', markersize=markersize, markeredgecolor=markeredgecolor, color='g', markeredgewidth=markeredgewidth, label=r'$\beta_{{1 }}$')
         p31, = ax1[0].plot(betaOut,   midpoint, linestyle='-',  linewidth=2, marker='s', markersize=markersize, markeredgecolor=markeredgecolor, color='m', markeredgewidth=markeredgewidth, label=r'$\beta_{{2 }}$')
         p32, = ax1[0].plot(gamma,     midpoint, linestyle='-',  linewidth=2, marker='p', markersize=markersize, markeredgecolor=markeredgecolor, color='c', markeredgewidth=markeredgewidth, label=r'$\gamma$')
         p33, = twiny31.plot(chord,    midpoint, linestyle='--', linewidth=2, marker='d', markersize=markersize, markeredgecolor=markeredgecolor, color='y', markeredgewidth=markeredgewidth, label=r'$c$')
-        p34, = twiny32.plot(rD,       midpoint, linestyle='--', linewidth=2, marker='^', markersize=markersize, markeredgecolor=markeredgecolor, color='b', markeredgewidth=markeredgewidth, label=r'$\chi$')
-        p35, = twiny33.plot(solidity, midpoint, linestyle='--', linewidth=2, marker='D', markersize=markersize, markeredgecolor=markeredgecolor, color='r', markeredgewidth=markeredgewidth, label=r'$\sigma$')
+        p34, = twiny32.plot(solidity, midpoint, linestyle='--', linewidth=2, marker='D', markersize=markersize, markeredgecolor=markeredgecolor, color='r', markeredgewidth=markeredgewidth, label=r'$\sigma$')
+        if self.turboType == 'rotor':
+            p35, = twiny33.plot(rD,       midpoint, linestyle='--', linewidth=2, marker='^', markersize=markersize, markeredgecolor=markeredgecolor, color='b', markeredgewidth=markeredgewidth, label=r'$\chi$')
         
         # ax0 setup
         ax1[0].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
         ax1[0].set_xlabel(r'$\beta_{{1 }} \ \beta_{{2 }} \ \gamma \ [^{\circ}]$')
         twiny31.set_xlabel(r'$c \ [m]$')
-        twiny32.set_xlabel(r'$\chi$')
-        twiny33.set_xlabel(r'$\sigma$')
+        twiny32.set_xlabel(r'$\sigma$')
+        if self.turboType == 'rotor':
+            twiny33.set_xlabel(r'$\chi$')
 
         # setting up axes 
         ax1[0].set_title('Main geometric/load quantities')
@@ -327,43 +346,54 @@ class blade:
         ax1[0].yaxis.set_ticks_position('right')
 
         # legend generation 
-        ax1[0].legend(handles=[p30,p31,p32,p33,p34,p35], loc='upper right', bbox_to_anchor=[0,1])
-
+        try:
+            ax1[0].legend(handles=[p30,p31,p32,p33,p34,p35], loc='upper right', bbox_to_anchor=[0,1])
+        except:
+            ax1[0].legend(handles=[p30,p31,p32,p33,p34], loc='upper right', bbox_to_anchor=[0,1])
+        
         plt.tight_layout()
 
         # outlet section plot 
         twiny41 = ax1[1].twiny()
-        #twiny42 = ax1[1].twiny() 
-        #twiny43 = ax1[1].twiny()
+        twiny42 = ax1[1].twiny()
         # moving axis position
         twiny41.spines["top"].set_position(("axes", 1))
-        #twiny42.spines["top"].set_position(("axes", 1.2))
-        #twiny43.spines["top"].set_position(("axes", 1.1))
+        twiny42.spines["top"].set_position(("axes", 1.1))
 
         # plotting ax1
-        p40, = ax1[1].plot(Pin,   midpoint, linestyle='-',  marker='o', color='g', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{{in }}$')
-        p41, = ax1[1].plot(Pout,  midpoint, linestyle='-',  marker='s', color='m', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{{out }}$')
-        p42, = twiny41.plot(Tin,  midpoint, linestyle='--', marker='^', color='b', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{{in }}$')
-        p43, = twiny41.plot(Tout, midpoint, linestyle='--', marker='D', color='r', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{{out }}$')
-        
+        p40, = ax1[1].plot(Pin,    midpoint, linestyle='-',        marker='o', color='peru', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{{in }}$')
+        p41, = ax1[1].plot(Pout,   midpoint, linestyle='-',        marker='s', color='deeppink', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{{out }}$')
+        p42, = twiny41.plot(Tin,   midpoint, linestyle='--',       marker='^', color='lightseagreen', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{{in }}$')
+        p43, = twiny41.plot(Tout,  midpoint, linestyle='--',       marker='D', color='indianred', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{{out }}$')
+        p44, = ax1[1].plot(Ptin,   midpoint, linestyle='-',        marker='o', color='skyblue', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{t_{in }}$')
+        p45, = ax1[1].plot(Ptout,  midpoint, linestyle='-',        marker='s', color='lime', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_{t_{out }}$')
+        p46, = twiny41.plot(Ttin,  midpoint, linestyle='--',       marker='^', color='salmon', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{t_{in }}$')
+        p47, = twiny41.plot(Ttout, midpoint, linestyle='--',       marker='D', color='royalblue', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_{t_{out }}$')
+        p48, = twiny42.plot(MrIn,  midpoint, linestyle='dashdot',  marker='8', color='red', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$M_{r_{in }}$')
+        p49, = twiny42.plot(MrOut, midpoint, linestyle='dashdot',  marker='8', color='gold', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$M_{r_{out }}$')
+
         # ax1 setup
         ax1[1].set_title('Main thermodynamic quantities')
         ax1[1].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
         ax1[1].set_ylabel(r'$r \ [m]$')
         ax1[1].set_xlabel(r'$P \ [bar]$')
-        twiny41.set_xlabel(r'$T \ [k]$')
-        #twiny22.set_xlabel(r'$P_t \ [bar]$')
-        #twiny23.set_xlabel(r'$s \ [\frac{{J}}{{kg }}]$')
+        twiny41.set_xlabel(r'$T \ [K]$')
+        twiny42.set_xlabel(r'$M$')
+        twiny42.set_xlim(0.3,1.1)
 
         # legend generation 
-        ax1[1].legend(handles=[p40,p41,p42,p43], loc='upper left', bbox_to_anchor=[1,1])
+        ax1[1].legend(handles=[p40,p41,p42,p43,p44,p45,p46,p47,p48,p49], loc='upper left', bbox_to_anchor=[1,1])
 
         plt.tight_layout()
 
         # setting up figure supertitle 
         fig1.suptitle(self.turboType)
 
-        plt.show()
+        if save:
+            fig0.savefig(position0)
+            fig1.savefig(position1)
+        else:
+            plt.show()
 
     def allocateKinetics(self, rMean, VtMean, VaMean, omega, section='inlet'):
         '''
@@ -474,7 +504,7 @@ class blade:
             self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, rhotr=rhot0r, s=self.inletSection[ii].s)
             self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, rhotr=rhot1r, s=self.outletSection[ii].s)
 
-    def radialEquilibrium(self, Pt0, Tt0, mFlux, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, plot=False, save=False, position0='inOut.pgf', position1='betaInbetaOut.pgf', R=287.06, gamma=1.4):
+    def radialEquilibrium(self, Pt0, Tt0, mFlux, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -519,9 +549,6 @@ class blade:
 
         # omega 
         omega = self.omega 
-
-        # saving initial beta2 angle for plotting 
-        beta2start = [self.outletSection[ii].beta for ii in range(self.nSection)]
 
         # INLET VARIABLES INTERPOLATION 
         # these variables do not change so they are set once in all the process
@@ -724,135 +751,19 @@ class blade:
             self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
             # total relative density computation 
             self.outletSection[ii].rhotr = self.outletSection[ii].Ptr / (R * self.outletSection[ii].Ttr)
+            # sound speed computation 
+            self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
+            # mach number computation
+            self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
+            # relative mach number computation
+            self.outletSection[ii].Mr = self.outletSection[ii].W / self.outletSection[ii].a
             # reaction degree compuation 
             if self.turboType == 'rotor':
                 self.inletSection[ii].rD = self.outletSection[ii].rD = np.abs((self.inletSection[ii].T - self.outletSection[ii].T) / (self.inletSection[ii].Tt - self.outletSection[ii].Tt))
-
+           
         # plotting interpolated functions 
-        if plot or save:
-            if save:
-                # setting matplotlib LaTeX export 
-                import matplotlib
-                matplotlib.use("pgf")
-                matplotlib.rcParams.update({
-                    "pgf.texsystem": "pdflatex",
-                    'font.family': 'serif',
-                    'text.usetex': True,
-                    'pgf.rcfonts': False,
-                })
-
-            midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
-            midpointOutlet = [self.outletSection[ii].midpoint for ii in range(self.nSection)]    
-
-            fig0, ax = plt.subplots(ncols=2, nrows=1)
-            fig0.set_figwidth(18)
-            fig0.set_figheight(9.5)
-
-            # inlet section plot 
-            twiny1 = ax[0].twiny()
-            twiny2 = ax[0].twiny() 
-            twiny3 = ax[0].twiny()
-            # moving axis position
-            twiny1.spines["top"].set_position(("axes", 1))
-            twiny2.spines["top"].set_position(("axes", 1.1))
-            twiny3.spines["top"].set_position(("axes", 1.2))
-
-            # Vt1 allocation 
-            Vt1 = [self.inletSection[ii].Vt for ii in range(self.nSection)]
-            # Pt1 allocation 
-            Pt1 = [self.inletSection[ii].Pt/1e+5 for ii in range(self.nSection)]
-
-            # plotting data
-            p0, = ax[0].plot(Va1(midpointInlet), midpointInlet, 'ko-', label=r'$V_a$')
-            p1, = twiny1.plot(Vt1, midpointInlet, 'm*-', label=r'$V_t$')
-            p2, = twiny2.plot(s1(midpointInlet), midpointInlet, 'r--', label=r'$s$')
-            p3, = twiny3.plot(Pt1, midpointInlet, 'b-o', label=r'$P_t$')
-            ax[0].set_ylim(self.inletSection[0].midpoint, self.inletSection[-1].midpoint)
-            ax[0].set_ylabel(r'$r$')
-            ax[0].set_xlabel(r'$V_a \ \frac{{m}}{{s}}$')
-            twiny1.set_xlabel(r'$V_t \ \frac{{m}}{{s}}$')
-            twiny2.set_xlabel(r'$s \ \frac{{J}}{{kg}}$')
-            twiny3.set_xlabel(r'$P_t \ bar$')
-
-            ax[0].legend(handles=[p0,p1,p2,p3], loc='center right')
-            ax[0].set_title('Inlet')
-
-            # inlet section plot 
-            twiny1 = ax[1].twiny()
-            twiny2 = ax[1].twiny() 
-            twiny3 = ax[1].twiny()
-            # moving axis position
-            twiny1.spines["top"].set_position(("axes", 1))
-            twiny2.spines["top"].set_position(("axes", 1.1))
-            twiny3.spines["top"].set_position(("axes", 1.2))
-
-            # Vt2 allocation 
-            Vt2 = [self.outletSection[ii].Vt for ii in range(self.nSection)]
-            # Pt2 allocation 
-            Pt2 = [self.outletSection[ii].Pt/1e+5 for ii in range(self.nSection)]
-
-            # plotting data
-            p0, = ax[1].plot(Va2, midpointOutlet, 'ko-', label=r'$V_a$')
-            p1, = twiny1.plot(Vt2, midpointOutlet, 'm*-', label=r'$V_t$')
-            p2, = twiny2.plot(s2(midpointOutlet), midpointOutlet, 'r--', label=r'$s$')
-            p3, = twiny3.plot(Pt2, midpointOutlet, 'b-o', label=r'$P_t$')
-            ax[1].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
-            ax[1].set_ylabel(r'$r$')
-            ax[1].set_xlabel(r'$V_a \ \frac{{m}}{{s}}$')
-            twiny1.set_xlabel(r'$V_t \ \frac{{m}}{{s}}$')
-            twiny2.set_xlabel(r'$s \ \frac{{J}}{{kg}}$')
-            twiny3.set_xlabel(r'$P_t \ bar$')
-
-            ax[1].legend(handles=[p0,p1,p2,p3], loc='center right')
-            ax[1].set_title('Outlet')
-
-            plt.tight_layout()
-
-            # new figure 
-            fig1, ax1 = plt.subplots(ncols=1, nrows=1)
-            fig1.set_figwidth(10)
-            fig1.set_figheight(8)
-            
-            # collecting new beta2 
-            beta2new = [self.outletSection[ii].beta for ii in range(self.nSection)]
-            # collecting beta1 
-            beta1 = [self.inletSection[ii].beta for ii in range(self.nSection)]
-            # collecting pressure 
-            P2 = [self.outletSection[ii].P/1e+5 for ii in range(self.nSection)]
-
-            # subdividing data 
-            twiny1 = ax1.twiny()
-            twiny2 = ax1.twiny() 
-            twiny3 = ax1.twiny()
-            # moving axis position
-            twiny1.spines["top"].set_position(("axes", 1))
-            twiny2.spines["top"].set_position(("axes", 1.1))
-            twiny3.spines["top"].set_position(("axes", 1.2))
-            
-            # plotting data
-            p20, = ax1.plot(Va2, midpointOutlet, 'k-*', label=r'$V_{{a \ 2}}$')
-            p21, = twiny1.plot(Vt2, midpointOutlet, 'm-*', label=r'$V_{{t \ 2}}$')
-            p22, = twiny2.plot(beta2start, midpointOutlet, 'r--', linewidth=2, label=r'$\beta_{{2 \ iter_{{0 }}}}$')
-            p23, = twiny2.plot(beta2new, midpointOutlet, 'c', linewidth=2, label=r'$\beta_{{2 \ iter_{{last }}}}$')
-            p24, = twiny2.plot(beta1, midpointOutlet, 'g', linewidth=2, label=r'$\beta_{{1 }}$')
-            p25, = twiny3.plot(P2, midpointOutlet, 'y-o', label=r'$P_{{2 }}$')
-            p26, = twiny3.plot(Pt2, midpointOutlet, 'b-o', label=r'$P_{{t \ 2}}$')
-            ax1.set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
-            ax1.set_ylabel(r'$r$')
-            ax1.set_xlabel(r'$V_{{a \ 2}} \ \frac{{m}}{{s}}$')
-            twiny1.set_xlabel(r'$V_{{t \ 2}} \ \frac{{m}}{{s}}$')
-            twiny2.set_xlabel(r'$\beta_{{2 }} \ - \ \beta_{{1 }} \ ^\circ$')
-            twiny3.set_xlabel(r'$P_{{2 }} \ - \ P_{{t \ 2}} \ bar$')
-
-            ax1.legend(handles=[p20,p21,p22,p23,p24,p25,p26], loc='center left')
-            
-            plt.tight_layout()
-
-            if save:
-                fig0.savefig(position0)
-                fig1.savefig(position1)
-            else:
-                plt.show()
+        if plot:
+            self.printMeridional(save=save, position0=position0, position1=position1)
 
     def generateGeometry(self, pos='/data/airfoils/naca65.txt', STLname='cad', plot=False, printout=False):
         '''
@@ -1191,13 +1102,13 @@ class blade:
             WrVec[ii]    = np.sqrt(2 * gamma / (gamma + 1) * R * self.inletSection[ii].Ttr)
 
             # computing minumum throat 
-            gamma    = self.inletSection[ii].gamma
-            tbc      = self.inletSection[ii].tbc
-            solidity = self.inletSection[ii].solidity
-            pitch    = self.inletSection[ii].pitch
-            Cl       = self.inletSection[ii].Cl
+            gamma_    = self.inletSection[ii].gamma     # pay attention with the specific heat ratio gamma
+            tbc_      = self.inletSection[ii].tbc
+            solidity_ = self.inletSection[ii].solidity
+            pitch_    = self.inletSection[ii].pitch
+            Cl_       = self.inletSection[ii].Cl
             # minimum throath
-            oVec[ii] = lieblein.oFunc(gamma=gamma, tbc=tbc, solidity=solidity, pitch=pitch, Cl=Cl)
+            oVec[ii] = lieblein.oFunc(gamma=gamma_, tbc=tbc_, solidity=solidity_, pitch=pitch_, Cl=Cl_)
 
             # chocking check condition
             if rho * W * pitch * np.cos(np.deg2rad(beta)) > rhotrVec[ii] * oVec[ii] * WrVec[ii]:
@@ -1213,7 +1124,7 @@ class blade:
         print('-- minimum rho*            = {0:>8.3f} kg/m3 --  minimum W*         = {1:>8.3f} m/s'.format(np.min(rhotrVec), np.min(WrVec)))
         print('*' * starDim)
 
-    def copySection(self, blade, fromSection='outlet', toSection='inlet'):
+    def copySection(self, blade, fromSection='outlet', toSection='inlet', R=287.06, gamma=1.4):
         '''
         This function copies the properties of blade another section. 
         The blades must have the same number of sections. The interpolation of data is not available (till now).
@@ -1225,6 +1136,9 @@ class blade:
                 toSection   -- name of the section where to store data
                             -- inlet/outlet
         '''
+
+        # heat coefficient 
+        cP = gamma / (gamma - 1) * R
 
         if fromSection == 'outlet':
             if toSection == 'inlet':
