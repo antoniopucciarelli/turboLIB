@@ -34,9 +34,10 @@ class section:
         self.tip      = tip 
         self.height   = height 
         self.pitch    = pitch
-        self.solidity = 1
-        self.Cl       = 0
-        self.s        = 0
+        self.solidity = 1.0
+        self.Cl       = 0.0
+        self.s        = 0.0
+        self.rD       = 0.0
 
     def allocateKinetics(self, Va, Vt, U):
         '''
@@ -103,6 +104,7 @@ class section:
                 tbc         -- thickness / chord
         '''
 
+        # data allocation 
         self.i          = i 
         self.delta      = delta
         self.solidity   = solidity
@@ -118,6 +120,7 @@ class section:
             -- the axial fluid speed and the density are considered constant in the stream tube.
         '''
 
+        # mass flux computation
         massFlux = np.pi * (self.tip**2 - self.bottom**2) * self.rho * self.Va
 
         return massFlux 

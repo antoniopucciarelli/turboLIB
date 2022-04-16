@@ -16,7 +16,7 @@ include <data.scad>
 // variables computation
 alphaRotor = 360/nRotorBlades; // computing distance angle between 2 blades
 rotorStaggerAngle = 0; // setting up hub blade stagger angle
-rotorOrigin = [0, 0, 0.99*rotorHubInletCoords[2]]; // setting up rotor hub blade section origin
+rotorOrigin = [0.001, 0, 0.97*rotorHubInletCoords[2]]; // setting up rotor hub blade section origin
 
 // rotor generation 
 for(ii = [0:nRotorBlades-1]){

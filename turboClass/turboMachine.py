@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import warnings
 from turboStage import *
+from turboBlade import blade
 
 class turbomachine:
     def __init__(self, ID, nStage, turboType):
@@ -28,7 +29,7 @@ class turbomachine:
         Turbomachine object stages declaration 
         '''
         
-        self.stage = [stage(ii+1, self.turboType, rotor(ii+1), stator(ii+1)) for ii in range(self.nStage)]
+        self.stage = [stage(ii+1, self.turboType, blade(ii+1), blade(ii+1)) for ii in range(self.nStage)]
     
     def print(self):
         '''

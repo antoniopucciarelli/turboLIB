@@ -1,5 +1,4 @@
 # importing libraries
-import numpy as np 
 from turboClass import turboBlade
 from turboCoeff import similarity
 from geometry import bladeGenerator
@@ -56,7 +55,8 @@ Pt1                = thermo1[4]
 # rotor study 
 print('\n\n-- ROTOR STUDY')
 # rotor object generation 
-rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=35)
+nRotorBlades = 35
+rotorBlade = turboBlade.blade(ID=1, turboType='rotor', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=omega, nBlade=nRotorBlades)
 # blade dimensions allocation -> kinetics inlet
 rotorBlade.allocateKinetics(rMean=rMean, VtMean=rotorVtMeanInlet, VaMean=rotorVaMeanInlet, omega=omega, section='inlet')
 # blade dimensions allocation -> kinetics outlet
@@ -66,12 +66,15 @@ rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
 # rotor blade geometry allocation
 rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
 # computing the best shape 
-rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, STLname='rotor', plot=False, nMaxShape=3)
+rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, STLname='rotor', plot=False, nMaxShape=1)
+# plotting results
+rotorBlade.printMeridional()
 
 # stator study 
 print('\n\n-- STATOR STUDY')
 # stator object generation
-statorBlade = turboBlade.blade(ID=2, turboType='stator', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=0, nBlade=35)
+nStatorBlades = 35
+statorBlade = turboBlade.blade(ID=2, turboType='stator', nSection=nSection, inletBladeHeight=b0, outletBladeHeight=b0, inletHubRadius=hubRadius, outletHubRadius=hubRadius, omega=0, nBlade=nStatorBlades)
 # blade dimensions allocation -> kinetics inlet 
 statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanInlet, VaMean=statorVaMeanInlet, omega=0, section='inlet')
 # blade dimension allocation -> kinetics outlet
@@ -83,7 +86,10 @@ statorBlade.copySection(blade=rotorBlade, fromSection='outlet', toSection='inlet
 # stator blade geometry allocation
 statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
 # computing the best shape 
-statorBlade.bladeGenerator(Pt1, Tt1, mFlux, STLname='stator', plot=False)
+statorBlade.bladeGenerator(Pt1, Tt1, mFlux, STLname='stator', plot=False, nMaxShape=1)
+# plotting results
+statorBlade.printMeridional()
+
 
 # .scad file generation 
 nRotorBlades  = rotorBlade.nBlade
@@ -92,4 +98,3 @@ rotorHub      = [rotorBlade.blade[0].chord, rotorBlade.blade[0].camber[0,0], rot
 statorHub     = [statorBlade.blade[0].chord, statorBlade.blade[0].camber[0,0], statorBlade.blade[0].camber[0,1], statorBlade.blade[0].camber[0,2], statorBlade.blade[0].camber[-1,0], statorBlade.blade[0].camber[-1,1], statorBlade.blade[0].camber[-1,2]]
 b1            = b0 
 bladeGenerator.SCADsaving(nRotorBlades, nStatorBlades, rotorHub, statorHub, rMean, b0, b1, rotorPath='../container/rotor.stl', statorPath='../container/stator.stl', geometryPath='geometry/')
-
