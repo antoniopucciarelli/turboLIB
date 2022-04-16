@@ -1156,4 +1156,55 @@ class blade:
             elif toSection == 'outlet':
                 for ii in range(self.nSection):
                     self.outletSection[ii] = blade.inletSection[ii]
+
+    def velocityTriangles(self, sectionNumber, save=False, position='velocityTriangle.pgf'):
+        '''
+        This function plots the velocity triangles of a blade section.
+            inputs:
+                sectionNumber   -- the section to analise
+        '''
+
+        # generating axes
+        fig, ax = plt.subplots(ncols=1, nrows=len(sectionNumber), figsize=(5,10))
         
+        for ii,secNum in enumerate(sectionNumber):
+            # setting up dimensions
+            VaIn = self.inletSection[secNum].Va
+            VtIn = self.inletSection[secNum].Vt
+            VaOut = self.outletSection[secNum].Va
+            VtOut = self.outletSection[secNum].Vt
+
+            # finding min and max velocities 
+            if VaIn < VaOut:
+                maxVelAx = VaOut
+            else:
+                maxVelAx = VaIn
+            if VtIn < VtOut:
+                minVelTan = VtIn
+                maxVelTan = VtOut
+            else:
+                minVelTan = VtOut 
+                maxVelTan = VtIn
+
+            # plotting quiver 
+            ax[ii].quiver(0, 0, VaIn, VtIn, color='red', angles='xy', scale_units='xy', scale=1)
+            ax[ii].quiver(0, 0, VaOut, VtOut, color='blue', angles='xy', scale_units='xy', scale=1)
+            deltaVx = VaOut - VaIn 
+            deltaVy = VtOut - VtIn
+            ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='black', angles='xy', scale_units='xy', scale=1)
+
+            ax[ii].set_xlim(-10, maxVelAx * 1.1)
+            ax[ii].set_ylim(-50 + minVelTan * 1.1, maxVelTan * 1.1 + 50)
+            ax[ii].set_title('section {0:d}\n'.format(secNum+1) + r'$U = {0:.2f} \frac{{m }}{{s }}$'.format(self.inletSection[secNum].U) + '\t' + r'$\Delta V_t = {0:.2f} \frac{{m }}{{s }}$'.format(VtOut - VtIn))
+
+            ax[ii].grid(linestyle='--')
+            ax[ii].set_xlabel(r'$V_a \ [\frac{{m }}{{s }}]$')   
+            ax[ii].set_ylabel(r'$V_t \ [\frac{{m }}{{s }}]$')
+
+        fig.suptitle('\n')
+        fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3)
+        plt.tight_layout()
+        plt.show()
+
+    def computeEfficiency():
+        pass  
