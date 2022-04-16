@@ -301,8 +301,6 @@ class blade:
         # vector allocation
         for ii in range(self.nSection):
             midpoint[ii] = self.inletSection[ii].midpoint 
-            betaIn[ii]   = self.inletSection[ii].beta
-            betaOut[ii]  = self.outletSection[ii].beta 
             gamma[ii]    = self.inletSection[ii].gamma
             rD[ii]       = self.inletSection[ii].rD
             chord[ii]    = self.inletSection[ii].chord 
@@ -319,9 +317,13 @@ class blade:
             if self.turboType == 'stator':
                 MrIn[ii]     = self.inletSection[ii].M
                 MrOut[ii]    = self.outletSection[ii].M
+                betaIn[ii]   = self.inletSection[ii].alpha
+                betaOut[ii]  = self.outletSection[ii].alpha 
             elif self.turboType == 'rotor':
                 MrIn[ii]     = self.inletSection[ii].Mr
                 MrOut[ii]    = self.outletSection[ii].Mr
+                betaIn[ii]   = self.inletSection[ii].beta
+                betaOut[ii]  = self.outletSection[ii].beta 
 
         # plotting ax0
         p30, = ax1[0].plot(betaIn,    midpoint, linestyle='-',  linewidth=2, marker='o', markersize=markersize, markeredgecolor=markeredgecolor, color='g', markeredgewidth=markeredgewidth, label=r'$\beta_{{1 }}$')
