@@ -1161,10 +1161,22 @@ class blade:
         '''
         This function plots the velocity triangles of a blade section.
             inputs:
-                sectionNumber   -- the section to analise
+                sectionNumber   -- the section vector to analise
+                                -- it must be a vector 
         '''
 
         # generating axes
+        if save:
+            # setting matplotlib LaTeX export 
+            import matplotlib
+            matplotlib.use("pgf")
+            matplotlib.rcParams.update({
+                "pgf.texsystem": "pdflatex",
+                'font.family': 'serif',
+                'text.usetex': True,
+                'pgf.rcfonts': False,
+            })
+
         fig, ax = plt.subplots(ncols=1, nrows=len(sectionNumber), figsize=(5,10))
         
         for ii,secNum in enumerate(sectionNumber):
@@ -1204,7 +1216,14 @@ class blade:
         fig.suptitle('\n')
         fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3)
         plt.tight_layout()
-        plt.show()
 
-    def computeEfficiency():
-        pass  
+        if save:
+            fig.savefig(position)
+        else:
+            plt.show()
+
+    def computeEfficiency(self):
+        '''
+        This function computes the efficiency of the blade. 
+        '''
+        
