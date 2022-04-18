@@ -67,13 +67,13 @@ with open(file_path, "w") as file:
         # blade dimensions allocation -> thermodynamics inlet/outlet
         rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
         # plotting velocity triangle
-        #rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
-        rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
+        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
         # computing efficiency
-        rotorBlade.computeBladeEfficiency(VaOut=rotorVaMeanOutlet)
+        rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
 
         # stator study 
         # stator object generation
@@ -84,7 +84,7 @@ with open(file_path, "w") as file:
         # blade dimension allocation -> kinetics outlet
         statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanOutlet, VaMean=statorVaMeanOutlet, omega=0, section='outlet')
         # plotting velocity triangle
-        #statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
         # blade dimensions allocation -> thermodynamics inlet/outlet
         statorBlade.allocateThermodynamics(Tt0=Tt1, Pt0=Pt1, eta=eta)
         # copying flow properties from rotor outlet to stator inlet 
@@ -94,7 +94,7 @@ with open(file_path, "w") as file:
         # computing the best shape 
         statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
         # computing efficiency
-        statorBlade.computeBladeEfficiency(VaOut=statorVaMeanOutlet)
+        statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
 
         # .scad file generation 
         nRotorBlades  = rotorBlade.nBlade
@@ -105,5 +105,5 @@ with open(file_path, "w") as file:
         bladeGenerator.SCADsaving(nRotorBlades, nStatorBlades, rotorHub, statorHub, rMean, b0, b1, rotorPath='../container/rotor.stl', statorPath='../container/stator.stl', geometryPath='geometry/')
 
 # plotting results
-rotorBlade.printMeridional()
-statorBlade.printMeridional()
+#rotorBlade.printMeridional()
+#statorBlade.printMeridional()

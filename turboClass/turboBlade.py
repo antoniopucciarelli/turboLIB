@@ -599,7 +599,7 @@ class blade:
         print('' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
 
         # entropy outer loop 
-        while relErrorS > tolS and counterS < nMaxS: 
+        while  counterS < nMaxS and relErrorS > tolS: 
             # updating entropy loop counter 
             counterS = counterS + 1
 
@@ -636,7 +636,7 @@ class blade:
                 ds2 = derivative(s2, t, dx=dx, n=1, order=3)
 
                 # y derivative computation
-                dydt = - 2 * (- y / (2*cP) * ds2 - cP * dTt1 - omega * drVt2 + omega * drVt1 + Tt1(t) * ds2 + omega / cP * rVt2(t) * ds2 - omega / cP * rVt1(t) * ds2 - Vt2(t)**2 / (2*cP) * ds2 + Vt2(t) / t * drVt2)
+                dydt = 2 * (y / (2 * cP) * ds2 - Tt1(t) * ds2 - omega * rVt2(t) / cP * ds2  + omega * rVt1(t) / cP * ds2 + Vt2(t)**2 / (2 * cP) * ds2 - Vt2(t) / t * drVt2 + cP * dTt1 + omega * drVt2 - omega * drVt1)
 
                 return dydt 
             
@@ -655,14 +655,13 @@ class blade:
             # computing losses for the new loop cycle (used if relError > tol) 
             # LOSSES COMPUTATION => target s2
             # computing pressure losses 
-            lossVec = np.zeros(self.nSection)
             lossVec = self.computeLosses(mFlux=mFlux, clearance=clearance)
 
+            # storing s2 old 
+            s2old = [self.outletSection[ii].s for ii in range(self.nSection)]
+
             # computing entropy generation through losses 
-            for ii in range(self.nSection):
-                # storing s2 old 
-                s2old = [self.outletSection[ii].s for ii in range(self.nSection)]
-                
+            for ii in range(self.nSection):    
                 # COMPUTING NEW s VALUES
                 # new outlet pressure computation -> using losses
                 if self.turboType == 'rotor':
@@ -673,11 +672,15 @@ class blade:
                     self.outletSection[ii].Pt = self.inletSection[ii].Pt - lossVec[ii] * (self.inletSection[ii].Pt - self.inletSection[ii].P)
                     # entropy computation
                     self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Pt / self.inletSection[ii].Pt) 
-                # storing new s2 
-                s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
+                
+            # storing new s2 
+            s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
 
             # loss error computation 
-            relErrorS = np.abs(np.sum(s2old) - np.sum(s2new)) / np.abs(sum(s2old))
+            relErrorS = 0.0
+            for ii in range(self.nSection):
+                if np.abs(s2old[ii] - s2new[ii]) > relErrorS:
+                    relErrorS = np.abs(s2old[ii] - s2new[ii])
         
             # getting info on s 
             s2Vec = [self.outletSection[ii].s for ii in range(self.nSection)]
@@ -735,6 +738,7 @@ class blade:
                     pass
             
             print('*' * lineLenght)
+            
             # reallocating the entropy for the next iteration 
             for ii in range(self.nSection):
                 self.outletSection[ii].s = s2new[ii]
@@ -779,13 +783,15 @@ class blade:
                     # mach number computation
                     self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
     
-                # reaction degree compuation 
+                # reaction degree computation 
                 if self.turboType == 'rotor':
                     self.inletSection[ii].rD = self.outletSection[ii].rD = np.abs((self.inletSection[ii].T - self.outletSection[ii].T) / (self.inletSection[ii].Tt - self.outletSection[ii].Tt))
             
         # plotting interpolated functions 
         if plot:
             self.printMeridional(save=save, position0=position0, position1=position1)
+
+        return lossVec
 
     def generateGeometry(self, pos='/data/airfoils/naca65.txt', STLname='cad', plot=False, printout=False):
         '''
@@ -1064,21 +1070,6 @@ class blade:
                 # tip loss computation
                 lossVec[ii] = lossVec[ii] + losses.tipLosses(r, clearance, VaInMid, VaOutMid, VtInMid, VtOutMid, rhoInMid, rhoOutMid, rhotMid, r1Mid, r2Mid, rHub, rTip, nBlade, chordMid, gammaMid, Nrow, mFlux, deltaPiso)
 
-            # SECONDARY LOSSES
-            # computing if the rotor blade is close to the tip
-            if np.abs(self.inletSection[-1].midpoint - self.inletSection[ii].midpoint) / self.inletBladeHeight < 0.2:
-                endWall = True 
-            elif np.abs(self.inletSection[ii].midpoint - self.inletSection[0].midpoint) / self.inletBladeHeight < 0.1:
-                endWall = True
-            else:
-                endWall = False 
-
-            # !!!!
-            endWall = False
-            # loss computation -> Howel additional loss model 
-            if endWall:
-                lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=solidity, pitch=self.inletSection[ii].pitch, bladeHeight=self.inletBladeHeight, endWall=endWall)
-                
         return lossVec
 
     def bladeGenerator(self, Pt0, Tt0, mFlux, clearance=3e-3, STLname='cad', relTolShape=1e-3, nMaxShape=100, plot=False):
@@ -1120,7 +1111,7 @@ class blade:
             print('-' * geometryDim + ' SHAPE ITERATION {0:d} '.format(counterShape) + '-' * geometryDim)
 
             # blade design through iterative process on radial equilibrium 
-            self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux, clearance=clearance, plot=plot)
+            lossVec = self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux, clearance=clearance, plot=plot)
 
             # rotor blade geometry allocation
             self.generateGeometry(pos='data/airfoils/naca65.txt', STLname=STLname, plot=False, printout=False)
@@ -1142,6 +1133,8 @@ class blade:
 
         # check flow chockin in flow passages
         self.checkChoking()
+
+        return lossVec
 
     def checkChoking(self, R=287.06, gamma=1.4):
         '''
@@ -1289,32 +1282,78 @@ class blade:
         else:
             plt.show()
 
-    def computeBladeEfficiency(self, VaOut):
+    def computeBladeEfficiency(self, Va, lossVec, R=287.06, gamma=1.4):
         '''
         This function computes the efficiency of the blade.
             inputs:
                 VaOut   -- isentropic axial outlet speed
         '''
 
-        # efficiency vector generation
+        # cP computation
+        cP = gamma / (gamma - 1) * R
+
+        # allocating vector 
         eta = np.zeros(self.nSection)
 
-        # computing efficiecny for each section and storing it
-        for ii in range(self.nSection):
+        # computing entropy generation through losses 
+        for ii in range(self.nSection):    
+            # new outlet pressure computation -> using losses
             if self.turboType == 'rotor':
-                # computing relative velocities
+                # data allocation 
+                Ptr1  = self.inletSection[ii].Ptr
+                Ttr1  = self.inletSection[ii].Ttr
+                Ttr2  = Ttr1
+                P1    = self.inletSection[ii].P
                 W1    = self.inletSection[ii].W
-                W2    = self.outletSection[ii].W
-                W2iso = np.sqrt(self.outletSection[ii].Wt**2 + VaOut**2)
-                # computing efficiency
-                eta[ii] = (W1**2 - W2iso**2) / (W1**2 - W2**2)
-            elif self.turboType == 'stator':
-                # computing absolute velocities
-                V2    = self.outletSection[ii].V
-                V2iso = np.sqrt(self.outletSection[ii].Vt**2 + VaOut**2)
-                # computing efficiency 
-                eta[ii] = V2**2 / V2iso**2
+                T1    = self.inletSection[ii].T
+                W2iso = np.sqrt(Va**2 + self.outletSection[ii].Wt**2)
 
+                # due to losses there is a reduction in the relative total pressure
+                Ptr2 = Ptr1 - lossVec[ii] * (Ptr1 - P1)
+
+                # computing T2iso 
+                T2iso = T1 + W1**2/(2*cP) - W2iso**2/(2*cP)
+
+                # computing exit pressure 
+                P2 = Ptr1 * (T2iso/Ttr1)**(gamma/(gamma - 1))
+
+                # computing T2 real 
+                T2 = Ttr2 * (P2/Ptr2)**((gamma - 1)/gamma)
+
+                # computing W2 
+                W2 = np.sqrt((T1 - T2)*2*cP + W1**2) 
+
+                # computing efficiency
+                eta[ii] = (W1**2 - W2iso**2) / (W1**2 - W2**2)            
+
+            elif self.turboType == 'stator':
+                # data allocation 
+                Pt1   = self.inletSection[ii].Pt
+                Tt1   = self.inletSection[ii].Tt
+                Tt2   = Tt1
+                P1    = self.inletSection[ii].P
+                V1    = np.sqrt(Va**2 + self.inletSection[ii].Vt**2)
+                T1    = self.inletSection[ii].T
+                V2iso = np.sqrt(Va**2 + self.outletSection[ii].Vt**2)
+
+                # due to losses there is a reduction in the relative total pressure
+                Pt2 = Pt1 - lossVec[ii] * (Pt1 - P1)
+
+                # computing T2iso 
+                T2iso = T1 + V1**2/(2*cP) - V2iso**2/(2*cP)
+
+                # computing exit pressure 
+                P2 = Pt1 * (T2iso/Tt1)**(gamma/(gamma - 1))
+
+                # computing T2 real 
+                T2 = Tt2 * (P2/Pt2)**((gamma - 1)/gamma)
+
+                # computing V2 
+                V2 = np.sqrt((T1 - T2)*2*cP + V1**2) 
+
+                # computing efficiency
+                eta[ii] = (V1**2 - V2iso**2) / (V1**2 - V2**2)   
+                
         # efficiency
         etaBlade = np.sum(eta) / self.nSection
 
@@ -1326,5 +1365,4 @@ class blade:
         print('-- minimum efficiency = {0:>4.3f} -- minimum efficiency position = {1:d}'.format(np.min(eta), np.argmin(eta)))
         print('-- maximum efficiency = {0:>4.3f} -- maximum efficiency position = {1:d}'.format(np.max(eta), np.argmax(eta)))
         print('*' * starDim)
-
-        return etaBlade, eta 
+            
