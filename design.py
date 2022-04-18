@@ -1,6 +1,7 @@
 # importing libraries
 from turboClass import turboBlade
 from turboCoeff import similarity
+from turboCoeff import coeff
 from geometry import bladeGenerator
 import contextlib
 
@@ -41,6 +42,7 @@ with open(file_path, "w") as file:
         adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True)
 
         # values allocation 
+        Leu                = work[0]
         eta                = adimVec[2]
         omega              = rotationVec[1]
         b0                 = bladeVec[0]
@@ -67,7 +69,7 @@ with open(file_path, "w") as file:
         # blade dimensions allocation -> thermodynamics inlet/outlet
         rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
         # plotting velocity triangle
-        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        #rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
@@ -84,7 +86,7 @@ with open(file_path, "w") as file:
         # blade dimension allocation -> kinetics outlet
         statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanOutlet, VaMean=statorVaMeanOutlet, omega=0, section='outlet')
         # plotting velocity triangle
-        statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        #statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
         # blade dimensions allocation -> thermodynamics inlet/outlet
         statorBlade.allocateThermodynamics(Tt0=Tt1, Pt0=Pt1, eta=eta)
         # copying flow properties from rotor outlet to stator inlet 
@@ -103,6 +105,9 @@ with open(file_path, "w") as file:
         statorHub     = [statorBlade.blade[0].chord, statorBlade.blade[0].camber[0,0], statorBlade.blade[0].camber[0,1], statorBlade.blade[0].camber[0,2], statorBlade.blade[0].camber[-1,0], statorBlade.blade[0].camber[-1,1], statorBlade.blade[0].camber[-1,2]]
         b1            = b0 
         bladeGenerator.SCADsaving(nRotorBlades, nStatorBlades, rotorHub, statorHub, rMean, b0, b1, rotorPath='../container/rotor.stl', statorPath='../container/stator.stl', geometryPath='geometry/')
+
+        # computing stage efficiency
+        coeff.stageEfficiency(rotorBlade, statorBlade)
 
 # plotting results
 #rotorBlade.printMeridional()

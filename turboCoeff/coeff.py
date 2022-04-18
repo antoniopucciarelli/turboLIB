@@ -116,6 +116,51 @@ def L_adR(Tin=0, Pin=0, Pout=0, n=0, beta=0, kind='', gamma=1.4, R=287.06):
 
 # EFFICIENCY COMPUTATION
 
+def stageEfficiency(rotorBlade, statorBlade, R=287.06, gamma=1.4):
+    '''
+    This function computes the efficiency of a compressor stage.
+        inputs:
+            rotorBlade  -- turboBlade object of rotor type
+            statroBlade -- turboBlade object of stator type 
+
+    '''
+
+    # compute stage efficiency 
+    etaStage = 0 
+
+    # cP computation 
+    cP = gamma / (gamma - 1) * R 
+
+    for ii in range(rotorBlade.nSection):
+        # allocating total pressure 
+        Pt1 = rotorBlade.inletSection[ii].Pt
+        Pt2 = statorBlade.outletSection[ii].Pt 
+        
+        # allocation total temperature 
+        Tt1 = rotorBlade.inletSection[ii].Tt
+        
+        # computing total temperature if the transformation Pt1 -> Pt2 were isentropic 
+        Tt2 = Tt1 * (Pt2/Pt1)**((gamma-1)/gamma)
+        
+        # computing work if the transformation were isentropic 
+        Lis = cP * (Tt2 - Tt1)
+        
+        # euler work computation 
+        Leu = cP * (rotorBlade.outletSection[ii].Tt - rotorBlade.inletSection[ii].Tt)
+        
+        # etaSection 
+        etaSection = Lis / Leu
+        
+        # etaStage 
+        etaStage = etaStage + etaSection
+
+    # computing total stage efficiency
+    etaStage = etaStage / rotorBlade.nSection
+
+    print('\n-- STAGE EFFICIENCY: etaStage = {0:>4.4f}'.format(etaStage))
+
+    return etaStage
+
 def ise_eff(hout_is=0, hin=0, hout=0, Tout_is=0, Tin=0, Tout=0, beta=0, kind='', gamma=0, n=0, L_is=0, L_adR=0):
     '''
     Isentropic efficiency computation
