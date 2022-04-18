@@ -193,3 +193,53 @@ def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, endWall=Fal
     loss = Cd * solidity * np.cos(np.deg2rad(beta1))**2 / np.cos(beta_)**3
 
     return loss
+
+def machLosses(beta1, beta2, theta, i, W1, M1, Ttr, omegaStar, solidity, Ksh=0.1, R=287.06, gamma=1.4):
+    '''
+    This funciton computes the mach losses at each blade section.
+        inputs:
+            beta1       -- inlet relative flow angle 
+            beta2       -- outlet relative flow angle 
+            theta       -- camber angle
+            i           -- design incidence angle 
+            W1          -- inlet relative flow speed
+            M1          -- inlet relative mach number 
+            Ttr         -- inlet relative total temperature 
+            omegaStart  -- profile loss without compressibility effect
+            solidity    -- section solidity
+            Ksh         -- shape factor
+    '''
+    
+    # computing Rc/Rs related to the limit angles 
+    Rc = - ( - 9 + (1 - (30 / beta1)**(0.48)) * theta / 8.2 )
+    Rs = 10.3 + (2.92 - beta1 / 15.6) * theta / 8.2 
+
+    # computing extremes incidence angles 
+    iC = i - Rc / (1 + 0.5 * M1**3)
+    iS = i + Rs / (1 + 0.5 * (Ksh * M1)**3)
+
+    # computing mean incidence angle
+    iM = iC + (iS - iC) * Rc / (Rc + Rs)
+
+    # critical mach number computation
+    WrStar = np.sqrt(2 * gamma / (gamma + 1) * R * Ttr)
+    WmaxW1 = 1.12 + 0.61 * np.cos(np.deg2rad(beta1))**2 / solidity * (np.tan(np.deg2rad(beta1)) - np.tan(np.deg2rad(beta2)))
+    Wmax   = WmaxW1 * W1
+    # critical mach number for the section
+    Mc     = M1 * WrStar / Wmax
+        
+    # computing minimum pressure loss due to compressibility effects 
+    # this relation is related to losses without bow shocks for the design conditions
+    if M1 < Mc:
+        omegaM = omegaStar * (1 + (iM - i)**2 / Rs**2)
+    else:
+        omegaM = omegaStar * (1 + (iM - i)**2 / Rs**2) + Ksh * ((M1 / Mc - 1) * WrStar / W1)**2
+
+    # computing final loss
+    if i < iM:
+        omega  = omegaM + omegaM * ((i - iM)/(iC - iM))**2
+    else:
+        omega  = omegaM + omegaM * ((i - iM)/(iS - iM))**2
+
+    return omega
+

@@ -49,4 +49,118 @@
 
 
 -- ROTOR STUDY -- # blades 30
-193.23261251653074
+------------------------------ SHAPE ITERATION 1 ------------------------------
+********************************** RADIAL EQ. **********************************
+
+****************************** OUTER ITERATION 1 ******************************
+****************************** INNER ITERATION 1 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   116.96 kg/s -- rel. error flux 0.1696
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 2 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   109.40 kg/s -- rel. error flux 0.0940
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 3 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   105.38 kg/s -- rel. error flux 0.0538
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 4 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   103.14 kg/s -- rel. error flux 0.0314
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 5 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   101.86 kg/s -- rel. error flux 0.0186
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 6 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   101.10 kg/s -- rel. error flux 0.0110
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+****************************** INNER ITERATION 7 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   100.66 kg/s -- rel. error flux 0.0066
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.15 J/kg -- s2_max       1.98 J/kg -- rel. error s    0.0285
+********************************************************************************
+
+****************************** OUTER ITERATION 2 ******************************
+****************************** INNER ITERATION 1 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   100.80 kg/s -- rel. error flux 0.0080
+-- lossMin     0.01      -- lossAve      0.01      -- lossMax         0.02
+-- s2_min      1.11 J/kg -- s2_max       2.26 J/kg -- rel. error s    0.0036
+********************************************************************************
+-- rel. error shape = 110.3712
+--------------------------------------------------------------------------------
+
+********************************* CHOKING CHECK *********************************
+-- ASME DEFINITION: rho1*W1*pitch*cos(beta1) < rho* W* o
+-- choked                  = False
+-- minimum throat position =    0           -- minimum throat diam =    3.918 cm
+-- minimum rho*            =    1.161 kg/m3 --  minimum W*         =  322.187 m/s
+**********************************************************************************
+*********************************** EFFICIENCY ***********************************
+-- etaBlade           = -0.944
+-- minimum efficiency = -1.015 -- minimum efficiency position = 0
+-- maximum efficiency = -0.919 -- maximum efficiency position = 49
+**********************************************************************************
+
+
+-- STATOR STUDY -- # blades 25
+------------------------------ SHAPE ITERATION 1 ------------------------------
+********************************** RADIAL EQ. **********************************
+
+****************************** OUTER ITERATION 1 ******************************
+****************************** INNER ITERATION 1 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   133.54 kg/s -- rel. error flux 0.3354
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 2 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   114.27 kg/s -- rel. error flux 0.1427
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 3 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   107.24 kg/s -- rel. error flux 0.0724
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 4 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   103.89 kg/s -- rel. error flux 0.0389
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 5 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   102.15 kg/s -- rel. error flux 0.0215
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 6 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   101.20 kg/s -- rel. error flux 0.0120
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+****************************** INNER ITERATION 7 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   100.68 kg/s -- rel. error flux 0.0068
+-- lossMin     0.02      -- lossAve      0.03      -- lossMax         0.03
+-- s2_min      2.51 J/kg -- s2_max       3.36 J/kg -- rel. error s    0.0245
+********************************************************************************
+
+****************************** OUTER ITERATION 2 ******************************
+****************************** INNER ITERATION 1 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   101.27 kg/s -- rel. error flux 0.0127
+-- lossMin     0.03      -- lossAve      0.03      -- lossMax         0.05
+-- s2_min      2.68 J/kg -- s2_max       4.11 J/kg -- rel. error s    0.0014
+****************************** INNER ITERATION 2 ******************************
+-- mFlux     100.00 kg/s -- iterFlux   100.72 kg/s -- rel. error flux 0.0072
+-- lossMin     0.03      -- lossAve      0.03      -- lossMax         0.05
+-- s2_min      2.68 J/kg -- s2_max       4.11 J/kg -- rel. error s    0.0014
+********************************************************************************
+-- rel. error shape = 42.8521
+--------------------------------------------------------------------------------
+
+********************************* CHOKING CHECK *********************************
+-- ASME DEFINITION: rho1*W1*pitch*cos(beta1) < rho* W* o
+-- choked                  = False
+-- minimum throat position =    0           -- minimum throat diam =    3.476 cm
+-- minimum rho*            =    1.523 kg/m3 --  minimum W*         =  322.187 m/s
+**********************************************************************************
+*********************************** EFFICIENCY ***********************************
+-- etaBlade           = -0.949
+-- minimum efficiency = -0.983 -- minimum efficiency position = 49
+-- maximum efficiency = -0.905 -- maximum efficiency position = 0
+**********************************************************************************

@@ -853,6 +853,15 @@ class blade:
                 alpha = - alpha 
                 gamma = - gamma 
 
+            # allocate main angles
+            try:
+                self.inletSection[ii].theta  = theta
+                self.inletSection[ii].i      = i
+                self.outletSection[ii].theta = theta 
+                self.outletSection[ii].i     = i 
+            except:
+                pass
+
             # computing Cl 
             Cl = ac * np.tan(np.deg2rad(theta)/4) / 0.0551515
 
@@ -975,7 +984,15 @@ class blade:
             # angles
             beta1 = self.inletSection[ii].beta
             beta2 = self.outletSection[ii].beta
-            
+            theta = np.abs(self.inletSection[ii].theta)
+            i     = np.abs(self.inletSection[ii].i)
+            if self.turboType == 'rotor':
+                M1    = self.inletSection[ii].Mr
+                Ttr   = self.inletSection[ii].Ttr
+            else:
+                M1    = self.inletSection[ii].M 
+                Ttr   = self.inletSection[ii].Tt
+
             # angles check -> the Leiblein model treats with positive angle for beta1 
             # this implies changing the angle sign with respect to beta1 sign angle  
             if beta1 < 0:
@@ -997,6 +1014,10 @@ class blade:
                 lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0)
             else:
                 lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, solidity=solidity, D=0)
+
+            # compressibility effects
+            if theta != 0 and i != 0:
+                lossVec[ii] = losses.machLosses(beta1, beta2, theta, i, W1, M1, Ttr, lossVec[ii], solidity, Ksh=0.1, R=287.06, gamma=1.4)
 
             # TIP LOSSES & SECONDARY LOSSES
             # computing if the rotor blade is close to the tip
@@ -1222,8 +1243,42 @@ class blade:
         else:
             plt.show()
 
-    def computeEfficiency(self):
+    def computeSectionEfficiency(self, ii, R=287.06, gamma=1.4):
         '''
-        This function computes the efficiency of the blade. 
+        This function computes the efficiency of the section.
+            inputs:
+                ii  -- section number to be studied
         '''
-        
+
+        # constant pressure specific heat ratio
+        cP = gamma / (gamma - 1) * R
+
+        eta = (1 - self.inletSection[ii].T/self.outletSection[ii].T) / (1 - (self.outletSection[ii].P / self.inletSection[ii].P)**((gamma - 1) / gamma)) 
+
+        return eta 
+
+    def computBladeEfficiency(self):
+        '''
+        This function computes the efficiency of the blade.
+        '''
+
+        # efficiency vector generation
+        eta = np.zeros(self.nSection)
+
+        # computing efficiecny for each section and storing it
+        for ii in range(self.nSection):
+            eta[ii] = self.computeSectionEfficiency(ii)
+
+        # efficiency
+        etaBlade = np.sum(eta) / self.nSection
+
+        # printing results
+        starDim = 82
+        efficiencyDim = np.int16(np.floor(starDim - len(' EFFICIENCY '))/2)
+        print('*' * efficiencyDim + ' EFFICIENCY ' + '*' * efficiencyDim)
+        print('-- etaBlade           = {0:>4.3f}'.format(etaBlade))
+        print('-- minimum efficiency = {0:>4.3f} -- minimum efficiency position = {1:d}'.format(np.min(eta), np.argmin(eta)))
+        print('-- maximum efficiency = {0:>4.3f} -- maximum efficiency position = {1:d}'.format(np.max(eta), np.argmax(eta)))
+        print('*' * starDim)
+
+        return etaBlade, eta 

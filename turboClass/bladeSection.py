@@ -38,6 +38,8 @@ class section:
         self.Cl       = 0.0
         self.s        = 0.0
         self.rD       = 0.0
+        self.theta    = 0
+        self.i        = 0
 
     def allocateKinetics(self, Va, Vt, U):
         '''
