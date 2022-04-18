@@ -1,3 +1,4 @@
 # files to ignore 
 *.stl
 __pycache__
+*.txt

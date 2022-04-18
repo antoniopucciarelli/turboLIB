@@ -6,6 +6,7 @@
 #  
 
 # importing libraries 
+from turtle import clear
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -243,3 +244,58 @@ def machLosses(beta1, beta2, theta, i, W1, M1, Ttr, omegaStar, solidity, Ksh=0.1
 
     return omega
 
+def tipLosses(r, clearance, VaInMid, VaOutMid, VtInMid, VtOutMid, rhoInMid, rhoOutMid, rhotMid, r1Mid, r2Mid, rHub, rTip, nBlade, chordMid, gammaMid, Nrow, mFlux, deltaPiso):
+    '''
+    This function computes the rotor clearance losses. The pressure loss distribution is linear from the hub (pressure loss == 0) to the rotor tip (max pressure loss).
+        inputs:
+            r           -- position of study
+            clearance   -- blade clearance 
+            VaInMid     -- reference section inlet absolute axial velocity
+            VaOutMid    -- reference section outlet absolute axial velocity 
+            VtInMid     -- reference section inlet absolute tangential velocity
+            VtOutMid    -- reference section outlet absolute tangential velocity 
+            rhoInMid    -- reference section inlet density
+            rhoOutMid   -- reference section outlet density 
+            rhotMid     -- reference section total density 
+            r1Mid       -- reference section inlet radius 
+            r2Mid       -- reference section outleet radius 
+            rHub        -- rotor hub radius 
+            rTip        -- rotor tip radius
+            nBlade      -- # of rotor blades
+            chordMid    -- reference section chord 
+            gammaMid    -- reference section stagger angle
+            Nrow        -- rotor blade # from 1 to # of turbomachine rotors + stators
+            mFlux       -- mass flux 
+    '''
+
+    # clearance effect 
+    tau = np.pi * clearance * ((r1Mid * rhoInMid * VaInMid) + (r2Mid * rhoOutMid * VaOutMid)) * (r2Mid * VtOutMid - r1Mid * VtInMid)
+
+    # average pressure difference
+    deltaP = tau / (nBlade * rTip * clearance * chordMid * np.cos(np.deg2rad(gammaMid)))
+
+    # Uc is used for the reference mass flux 
+    Uc = 0.816 * np.sqrt(2 * deltaP / rhotMid) / Nrow**0.2
+
+    # reference mass flux computation
+    mFluxC = rhotMid * Uc * nBlade * clearance * chordMid * np.cos(np.deg2rad(gammaMid))
+
+    # total pressure loss alonge the blade due to tip clearance effects
+    deltaPtot = deltaP * mFluxC / mFlux
+
+    # following ASME directives -> the pressure loss distribution is linear and starts from 0 at hub 
+    # the total pressure loss distribution is such that the integral of pressure loss is equal omegaTip 
+    bladeHeight = rTip - rHub
+
+    # computing deltaP at tip 
+    # conserving pressure loss: deltaPtot = deltaPtip * bladeHeight / 2 
+    deltaPtip = deltaPtot * 2 / bladeHeight
+    
+    # computing pressure loss at tip 
+    lossTip = deltaPtip / deltaPiso
+
+    # computing losses at section r
+    # lossTip : bladeHeight = lossR : (r - rHub)
+    lossR = lossTip * (r - rHub) / bladeHeight
+
+    return lossR

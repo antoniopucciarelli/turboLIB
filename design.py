@@ -29,8 +29,9 @@ lam = (1 - rD - Vt0Umean) * 4
 psiTarget = lam / 2
 
 # declaring blades
-nRotorBlades = 30
-nStatorBlades = 25
+nRotorBlades  = 40
+nStatorBlades = 40
+nSection      = 50
 
 # output file generation
 file_path = 'compressor_' + str(rD) + '_' + str(rMean) + '_' + str(nRotorBlades) + '_' + str(nStatorBlades) + '.txt'
@@ -40,7 +41,6 @@ with open(file_path, "w") as file:
         adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True)
 
         # values allocation 
-        nSection           = 50
         eta                = adimVec[2]
         omega              = rotationVec[1]
         b0                 = bladeVec[0]
@@ -71,9 +71,9 @@ with open(file_path, "w") as file:
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
-        rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, STLname='rotor', plot=False, nMaxShape=1)
+        rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
         # computing efficiency
-        rotorBlade.computBladeEfficiency()
+        rotorBlade.computeBladeEfficiency(VaOut=rotorVaMeanOutlet)
 
         # stator study 
         # stator object generation
@@ -92,9 +92,9 @@ with open(file_path, "w") as file:
         # stator blade geometry allocation
         statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
         # computing the best shape 
-        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, STLname='stator', plot=False, nMaxShape=1)
+        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
         # computing efficiency
-        statorBlade.computBladeEfficiency()
+        statorBlade.computeBladeEfficiency(VaOut=statorVaMeanOutlet)
 
         # .scad file generation 
         nRotorBlades  = rotorBlade.nBlade
@@ -104,6 +104,6 @@ with open(file_path, "w") as file:
         b1            = b0 
         bladeGenerator.SCADsaving(nRotorBlades, nStatorBlades, rotorHub, statorHub, rMean, b0, b1, rotorPath='../container/rotor.stl', statorPath='../container/stator.stl', geometryPath='geometry/')
 
-        # plotting results
-        rotorBlade.printMeridional()
-        statorBlade.printMeridional()
+# plotting results
+rotorBlade.printMeridional()
+statorBlade.printMeridional()
