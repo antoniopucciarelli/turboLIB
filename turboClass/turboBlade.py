@@ -1013,12 +1013,21 @@ class blade:
             beta2 = self.outletSection[ii].beta
             theta = np.abs(self.inletSection[ii].theta)
             i     = np.abs(self.inletSection[ii].i)
+            tbc   = self.inletSection[ii].tbc
+            c     = self.inletSection[ii].chord
+            gamma = self.inletSection[ii].gamma
+            pitch = self.inletSection[ii].pitch 
+            
             if self.turboType == 'rotor':
                 M1    = self.inletSection[ii].Mr
                 Ttr   = self.inletSection[ii].Ttr
+                Ptr   = self.inletSection[ii].Ptr
+                P     = self.inletSection[ii].P
             else:
                 M1    = self.inletSection[ii].M 
                 Ttr   = self.inletSection[ii].Tt
+                Ptr   = self.inletSection[ii].Pt
+                P     = self.inletSection[ii].P
 
             # angles check -> the Leiblein model treats with positive angle for beta1 
             # this implies changing the angle sign with respect to beta1 sign angle  
@@ -1044,7 +1053,11 @@ class blade:
 
             # compressibility effects
             if theta != 0 and i != 0:
-                lossVec[ii] = losses.machLosses(beta1, beta2, theta, i, W1, M1, Ttr, lossVec[ii], solidity, Ksh=0.1, R=287.06, gamma=1.4)
+                lossVec[ii] = losses.machLosses(beta1, beta2, theta, i, W1, M1, Ttr, lossVec[ii], solidity)
+
+            # shock losses computation 
+            if M1 >= 1: 
+                lossVec[ii] = lossVec[ii] + losses.shockLosses(theta, tbc, c, gamma, pitch, W1, M1, Ptr, P)
 
             # TIP LOSSES 
             # computing tip losses 

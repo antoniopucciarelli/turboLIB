@@ -74,6 +74,15 @@ with open(file_path, "w") as file:
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
         lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
+        print(rotorBlade.inletSection[-1].theta)
+        print(rotorBlade.inletSection[-1].tbc)
+        print(rotorBlade.inletSection[-1].gamma)
+        print(rotorBlade.inletSection[-1].pitch)
+        print(rotorBlade.inletSection[-1].W)
+        print(rotorBlade.inletSection[-1].M)
+        print(rotorBlade.inletSection[-1].Ptr)
+        print(rotorBlade.inletSection[-1].P)
+#        theta, tbc, c, gammaStagger, pitch, W1, M1, Ptr1, P1
         # computing efficiency
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
         # rotor blade printout

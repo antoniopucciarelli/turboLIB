@@ -7,7 +7,8 @@
 
 # importing libraries 
 import numpy as np 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+import scipy.integrate as integrate
 
 def Dfactor(W1, W2, beta1, beta2, solidity):
     '''
@@ -298,3 +299,61 @@ def tipLosses(r, clearance, VaInMid, VaOutMid, VtInMid, VtOutMid, rhoInMid, rhoO
     lossR = lossTip * (r - rHub) / bladeHeight
 
     return lossR
+
+def shockLosses(theta, tbc, c, gammaStagger, pitch, W1, M1, Ptr1, P1, gamma=1.4):
+    '''
+    This funciton computes the shock losses at each section due to the presence of a supersonic inlet flow.
+        inputs:
+            theta   -- blade section geoemtric angle 
+            tbc     -- tb / c 
+            c       -- section chord 
+
+    '''
+
+    # thetaU computation
+    thetau = np.arctan(np.tan(np.deg2rad(theta/4)) + tbc) * 4
+
+    # Ru computation 
+    Ru = np.sin(thetau / 2) * 2 / c
+
+    # bu computation 
+    bu = np.tan(thetau/4) * c / 2 
+
+    # computing psi 
+    psi = 90 - np.rad2deg(thetau)/2 - gammaStagger
+
+    # computing phi 
+    phi = np.arctan(pitch * np.cos(np.deg2rad(psi)) / (pitch * np.sin(np.deg2rad(psi)) + Ru))
+
+    # computing sound speed 
+    a1 = W1 / M1
+
+    # Prandtl-Meyer expansion 
+    PRfunc = lambda W: np.sqrt(W**2/a1**2 - 1) / W
+
+    # generating W vector and computing Ws that will be used later on for the normal shock mach # 
+    Wmax = 2.0 * a1
+    Wvec = np.linspace(W1, Wmax, 100)
+
+    # allocating storing vector 
+    integralVec = np.zeros(len(Wvec))
+    
+    # computing integral and errors
+    for ii in range(len(Wvec)):
+        #print(integrate.quad(PRfunc, W1, Wvec[ii])[0])
+        integralVec[ii] = np.abs(integrate.quad(PRfunc, W1, Wvec[ii])[0] - phi)
+
+    # getting Ws for the computation of Min 
+    WsPos = np.argmin(integralVec)
+    Ws = Wvec[WsPos]
+
+    # computing normal mach number that will be used for the computation of the losses 
+    Min = np.sqrt(W1/a1 * Ws/a1)
+
+    # total pressure after the normal shock wave 
+    Ptr2 = Ptr1 * ((gamma+1)*Min**2/((gamma-1)*Min**2+2))**(gamma/(gamma-1)) * ((gamma+1)/((2*gamma*Min**2)-(gamma-1)))**(1/(gamma-1))
+
+    # computing loss 
+    loss = (Ptr1 - Ptr2) / (Ptr1 - P1)
+
+    return loss
