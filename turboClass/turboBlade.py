@@ -506,7 +506,7 @@ class blade:
             self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, rhotr=rhot0r, s=self.inletSection[ii].s)
             self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, rhotr=rhot1r, s=self.outletSection[ii].s)
 
-    def radialEquilibrium(self, Pt0, Tt0, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
+    def radialEquilibrium(self, Pt0, Tt0, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=0.5, tolFlux=1e-2, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -713,6 +713,46 @@ class blade:
                 for ii in range(self.nSection):
                     self.outletSection[ii].allocateKinetics(Va2[ii], self.outletSection[ii].Vt, self.outletSection[ii].U)
 
+                # computing all the new thermodynamic quantities after the radial equilibrium is satisfied
+                # computing change in total pressure due to losses 
+                for ii in range(self.nSection): 
+                    # static temperature computation 
+                    self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
+            
+                    # rotor and stator work with different total pressures
+                    # rotor -> total relative pressure
+                    # stator -> total pressure 
+                    if self.turboType == 'rotor':
+                        # total relative temperature computation
+                        self.outletSection[ii].Ttr = self.outletSection[ii].Tt - (self.outletSection[ii].V**2 - self.outletSection[ii].W**2) / (2 * cP)
+                        # total pressure computation 
+                        self.outletSection[ii].Pt = self.outletSection[ii].Ptr * (self.outletSection[ii].Tt/self.outletSection[ii].Ttr)**(gamma/(gamma-1))
+                        # static pressure computation
+                        self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
+                        # static density computation
+                        self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
+                        # total density computation
+                        self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
+                        # total relative density computation 
+                        self.outletSection[ii].rhotr = self.outletSection[ii].Ptr / (R * self.outletSection[ii].Ttr)
+                        # sound speed computation 
+                        self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
+                        # mach number computation
+                        self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
+                        # relative mach number computation
+                        self.outletSection[ii].Mr = self.outletSection[ii].W / self.outletSection[ii].a
+                    elif self.turboType == 'stator':
+                        # static pressure computation
+                        self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
+                        # static density computation
+                        self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
+                        # total density computation
+                        self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
+                        # sound speed computation 
+                        self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
+                        # mach number computation
+                        self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
+
                 # check mass flux 
                 newFlux = 0
                 for ii in range(self.nSection):
@@ -742,46 +782,6 @@ class blade:
             # reallocating the entropy for the next iteration 
             for ii in range(self.nSection):
                 self.outletSection[ii].s = s2new[ii]
- 
-            # computing all the new thermodynamic quantities after the radial equilibrium is satisfied
-            # computing change in total pressure due to losses 
-            for ii in range(self.nSection): 
-                # static temperature computation 
-                self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
-        
-                # rotor and stator work with different total pressures
-                # rotor -> total relative pressure
-                # stator -> total pressure 
-                if self.turboType == 'rotor':
-                    # total relative temperature computation
-                    self.outletSection[ii].Ttr = self.outletSection[ii].Tt - (self.outletSection[ii].V**2 - self.outletSection[ii].W**2) / (2 * cP)
-                    # total pressure computation 
-                    self.outletSection[ii].Pt = self.outletSection[ii].Ptr * (self.outletSection[ii].Tt/self.outletSection[ii].Ttr)**(gamma/(gamma-1))
-                    # static pressure computation
-                    self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
-                    # static density computation
-                    self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
-                    # total density computation
-                    self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
-                    # total relative density computation 
-                    self.outletSection[ii].rhotr = self.outletSection[ii].Ptr / (R * self.outletSection[ii].Ttr)
-                    # sound speed computation 
-                    self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
-                    # mach number computation
-                    self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
-                    # relative mach number computation
-                    self.outletSection[ii].Mr = self.outletSection[ii].W / self.outletSection[ii].a
-                elif self.turboType == 'stator':
-                    # static pressure computation
-                    self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
-                    # static density computation
-                    self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
-                    # total density computation
-                    self.outletSection[ii].rhot = self.outletSection[ii].Pt / (R * self.outletSection[ii].Tt)
-                    # sound speed computation 
-                    self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
-                    # mach number computation
-                    self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
     
                 # reaction degree computation 
                 if self.turboType == 'rotor':
@@ -986,7 +986,7 @@ class blade:
             plt.show()
 
         # STL file generation 
-        bladeGenerator.STLsaving(self.blade, STLname=STLname, kind=self.turboType)
+        bladeGenerator.STLsaving(self.blade, STLname=STLname)
 
     def computeLosses(self, mFlux, clearance=3e-3, variableSpeed=False):
         '''

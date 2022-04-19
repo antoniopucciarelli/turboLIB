@@ -18,9 +18,9 @@ Tt0 = 300       # inlet total temperature  [K]
 
 # stage hypothesis
 # reaction degree
-rD = 0.5
+rD = 0.56
 # stage mean radius -> radius @ inlet blade midspan
-rMean = 0.39
+rMean = 0.32
 # rotor inlet tangential velocity
 Vt0Umean = 0
 
@@ -73,10 +73,12 @@ with open(file_path, "w") as file:
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
-        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=3)
+        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
         # computing efficiency
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
-
+        # rotor blade printout
+        rotorBlade.printMeridional()
+        
         # stator study 
         # stator object generation
         print('\n\n-- STATOR STUDY -- # blades {0:d}'.format(nStatorBlades))
@@ -94,9 +96,11 @@ with open(file_path, "w") as file:
         # stator blade geometry allocation
         statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
         # computing the best shape 
-        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=3)
+        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
         # computing efficiency
         statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
+        # stator printout
+        statorBlade.printMeridional()
 
         # .scad file generation 
         nRotorBlades  = rotorBlade.nBlade
@@ -108,7 +112,3 @@ with open(file_path, "w") as file:
 
         # computing stage efficiency
         coeff.stageEfficiency(rotorBlade, statorBlade)
-
-# plotting results
-rotorBlade.printMeridional()
-statorBlade.printMeridional()

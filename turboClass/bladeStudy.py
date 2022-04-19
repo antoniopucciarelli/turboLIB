@@ -438,7 +438,7 @@ def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
     # bounds definition 
     epsilon = beta1 - beta2
     solidityMin = 0.2
-    solidityMax = 3
+    solidityMax = 2.2
     if tbc != 0.1:
         tbcMin = 0.1
         tbcMax = tbc * 1.5
@@ -451,6 +451,7 @@ def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
         x0 = (epsilon*1.05, solidityMin*1.05, tbc*1.05) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
     else:
         x0 = (epsilon*1.05, solidityMin*1.05)
+
     # minimizing system 
     res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
 
