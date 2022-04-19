@@ -30,8 +30,8 @@ lam = (1 - rD - Vt0Umean) * 4
 psiTarget = lam / 2
 
 # declaring blades
-nRotorBlades  = 40
-nStatorBlades = 40
+nRotorBlades  = 28
+nStatorBlades = 28
 nSection      = 50
 
 # output file generation
@@ -73,7 +73,7 @@ with open(file_path, "w") as file:
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
-        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
+        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=3)
         # computing efficiency
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
 
@@ -94,7 +94,7 @@ with open(file_path, "w") as file:
         # stator blade geometry allocation
         statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
         # computing the best shape 
-        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
+        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=3)
         # computing efficiency
         statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
 
