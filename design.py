@@ -110,5 +110,5 @@ with open(file_path, "w") as file:
         coeff.stageEfficiency(rotorBlade, statorBlade)
 
 # plotting results
-#rotorBlade.printMeridional()
-#statorBlade.printMeridional()
+rotorBlade.printMeridional()
+statorBlade.printMeridional()

@@ -242,12 +242,14 @@ def writeFacet(file, versor, vec1, vec2, vec3):
     file.write('\t\tendloop\n')
     file.write('\tendfacet\n')
 
-def STLsaving(airfoils, STLname='cad', containerPath='container/'):
+def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor', checkVersor=[False,False]):
     '''
     This function saves the blade in .stl format.
         inputs: 
             airfoils    -- tuple of airfoils objects
             STLname     -- .stl file name
+            kind        -- rotor/stator => allows computing the correct direction of the versors
+            checkVersor -- boolean array value for the plotting/checking of versor
         !!! it is assumed that each airfoil has the same number of description points !!!
         !!! it is assumed that the each airfoil section element is in sequence with respect the hub !!!
     '''
@@ -266,12 +268,12 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
             vec1 = np.array(airfoils[jj].upper[ii,:])
             vec2 = np.array(airfoils[jj].upper[ii+1,:])
             vec3 = np.array(airfoils[jj+1].upper[ii,:])
-            versor = np.cross(vec3 - vec1, vec2 - vec1)
-            # direction check -- for the upper surface the versor direction is towards y > 0 
-            if versor[1] < 0: 
-                versor = - versor 
+            versor = - np.cross(vec3 - vec1, vec2 - vec1)
             # vector normalization
             versor = versor / np.linalg.norm(versor)
+            # versor analysis
+            if kind == 'stator':
+                versor = - versor
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
 
@@ -279,14 +281,19 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
             vec1 = np.array(airfoils[jj+1].upper[ii,:])
             vec2 = np.array(airfoils[jj+1].upper[ii+1,:])
             vec3 = np.array(airfoils[jj].upper[ii+1,:])
-            versor = - np.cross(vec3 - vec1, vec2 - vec1)
-            # direction check -- for the upper surface the versor direction is towards y > 0 
-            if versor[1] < 0: 
-                versor = - versor 
+            versor = np.cross(vec3 - vec1, vec2 - vec1)
             # vector normalization 
             versor = versor / np.linalg.norm(versor)
+            # versor analysis
+            if kind == 'stator':
+                versor = - versor
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
+
+        if checkVersor[0]:
+            plt.plot(airfoils[0].lower[:,0], airfoils[0].lower[:,1], 'r')
+            plt.plot(airfoils[0].upper[:,0], airfoils[0].upper[:,1], 'b')
+            plt.plot([0,versor[0]], [0,versor[1]], 'b')
 
         # lower surface stl face generation 
         for ii in range(airfoils[jj].lower.shape[0]-1):
@@ -296,10 +303,13 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
             vec3 = np.array(airfoils[jj+1].lower[ii,:])
             versor = np.cross(vec3 - vec1, vec2 - vec1)
             # direction check -- for the upper surface the versor direction is towards y < 0 
-            if versor[1] > 0: 
+            if versor[1] < 0: 
                 versor = - versor 
             # vectorn normalization
             versor = versor / np.linalg.norm(versor)
+            # versor analysis
+            if kind == 'stator':
+                versor = - versor
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
 
@@ -309,12 +319,21 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/'):
             vec3 = np.array(airfoils[jj].lower[ii+1,:])
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
             # direction check -- for the upper surface the versor direction is towards y < 0 
-            if versor[1] > 0: 
+            if versor[1] < 0: 
                 versor = - versor 
             # vector normalization
             versor = versor / np.linalg.norm(versor)
+            # versor analysis
+            if kind == 'stator':
+                versor = - versor
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
+        
+        if checkVersor[1]:
+            plt.plot(airfoils[0].lower[:,0], airfoils[0].lower[:,1], 'r')
+            plt.plot(airfoils[0].upper[:,0], airfoils[0].upper[:,1], 'b')
+            plt.plot([0,versor[0]], [0,versor[1]], 'r')
+            plt.show()
     
     # end blade 
     file.write('endsolid bladeSurface\n')
