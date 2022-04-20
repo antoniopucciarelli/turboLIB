@@ -1,5 +1,4 @@
 # files to ignore 
-*.stl
 __pycache__
 *.txt
 .ipynb_checkpoints
