@@ -1,4 +1,5 @@
 # importing libraries 
+from numpy import False_
 from geometry import bladeGenerator
 from turboCoeff import similarity
 from turboClass import bladeStudy
@@ -22,7 +23,7 @@ cV    = cP - R                  # specific heat ratio @ V cost  [J/kg K]
 
 # stage hypothesis
 # reaction degree
-rD = 0.7
+rD = 0.55
 # stage mean radius -> radius @ inlet blade midspan
 rMean = 0.325
 # rotor inlet tangential velocity
@@ -34,11 +35,13 @@ lam = (1 - rD - Vt0Umean) * 4
 psiTarget = lam / 2
 
 # plotting charts 
-phi, psi = similarity.stagePerf(psi=psiTarget, rD=rD, plot=False, perc=0.98)
-eta = similarity.efficiency(phi=phi, rD=rD, plot=False)
+phi, psi = similarity.stagePerf(psi=psiTarget, rD=rD, perc=0.98, save=True, position='latex/figures/stagePerf.png')
+eta = similarity.efficiency(phi=phi, rD=rD, plot=False, save=True, position='latex/figures/efficiency.png')
 #similarity.stageStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.75, Vt0UmeanMin=0, Vt0UmeanMax=0.25, R=287.06, gamma=1.4)
-#similarity.reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf')
+#similarity.reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0UmeanMin=0, Vt0UmeanMax=0.1, save=True, position0='latex/figures/reactionStudy0.png', position1='latex/figures/reactionStudy1.png')
 #bladeStudy.optimalPlot(beta1, beta2, error=1e-4)
+
+exit()
 
 # generation of mean line properties to be used for the blade assembly 
 adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, _, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, R=R, gamma=gamma)

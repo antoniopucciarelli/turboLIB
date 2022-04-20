@@ -39,7 +39,7 @@ file_path = 'compressor_' + str(rD) + '_' + str(rMean) + '_' + str(nRotorBlades)
 with open(file_path, "w") as file:
     with contextlib.redirect_stdout(file):
         # generation of mean line properties to be used for the blade assembly 
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True)
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, _, _, _, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True, save=True)
 
         # values allocation 
         Leu                = work[0]
@@ -69,7 +69,7 @@ with open(file_path, "w") as file:
         # blade dimensions allocation -> thermodynamics inlet/outlet
         rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
         # plotting velocity triangle
-        #rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], )
+        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=True, position='latex/figures/rotorVelocityTriangle.png')
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
@@ -87,7 +87,7 @@ with open(file_path, "w") as file:
         # blade dimension allocation -> kinetics outlet
         statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanOutlet, VaMean=statorVaMeanOutlet, omega=0, section='outlet')
         # plotting velocity triangle
-        #statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=True, position='latex/figures/statorVelocityTriangle.png')
         # blade dimensions allocation -> thermodynamics inlet/outlet
         statorBlade.allocateThermodynamics(Tt0=Tt1, Pt0=Pt1, eta=eta)
         # copying flow properties from rotor outlet to stator inlet 
@@ -111,5 +111,5 @@ with open(file_path, "w") as file:
         coeff.stageEfficiency(rotorBlade, statorBlade)
 
 # rotor and stator printout
-#rotorBlade.printMeridional()
-#statorBlade.printMeridional()
+rotorBlade.printMeridional(save=True, position0='rotorEntropyFlow.pgf', position1='rotorBetaThermo.pgf')
+statorBlade.printMeridional(save=True, position0='statorEntropyFlow.pgf', position1='statorBetaThermo.pgf')

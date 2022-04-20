@@ -1240,15 +1240,7 @@ class blade:
 
         # generating axes
         if save:
-            # setting matplotlib LaTeX export 
-            import matplotlib
-            matplotlib.use("pgf")
-            matplotlib.rcParams.update({
-                "pgf.texsystem": "pdflatex",
-                'font.family': 'serif',
-                'text.usetex': True,
-                'pgf.rcfonts': False,
-            })
+            plt.rcParams['text.usetex'] = True
 
         fig, ax = plt.subplots(ncols=1, nrows=len(sectionNumber), figsize=(5,10))
         
@@ -1307,7 +1299,7 @@ class blade:
         if self.turboType == 'rotor':
             fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$W_{in }$', r'$W_{out }$'], loc='upper center', ncol=2, borderaxespad=0)
         else:
-            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3, borderaxespad=0)
+            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$'], loc='upper center', ncol=3, borderaxespad=0)
         plt.tight_layout()
 
         if save:

@@ -1,0 +1,25 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+************************************************************************************
+		THE FOLLOWING PAREMETERS ARE REFERRED TO ISENTROPIC
+		  TRANSFORMATION REFERRED TO A WORK L = Lis / eta
+************************************************************************************
+***************************** ADIMENSIONAL PARAMETERS  *****************************
+\PYGZhy{}\PYGZhy{} rD     =     0.55        \PYGZhy{}\PYGZhy{} psi    =     0.90        \PYGZhy{}\PYGZhy{} phi       =  0.98
+\PYGZhy{}\PYGZhy{} eta    =     0.9050      \PYGZhy{}\PYGZhy{} lamdba =     1.80        \PYGZhy{}\PYGZhy{} Vt0/Umean =  0.00
+*************************************** WORK ***************************************
+\PYGZhy{}\PYGZhy{} Lis    = 33758.53 J/kg   \PYGZhy{}\PYGZhy{} L      = 37302.79 J/kg   \PYGZhy{}\PYGZhy{} eta    =     0.9050
+************************************* ROTATION *************************************
+\PYGZhy{}\PYGZhy{} Umean  =   203.59 m/s    \PYGZhy{}\PYGZhy{} omega  =   626.42 rad/s  \PYGZhy{}\PYGZhy{} n      =  5981.88 rpm
+************************************************************************************
+
+*********************************** DEFINITIONS  ***********************************
+\PYGZhy{}\PYGZhy{} 0 =\PYGZgt{} rotor inlet         \PYGZhy{}\PYGZhy{} 1 =\PYGZgt{} rotor outlet        \PYGZhy{}\PYGZhy{} 2 =\PYGZgt{} stator outlet
+******************************** TOTAL TEMPERATURE  ********************************
+\PYGZhy{}\PYGZhy{} Tt0    =   300.00 K      \PYGZhy{}\PYGZhy{} Tt1    =   337.13 K      \PYGZhy{}\PYGZhy{} Tt2    =   337.13 K
+******************************* KINETICS \PYGZhy{}\PYGZhy{} ABSOLUTE *******************************
+\PYGZhy{}\PYGZhy{} 0                        \PYGZhy{}\PYGZhy{} 1                        \PYGZhy{}\PYGZhy{} 2
+\PYGZhy{}\PYGZhy{} alpha0 =     0.00 deg    \PYGZhy{}\PYGZhy{} alpha1 =    42.51 deg    \PYGZhy{}\PYGZhy{} alpha2 =     0.00 deg
+\PYGZhy{}\PYGZhy{} Va0    =   199.92 m/s    \PYGZhy{}\PYGZhy{} Va1    =   199.92 m/s    \PYGZhy{}\PYGZhy{} Va2    =   199.92 m/s
+\PYGZhy{}\PYGZhy{} Vt0    =     0.00 m/s    \PYGZhy{}\PYGZhy{} Vt1    =   183.23 m/s    \PYGZhy{}\PYGZhy{} Vt2    =     0.00 m/s
+\PYGZhy{}\PYGZhy{} V0     =   199.92 m/s    \PYGZhy{}\PYGZhy{} V1     =   271.18 m/s    \PYGZhy{}\PYGZhy{} V2     =   199.92 m/s
+\end{Verbatim}

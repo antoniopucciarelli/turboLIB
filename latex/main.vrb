@@ -1,0 +1,8 @@
+\begin{align}
+		U_{mean} & = \frac{L_{eu}}{\psi} \\
+		V_{a_{mean}} & = \phi \ U_{mean} \\
+		L_{eu} & = U_1 \ V_{t1} - U_0 \ V_{t0} \\
+		       & = U_{1_{mean}} \ V_{t1_{mean}} - U_{0_{mean}} \ V_{t0_{mean}} = U_{mean} \ \Delta V_{t_{mean}}
+	\end{align}
+	$\Delta V_t$ computation allows to get a \textit{first sketch} of the \textbf{velocity triangles}.
+	The first analysis results are stored in \verb|compressor_0.55_0.325_28_28.txt|.

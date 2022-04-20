@@ -1,0 +1,10 @@
+% separates the uncertain part from certain part
+[P, Delta, BlkStruct] = lftdata(G); 
+P.u = {'w1','w2','w3','w4','\delta_{lat}'}; % inputs of P
+P.y = {'z1','z2','z3','z4','p','\phi'}; % outputs of P
+eOuter_new = sumblk('e_{\phi} = - \phi');
+
+% computing M for mu synthesis
+M_mu = connect(Rphi, eInner, Rp, P, eOuter_new, ...
+      {'w1','w2','w3','w4'}, ...
+      {'z1','z2','z3','z4'}); 

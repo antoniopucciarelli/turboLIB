@@ -1,0 +1,89 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{transparent}
+\usepackage{verbatim}
+\newcommand{\semitransp}[2][40]{\textcolor{fg!#1}{#2}}
+\usepackage[super]{nth}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{pgf}
+\usepackage{lmodern}
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage{xcolor}
+\usepackage{latexsym,xcolor,multicol,booktabs,calligra}
+\usepackage{amsmath,amssymb,BOONDOX-cal,bm}	
+\usepackage{pstricks}
+\usepackage{stackengine}   
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{romannum}
+\usepackage{minted}
+
+\author{\textbf{Antonio Pucciarelli}}
+\title{\textsc{Turbomachinery: Compressor preliminary design}}
+\institute{Politecnico di Milano} 
+\date{\today}
+\logo{\includegraphics[width=0.2\textwidth]{polimiLogo.jpeg}}
+\newcommand{\nologo}{\setbeamertemplate{logo}{}}
+
+\usepackage{Wue}
+
+\def\cmd#1{\texttt{\color{red}\footnotesize $\backslash$#1}}
+\def\env#1{\texttt{\color{blue}\footnotesize #1}}
+
+\newtheorem{thm}{Theorem}[theorem]
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{LightGray}{gray}{0.9}
+
+\begin{document}
+	\begin{frame}
+    		\titlepage
+    	\end{frame}
+
+	\section{Problem Description}
+        \input{problemDescription}
+        
+	\section{Similitude}
+        \input{similitude}
+    
+   	\section{Blade Modeling}
+        \input{bladeModeling}
+
+	\section{Efficiency}
+	\input{efficiency}
+
+	\section{CFD}
+	%\input{verification}
+	    
+	\section{References}
+		
+		\begin{frame}[allowframebreaks]
+			\bibliographystyle{unsrt}
+			\bibliography{biblio.bib}	
+		\end{frame}
+	
+	\begin{frame}
+		\begin{center}
+			{\Huge \emph {\textrm{Thank  ~you!}}}
+		\end{center}
+		
+		\vspace{1cm}
+		
+		\Large{\textbf{Antonio Pucciarelli}        \hfill 974675} \\ 
+        
+	\end{frame}
+
+\end{document}
