@@ -1258,25 +1258,42 @@ class blade:
             VtIn = self.inletSection[secNum].Vt
             VaOut = self.outletSection[secNum].Va
             VtOut = self.outletSection[secNum].Vt
+            if self.turboType == 'rotor':
+                WaIn = self.inletSection[ii].Wa
+                WtIn = self.inletSection[ii].Wt
+                WaOut = self.outletSection[ii].Wa
+                WtOut = self.outletSection[ii].Wt
 
             # finding min and max velocities 
             if VaIn < VaOut:
                 maxVelAx = VaOut
             else:
                 maxVelAx = VaIn
-            if VtIn < VtOut:
-                minVelTan = VtIn
-                maxVelTan = VtOut
-            else:
-                minVelTan = VtOut 
-                maxVelTan = VtIn
+            
+            try:
+                VtVec = [VtIn, VtOut, WtIn, WtOut]
+            except:
+                VtVec = [VtIn, VtOut]
+
+            # computing maximum and minimum tangential velocity 
+            minVelTan = np.min(VtVec)
+            maxVelTan = np.max(VtVec)
 
             # plotting quiver 
-            ax[ii].quiver(0, 0, VaIn, VtIn, color='red', angles='xy', scale_units='xy', scale=1)
-            ax[ii].quiver(0, 0, VaOut, VtOut, color='blue', angles='xy', scale_units='xy', scale=1)
+            ax[ii].quiver(0, 0, VaIn, VtIn, color='firebrick', angles='xy', scale_units='xy', scale=1)
+            ax[ii].quiver(0, 0, VaOut, VtOut, color='royalblue', angles='xy', scale_units='xy', scale=1)            
             deltaVx = VaOut - VaIn 
             deltaVy = VtOut - VtIn
-            ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='black', angles='xy', scale_units='xy', scale=1)
+            ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='slategray', angles='xy', scale_units='xy', scale=1)
+            # if the blade is from a rotor
+            try:
+                ax[ii].quiver(0, 0, WaIn, WtIn, color='forestgreen', angles='xy', scale_units='xy', scale=1)
+                ax[ii].quiver(0, 0, WaOut, WtOut, color='darkorange', angles='xy', scale_units='xy', scale=1)
+                deltaWx = WaOut - WaIn 
+                deltaWy = WtOut - WtIn
+                ax[ii].quiver(WaIn, WtIn, deltaWx, deltaWy, color='black', angles='xy', scale_units='xy', scale=1)
+            except:
+                pass
 
             ax[ii].set_xlim(-10, maxVelAx * 1.1)
             ax[ii].set_ylim(-50 + minVelTan * 1.1, maxVelTan * 1.1 + 50)
@@ -1287,7 +1304,10 @@ class blade:
             ax[ii].set_ylabel(r'$V_t \ [\frac{{m }}{{s }}]$')
 
         fig.suptitle('\n')
-        fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3)
+        if self.turboType == 'rotor':
+            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$', r'$W_{in }$', r'$W_{out }$', r'$W_{{out }} - W_{{in }}$'], loc='upper center', ncol=2, borderaxespad=0)
+        else:
+            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3, borderaxespad=0)
         plt.tight_layout()
 
         if save:
