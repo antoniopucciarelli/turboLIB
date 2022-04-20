@@ -260,7 +260,308 @@ def stagePerf(phi=0, psi=0, perc=1, rD=0.5, phiVec=np.linspace(0,1.5,1000), plot
     if phi != 0 and psi !=0:
         return phi, psi 
 
-def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printout=False, R=287.06, gamma=1.4):
+def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printout=False, R=287.06, gamma=1.4, continuityCorrect=False):
+    '''
+    This function allows to compute the properties of a stage following the meanline initial design procedure.
+        procedural steps:
+            - from rD and psi -> find phi related to W2/W1 > 0.7 condition
+            - from phi and rD -> compute eta from Leiblein chart
+            - compute Lis and L using [betaP, Tt0, eta]
+            - compute rotation parameters 
+            - compute Va0, Vt0 and Vt1 
+            - compute kinetic and thermodynamic properties at rotor inlet 
+            - compute kinetic and thermodynamic properties at rotor outlet
+                - efficiency conditions check 
+            - compute kinetic and thermodynamic properties at stator outlet
+
+        inputs:
+            rD          -- reaction degree at the mean line 
+            psi         -- work coefficient at the mean line 
+            rMean       -- mean line radius 
+            mFlux       -- mass flux 
+            Tt0         -- total temperature 
+            Pt0         -- tottal pressure 
+            betaP       -- pressure ratio 
+            T1real      -- boolean value for computation of the real or ideal rotor outlet temperature startig from real work L = Lis / eta
+            printout    -- boolean value for the print of the results 
+            R           -- gas constant
+            gamma       -- specific heat ratio
+        
+        outputs:
+            check return at the bottom
+    '''
+
+    # importing libraries  
+    from turboCoeff import coeff
+
+    # air properties allocation 
+    cP = gamma / (gamma - 1) * R # specific heat ratio @ P cost  [J/kg K]
+
+    # adimensional parameters computation 
+    # -- from performance charts 
+    phi, psi = stagePerf(psi=psi, rD=rD, plot=False, perc=0.97)
+    eta = efficiency(phi=phi, rD=rD, plot=False)
+
+    ######################## WORK ########################
+    # ideal compression work 
+    Lis = coeff.L_is(Tin=Tt0, beta=betaP, gamma=gamma, kind='compressor')
+    # real compression work 
+    L = Lis / eta
+    # total temperature computation
+    Tt1 = L / cP + Tt0
+
+    ######################## ROTATION ######################## 
+    # mean section revolution speed from work coefficient
+    Umean = np.sqrt(L / psi) 
+    # angular speed 
+    omega = Umean / rMean
+    # rpm 
+    n = omega * 60 / (2 * np.pi)
+
+    ######### MAIN VELOCITIES COMPUTATION FROM WORK RESULTS #########
+    # Va0, Vt0 computation 
+    # axial inlet velocity from flow coefficient
+    Va0 = phi * Umean
+    # tangential inlet velocity from reaction degree and work coefficient
+    lam = 2 * psi 
+    Vt0 = (1 - rD - lam/4) * Umean 
+    # tangential rotor exit velocity computation
+    Vt1 = (1 - rD + lam/4) * Umean 
+
+    ######### ROTOR INLET QUANTITIES ######### 
+    # KINETICS 
+    # relative speed computation 
+    Wa0 = Va0
+    Wt0 = Vt0 - Umean
+    # veolcity magnitude computation
+    V0 = np.sqrt(Va0**2 + Vt0**2)
+    W0 = np.sqrt(Wa0**2 + Wt0**2)
+    # aerodynamic angles computation 
+    alpha0 = np.rad2deg(np.arctan(Vt0/Va0))
+    beta0 = np.rad2deg(np.arctan(Wt0/Wa0))
+    # THERMODYNAMICS
+    # static temperature computation
+    T0 = Tt0 - V0**2 / (2*cP)
+    # speed of sound computation
+    a0 = np.sqrt(gamma * R * T0)
+    # mach computation 
+    M0 = V0 / a0
+    Mr0 = W0 / a0
+    # static pressure computation
+    P0 = Pt0 / (1 + (gamma - 1)/2 * M0**2)**(gamma/(gamma-1))
+    # density computation 
+    rhot0 = Pt0 / (R * Tt0)
+    rho0 = rhot0 / (1 + (gamma - 1)/2 * M0**2)**(1/(gamma-1))
+
+    ######### ROTOR INLET BLADE DIMENSION #########
+    # rotor inlet blade height 
+    b0 = mFlux / (rho0 * 2 * np.pi * rMean * Va0)
+
+    ######### ROTOR OUTLET/STATOR INLET QUANTITIES #########  
+    tol = 1e-2
+    bladeError = 1.0
+
+    # first guess of the outlet blade axial speed 
+    Va1 = Va0 
+    while bladeError > tol:
+        # outlet quantities 
+        Wa1 = Va1 
+        Wt1 = Vt1 - Umean
+        # velocity magnitude computation
+        V1 = np.sqrt(Va1**2 + Vt1**2)
+        W1 = np.sqrt(Wa1**2 + Wt1**2)
+        # flow angle computation
+        alpha1 = np.rad2deg(np.arctan(Vt1/Va1))
+        beta1 = np.rad2deg(np.arctan(Wt1/Wa1))
+
+        # THERMODYNAMICS
+        # static temperature computation
+        T1 = Tt1 - V1**2 / (2*cP)
+
+        ################ EFFICIENCY CORRECTION ################
+        # it is assumed that the entropy generation is only on the rotor blade 
+        #   this allows to correct thermodynamics only on rotor blade and treating stator blade as isentropic
+        #
+        # the computed T1 is referred to an isentropic transformation that accounts 
+        #   to introduce into the system an amount of energy equal to that necessary
+        #   to reach the target betaP with efficiency equal to eta
+        #
+        # once T1 computed -> if pressure P1 is computed from T1 with the isentropic relation
+        #   the pressure obatined (P1) is greater than the real (so that eta < 1) transformation
+        # 
+        # in order to correct this deficiency:
+        # - compute the temperature like the transformation were isentropic 
+        # - from this temperature compute the achieved pressure using the isentropic transformation law
+        # - compute the density related to the pressure just obtained and the non isentropic temperature 
+        #  
+        # the changes made by this correction will affect the blade height at the exit 
+        #
+
+        if T1real:
+            # T1 isoentropic computation 
+            T1iso = T0 + eta * (T1 - T0)
+
+            # real pressure computation using the isentropic transformation law and the ideal T1iso temperature
+            P1 = Pt0 * (T1iso/Tt0)**(gamma/(gamma-1))
+        else: 
+            # ideal pressure computation using the isentropic transformation law and the ideal T1 temperature
+            P1 = Pt0 * (T1/Tt0)**(gamma/(gamma-1))
+        
+        # density computation 
+        rho1 = P1 / (R * T1)
+
+        # computing other quantities 
+        # speed of sound computation 
+        a1 = np.sqrt(gamma * R * T1)
+        # mach number computation 
+        M1 = V1 / a1
+        Mr1 = W1 / a1
+        # total pressure computation
+        Pt1 = P1 * (Tt1/T1)**(gamma/(gamma-1))
+
+        # total density computation
+        rhot1 = Pt1 / (R * Tt1)
+
+        if continuityCorrect:
+            # check velocity with respect to the blade without flaring 
+            VaOutCheck = mFlux / (b0 * 2 * np.pi * rMean * rho1)
+            
+            # computing relative error
+            bladeError = np.abs((VaOutCheck - Va1)/VaOutCheck)
+
+            # change on the outlet speed 
+            if VaOutCheck < Va1:
+                Va1 = Va1 * (1 - bladeError)
+            else:
+                Va1 = Va1 * (1 + bladeError)
+        else:
+            bladeError = 0.0
+
+    ######### STATOR OUTLET QUANTITIES #########
+    # main outlet quantities
+    # KINETICS 
+    Va2 = Va1 
+    Wa2 = Va2
+    Tt2 = Tt1
+    # from thermodynamics
+    deltaH = (1 - rD) * L
+    T2 = deltaH / cP + T1
+
+    # V2 & Vt2 computation  
+    V2 = np.sqrt(2 * cP * (Tt2 - T2))
+    # Vt2 computation and numerical correction 
+    if np.abs(V2**2 - Va2**2) < 1e-10: 
+        Vt2 = 0
+    else:
+        Vt2 = np.sqrt(V2**2 - Va2**2)
+
+    # W2 & Wt2 computation
+    Wt2 = Vt2 - 0 
+    W2 = np.sqrt(Wa2**2 + Wt2**2)
+    # aerodynamics angles 
+    alpha2 = np.rad2deg(np.arctan2(Vt2,Va2))
+    beta2 = np.rad2deg(np.arctan(Wt2/Wa2))
+    # THERMODYNAMICS
+    # sound speed 
+    a2 = np.sqrt(gamma * R * T2)
+    # mach number computation
+    M2 = V2 / a2
+    Mr2 = W2 / a2
+    # pressure computation
+    Pt2 = Pt1
+    P2 = P1 * (T2/T1)**(gamma/(gamma-1))
+    # density computation 
+    rho2 = P2 / (R * T2)
+    rhot2 = Pt2 / (R * Tt2)
+
+    ######### BLADE RADIUS #########
+    # rotor inlet blade height 
+    b0 = mFlux / (rho0 * 2 * np.pi * rMean * Va0)
+    # rotor outlet/stator inlet  blade height
+    b1 = mFlux / (rho1 * 2 * np.pi * rMean * Va1)
+    # stator outlet blade height
+    b2 = mFlux / (rho2 * 2 * np.pi * rMean * Va2)
+
+    if printout:
+        # print data 
+        printLength = 84
+        print('*' * printLength)
+        if T1real:
+            print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO ISENTROPIC\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
+        else:
+            print('\t\tTHE FOLLOWING PAREMETERS ARE REFERRED TO REAL\n\t\t  TRANSFORMATION REFERRED TO A WORK L = Lis / eta')
+        print('*' * printLength)
+        nAdim = int((printLength - len(' ADIMENSIONAL PARAMETERS '))/2)
+        print('*' * nAdim + ' ADIMENSIONAL PARAMETERS  ' + '*' * nAdim)
+        print('-- rD     = {0:>8.2f}        -- psi    = {1:>8.2f}        -- phi       = {2:>5.2f}'.format(cP * (T1 - T0) / L, psi, phi))
+        print('-- eta    = {0:>10.4f}      -- lamdba = {1:>8.2f}        -- Vt0/Umean = {2:>5.2f}'.format(eta, lam, Vt0/Umean))
+        nWork = int((printLength - len(' WORK '))/2)
+        print('*' * nWork + ' WORK ' + '*' * nWork)
+        print('-- Lis    = {0:>8.2f} J/kg   -- L      = {1:>8.2f} J/kg   -- eta    = {2:>10.4f}'.format(Lis, L, eta))
+        nRotation = int((printLength - len(' ROTATION '))/2)
+        print('*' * nRotation + ' ROTATION ' + '*' * nRotation)
+        print('-- Umean  = {0:>8.2f} m/s    -- omega  = {1:>8.2f} rad/s  -- n      = {2:>8.2f} rpm'.format(Umean, omega, n))
+        print('*' * printLength)
+        nDefinitions = int((printLength - len(' DEFINITIONS '))/2)
+        print('\n' + '*' * nDefinitions + ' DEFINITIONS  ' + '*' * nDefinitions)
+        print('-- 0 => rotor inlet         -- 1 => rotor outlet        -- 2 => stator outlet')
+        nTotTemp = int((printLength - len(' TOTAL TEMPERATURE '))/2)
+        print('*' * nTotTemp + ' TOTAL TEMPERATURE  ' + '*' * nTotTemp)
+        print('-- Tt0    = {0:>8.2f} K      -- Tt1    = {1:>8.2f} K      -- Tt2    = {2:>8.2f} K'.format(Tt0, Tt1, Tt2))
+        nAbsKin = int((printLength - len('KINETICS -- ABSOLUTE '))/2)
+        print('*' * nAbsKin + ' KINETICS -- ABSOLUTE ' + '*' * nAbsKin)
+        print('-- 0                        -- 1                        -- 2')
+        print('-- alpha0 = {0:>8.2f} deg    -- alpha1 = {1:>8.2f} deg    -- alpha2 = {2:>8.2f} deg'.format(alpha0, alpha1, alpha2))
+        print('-- Va0    = {0:>8.2f} m/s    -- Va1    = {1:>8.2f} m/s    -- Va2    = {2:>8.2f} m/s'.format(Va0, Va1, Va2))
+        print('-- Vt0    = {0:>8.2f} m/s    -- Vt1    = {1:>8.2f} m/s    -- Vt2    = {2:>8.2f} m/s'.format(Vt0, Vt1, Vt2))
+        print('-- V0     = {0:>8.2f} m/s    -- V1     = {1:>8.2f} m/s    -- V2     = {2:>8.2f} m/s'.format(V0, V1, V2))
+        nRelKin = int((printLength - len('KINETICS -- RELATIVE '))/2)
+        print('*' * nRelKin + ' KINETICS -- RELATIVE ' + '*' * nRelKin)
+        print('-- 0                        -- 1                        -- 2')
+        print('-- U0     = {0:>8.2f} m/s    -- U1     = {1:>8.2f} m/s    -- U2     = {2:>8.2f} m/s'.format(Umean, Umean, 0))
+        print('-- beta0  = {0:>8.2f} deg    -- beta1  = {1:>8.2f} deg    -- beta2  = {2:>8.2f} deg'.format(beta0, beta1, beta2))
+        print('-- Wa0    = {0:>8.2f} m/s    -- Wa1    = {1:>8.2f} m/s    -- Wa2    = {2:>8.2f} m/s'.format(Wa0, Wa1, Wa2))
+        print('-- Wt0    = {0:>8.2f} m/s    -- Wt1    = {1:>8.2f} m/s    -- Wt2    = {2:>8.2f} m/s'.format(Wt0, Wt1, Wt2))
+        print('-- W0     = {0:>8.2f} m/s    -- W1     = {1:>8.2f} m/s    -- W2     = {2:>8.2f} m/s'.format(W0, W1, W2))
+        nThermo = int((printLength - len(' THERMODYNAMICS '))/2)
+        print('*' * nThermo + ' THERMODYNAMICS ' + '*' * nThermo)
+        print('-- 0                        -- 1                        -- 2')
+        print('-- T0     = {0:>8.2f} K      -- T1     = {1:>8.2f} K      -- T2     = {2:>8.2f} K     '.format(T0, T1, T2))
+        print('-- Tt0    = {0:>8.2f} K      -- Tt1    = {1:>8.2f} K      -- Tt2    = {2:>8.2f} K     '.format(Tt0, Tt1, Tt2))
+        print('-- a0     = {0:>8.2f} m/s    -- a1     = {1:>8.2f} m/s    -- a2     = {2:>8.2f} m/s   '.format(a0, a1, a2))
+        print('-- M0     = {0:>8.2f}        -- M1     = {1:>8.2f}        -- M2     = {2:>8.2f}       '.format(M0, M1, M2))
+        print('-- Mr0    = {0:>8.2f}        -- Mr1    = {1:>8.2f}        -- Mr2    = {2:>8.2f}       '.format(Mr0, Mr1, Mr2))
+        print('-- P0     = {0:>8.2f} bar    -- P1     = {1:>8.2f} bar    -- P2     = {2:>8.2f} bar   '.format(P0/1e+5, P1/1e+5, P2/1e+5))
+        print('-- Pt0    = {0:>8.2f} bar    -- Pt1    = {1:>8.2f} bar    -- Pt2    = {2:>8.2f} bar   '.format(Pt0/1e+5, Pt1/1e+5, Pt2/1e+5))
+        print('-- rho0   = {0:>8.2f} kg/m3  -- rho1   = {1:>8.2f} kg/m3  -- rho2   = {2:>8.2f} kg/m3'.format(rho0,rho1,rho2))
+        print('-- rhot0  = {0:>8.2f} kg/m3  -- rhot1  = {1:>8.2f} kg/m3  -- rhot2  = {2:>8.2f} kg/m3'.format(rhot0,rhot1,rhot2))
+        nBlade = int((printLength - len(' BLADE DIMENSIONS -- FLARING '))/2)
+        print('*' * nBlade + ' BLADE DIMENSIONS -- FLARING  ' + '*' * nBlade)
+        print('-- 0                        -- 1                        -- 2')
+        print('-- b0     = {0:>8.2f} cm     -- b1     = {1:>8.2f} cm     -- b2     = {2:>8.2f} cm'.format(b0*1e+2, b1*1e+2, b2*1e+2))
+        print('-- rTip0  = {0:>8.2f} cm     -- rTip1  = {1:>8.2f} cm     -- rTip2  = {2:>8.2f} cm'.format((rMean + b0/2)*1e+2, (rMean + b1/2)*1e+2, (rMean + b2/2)*1e+2))
+        print('-- rMean0 = {0:>8.2f} cm     -- rMean1 = {0:>8.2f} cm     -- rMean  = {0:>8.2f} cm'.format(rMean))
+        print('-- rHub0  = {0:>8.2f} cm     -- rHub1  = {1:>8.2f} cm     -- rHub2  = {2:>8.2f} cm'.format((rMean - b0/2)*1e+2, (rMean - b1/2)*1e+2, (rMean - b2/2)*1e+2))
+        print('*' * printLength)
+
+    # return vector values 
+    adimVec     = [phi, psi, eta]
+    bladeVec    = [b0, b1, b2]
+    rotationVec = [Umean, omega, n] 
+    V0vec       = [Va0, Vt0, alpha0]
+    V1vec       = [Va1, Vt1, alpha1]
+    V2vec       = [Va2, Vt2, alpha2]
+    W0vec       = [Wa0, Wt0, beta0]
+    W1vec       = [Wa1, Wt1, beta1]
+    W2vec       = [Wa2, Wt2, beta2] 
+    thermo0     = [T0, P0, rho0, Tt0, Pt0, rhot0, M0, Mr0] 
+    thermo1     = [T1, P1, rho1, Tt1, Pt1, rhot1, M1, Mr1]
+    thermo2     = [T2, P2, rho2, Tt2, Pt2, rhot2, M2, Mr2] 
+    work        = [L, Lis]
+
+    return adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, W2vec, thermo0, thermo1, thermo2, work
+
+def stagePropertiesBAK(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printout=False, R=287.06, gamma=1.4):
     '''
     This function allows to compute the properties of a stage following the meanline initial design procedure.
         procedural steps:
@@ -536,6 +837,7 @@ def stageProperties(rD, psi, rMean, mFlux, Tt0, Pt0, betaP, T1real=False, printo
     work        = [L, Lis]
 
     return adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, W2vec, thermo0, thermo1, thermo2, work
+
 
 def stageStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.75, Vt0UmeanMin=0, Vt0UmeanMax=0.25, R=287.06, gamma=1.4):
     '''

@@ -680,7 +680,7 @@ class blade:
             relErrorS = 0.0
             for ii in range(self.nSection):
                 if np.abs(s2old[ii] - s2new[ii]) > relErrorS:
-                    relErrorS = np.abs(s2old[ii] - s2new[ii])
+                    relErrorS = np.abs(s2old[ii] - s2new[ii])/np.max(s2new)
         
             # getting info on s 
             s2Vec = [self.outletSection[ii].s for ii in range(self.nSection)]
@@ -1140,7 +1140,7 @@ class blade:
             ClVecOld = ClVecNew 
 
             # printing 
-            print('-- rel. error shape = {0:.4f}'.format(errorShape))
+            #print('-- rel. error shape = {0:.4f}'.format(errorShape))
 
         print('-' * starDim + '\n') 
 
@@ -1259,10 +1259,10 @@ class blade:
             VaOut = self.outletSection[secNum].Va
             VtOut = self.outletSection[secNum].Vt
             if self.turboType == 'rotor':
-                WaIn = self.inletSection[ii].Wa
-                WtIn = self.inletSection[ii].Wt
-                WaOut = self.outletSection[ii].Wa
-                WtOut = self.outletSection[ii].Wt
+                WaIn = self.inletSection[secNum].Wa
+                WtIn = self.inletSection[secNum].Wt
+                WaOut = self.outletSection[secNum].Wa
+                WtOut = self.outletSection[secNum].Wt
 
             # finding min and max velocities 
             if VaIn < VaOut:
@@ -1282,16 +1282,16 @@ class blade:
             # plotting quiver 
             ax[ii].quiver(0, 0, VaIn, VtIn, color='firebrick', angles='xy', scale_units='xy', scale=1)
             ax[ii].quiver(0, 0, VaOut, VtOut, color='royalblue', angles='xy', scale_units='xy', scale=1)            
-            deltaVx = VaOut - VaIn 
-            deltaVy = VtOut - VtIn
-            ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='slategray', angles='xy', scale_units='xy', scale=1)
+            #deltaVx = VaOut - VaIn 
+            #deltaVy = VtOut - VtIn
+            #ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='slategray', angles='xy', scale_units='xy', scale=1)
             # if the blade is from a rotor
             try:
                 ax[ii].quiver(0, 0, WaIn, WtIn, color='forestgreen', angles='xy', scale_units='xy', scale=1)
                 ax[ii].quiver(0, 0, WaOut, WtOut, color='darkorange', angles='xy', scale_units='xy', scale=1)
-                deltaWx = WaOut - WaIn 
-                deltaWy = WtOut - WtIn
-                ax[ii].quiver(WaIn, WtIn, deltaWx, deltaWy, color='black', angles='xy', scale_units='xy', scale=1)
+                #deltaWx = WaOut - WaIn 
+                #deltaWy = WtOut - WtIn
+                #ax[ii].quiver(WaIn, WtIn, deltaWx, deltaWy, color='black', angles='xy', scale_units='xy', scale=1)
             except:
                 pass
 
@@ -1305,7 +1305,7 @@ class blade:
 
         fig.suptitle('\n')
         if self.turboType == 'rotor':
-            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$', r'$W_{in }$', r'$W_{out }$', r'$W_{{out }} - W_{{in }}$'], loc='upper center', ncol=2, borderaxespad=0)
+            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$W_{in }$', r'$W_{out }$'], loc='upper center', ncol=2, borderaxespad=0)
         else:
             fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$V_{{out }} - V_{{in }}$'], loc='upper center', ncol=3, borderaxespad=0)
         plt.tight_layout()
@@ -1328,36 +1328,58 @@ class blade:
         # allocating vector 
         eta = np.zeros(self.nSection)
 
+        if self.turboType == 'rotor':
+            # allocate outlet velocity 
+            VaVec = [self.outletSection[ii].Va for ii in range(self.nSection)]
+            Va = np.max(VaVec)
+
         # computing entropy generation through losses 
         for ii in range(self.nSection):    
             # new outlet pressure computation -> using losses
             if self.turboType == 'rotor':
-                # data allocation 
-                Ptr1  = self.inletSection[ii].Ptr
-                Ttr1  = self.inletSection[ii].Ttr
-                Ttr2  = Ttr1
-                P1    = self.inletSection[ii].P
-                W1    = self.inletSection[ii].W
-                T1    = self.inletSection[ii].T
-                W2iso = np.sqrt(Va**2 + self.outletSection[ii].Wt**2)
 
-                # due to losses there is a reduction in the relative total pressure
+                # data allocation 
+                T1    = self.inletSection[ii].T
+                W1    = self.inletSection[ii].W
+                U1    = self.inletSection[ii].U
+                W2iso = np.sqrt(self.outletSection[ii].Wt**2 + Va**2)
+                U2    = self.outletSection[ii].U
+                Ptr1  = self.inletSection[ii].Ptr
+                P1    = self.inletSection[ii].P
+                Ttr   = self.inletSection[ii].Ttr
+                P2    = self.outletSection[ii].P
+                
+                # rothalpy computation
+                R = cP * T1 + W1**2 / 2 - U1**2 / 2
+
+                # T2 computation
+                T2iso = (R - W2iso**2/2 + U2**2/2) / cP
+
+                # Ttr 
+                Ttr = T1 + W1**2/(2 * cP)
+
+                # P2 computation
+                P2 = Ptr1 * (T2iso/Ttr)**(gamma/(gamma-1))
+
+                # Ptr2 computation
                 Ptr2 = Ptr1 - lossVec[ii] * (Ptr1 - P1)
 
-                # computing T2iso 
-                T2iso = T1 + W1**2/(2*cP) - W2iso**2/(2*cP)
+                # T2 computation
+                T2 = Ttr * (P2/Ptr2)**((gamma-1)/gamma)
 
-                # computing exit pressure 
-                P2 = Ptr1 * (T2iso/Ttr1)**(gamma/(gamma - 1))
-
-                # computing T2 real 
-                T2 = Ttr2 * (P2/Ptr2)**((gamma - 1)/gamma)
-
-                # computing W2 
-                W2 = np.sqrt((T1 - T2)*2*cP + W1**2) 
+                # W2 computation
+                W2 = np.sqrt(2 * cP * (Ttr - T2))
 
                 # computing efficiency
-                eta[ii] = (W1**2 - W2iso**2) / (W1**2 - W2**2)            
+                eta[ii] = (W1**2 - W2iso**2) / (W1**2 - W2**2)   
+
+                #print(W1)
+                #print(W2iso)
+                #print(Ptr2iso)
+                #print(W2)
+                #print(Ptr2)
+                #print(eta[ii])
+                #print('')
 
             elif self.turboType == 'stator':
                 # data allocation 

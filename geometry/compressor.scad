@@ -35,7 +35,7 @@ for(ii = [0:nRotorBlades-1]){
 // variables computation
 alphaStator = 360/nStatorBlades; // computing distance angle between 2 blades
 statorStaggerAngle = 0; // setting up hub blade stagger angle
-statorOrigin = [0.15, 0, 0.979*statorHubInletCoords[2]]; // setting up rotor hub blade section origin
+statorOrigin = [0.2, 0, 0.979*statorHubInletCoords[2]]; // setting up rotor hub blade section origin
 
 // stator generation 
 for(ii = [0:nStatorBlades-1]){

@@ -18,9 +18,9 @@ Tt0 = 300       # inlet total temperature  [K]
 
 # stage hypothesis
 # reaction degree
-rD = 0.56
+rD = 0.55
 # stage mean radius -> radius @ inlet blade midspan
-rMean = 0.32
+rMean = 0.325
 # rotor inlet tangential velocity
 Vt0Umean = 0
 
@@ -49,9 +49,9 @@ with open(file_path, "w") as file:
         hubRadius          = rMean - b0/2
         rotorVaMeanInlet   = V0vec[0]
         rotorVtMeanInlet   = V0vec[1] 
-        rotorVaMeanOutlet  = V1vec[0]
+        rotorVaMeanOutlet  = V0vec[0]
         rotorVtMeanOutlet  = V1vec[1]
-        statorVaMeanInlet  = V1vec[0] 
+        statorVaMeanInlet  = V0vec[0] 
         statorVtMeanInlet  = V1vec[1]
         statorVaMeanOutlet = V2vec[0]
         statorVtMeanOutlet = V2vec[1]
@@ -69,16 +69,15 @@ with open(file_path, "w") as file:
         # blade dimensions allocation -> thermodynamics inlet/outlet
         rotorBlade.allocateThermodynamics(Tt0=Tt0, Pt0=Pt0, eta=eta)
         # plotting velocity triangle
-        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1])
+        #rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], )
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
         lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
         # computing efficiency
+        # getting maximum axial rotor outlet speed 
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
-        # rotor blade printout
-        rotorBlade.printMeridional()
-        
+
         # stator study 
         # stator object generation
         print('\n\n-- STATOR STUDY -- # blades {0:d}'.format(nStatorBlades))
@@ -99,8 +98,6 @@ with open(file_path, "w") as file:
         statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
         # computing efficiency
         statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
-        # stator printout
-        statorBlade.printMeridional()
 
         # .scad file generation 
         nRotorBlades  = rotorBlade.nBlade
@@ -112,3 +109,7 @@ with open(file_path, "w") as file:
 
         # computing stage efficiency
         coeff.stageEfficiency(rotorBlade, statorBlade)
+
+# rotor and stator printout
+#rotorBlade.printMeridional()
+#statorBlade.printMeridional()
