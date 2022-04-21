@@ -13,82 +13,94 @@
 \headcommand {\slideentry {2}{0}{1}{4/4}{}{0}}
 \headcommand {\beamer@framepages {4}{4}}
 \headcommand {\beamer@subsectionpages {4}{4}}
-\headcommand {\beamer@subsectionentry {0}{2}{1}{5}{Procedural Steps}}
-\headcommand {\slideentry {2}{1}{1}{5/5}{Procedural Steps}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{5}{Problem setup}}
+\headcommand {\slideentry {2}{1}{1}{5/5}{Problem setup}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\slideentry {2}{1}{2}{6/6}{Procedural Steps}{0}}
+\headcommand {\slideentry {2}{1}{2}{6/6}{Problem setup}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\beamer@subsectionpages {5}{6}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{7}{Main Design Quantities}}
-\headcommand {\slideentry {2}{2}{1}{7/7}{Main Design Quantities}{0}}
+\headcommand {\slideentry {2}{1}{3}{7/7}{Problem setup}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\slideentry {2}{2}{2}{8/8}{Main Design Quantities}{0}}
+\headcommand {\beamer@subsectionpages {5}{7}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{8}{Main design quantities}}
+\headcommand {\slideentry {2}{2}{1}{8/8}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {2}{2}{3}{9/9}{Main Design Quantities}{0}}
+\headcommand {\slideentry {2}{2}{2}{9/9}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\slideentry {2}{2}{4}{10/10}{Main Design Quantities}{0}}
+\headcommand {\slideentry {2}{2}{3}{10/10}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {10}{10}}
-\headcommand {\slideentry {2}{2}{5}{11/11}{Main Design Quantities}{0}}
+\headcommand {\slideentry {2}{2}{4}{11/11}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\slideentry {2}{2}{6}{12/12}{Main Design Quantities}{0}}
+\headcommand {\slideentry {2}{2}{5}{12/12}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\beamer@subsectionpages {7}{12}}
-\headcommand {\beamer@subsectionentry {0}{2}{3}{13}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}}
-\headcommand {\slideentry {2}{3}{1}{13/13}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
+\headcommand {\slideentry {2}{2}{6}{13/13}{Main design quantities}{0}}
 \headcommand {\beamer@framepages {13}{13}}
-\headcommand {\slideentry {2}{3}{2}{14/14}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
+\headcommand {\beamer@subsectionpages {8}{13}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{14}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}}
+\headcommand {\slideentry {2}{3}{1}{14/14}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
 \headcommand {\beamer@framepages {14}{14}}
-\headcommand {\slideentry {2}{3}{3}{15/15}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
+\headcommand {\slideentry {2}{3}{2}{15/15}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
 \headcommand {\beamer@framepages {15}{15}}
-\headcommand {\beamer@sectionpages {4}{15}}
-\headcommand {\beamer@subsectionpages {13}{15}}
-\headcommand {\sectionentry {3}{Blade Modeling}{16}{Blade Modeling}{0}}
-\headcommand {\slideentry {3}{0}{1}{16/16}{}{0}}
+\headcommand {\slideentry {2}{3}{3}{16/16}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{0}}
 \headcommand {\beamer@framepages {16}{16}}
-\headcommand {\beamer@subsectionpages {16}{16}}
-\headcommand {\beamer@subsectionentry {0}{3}{1}{17}{Losses Modeling}}
-\headcommand {\slideentry {3}{1}{1}{17/17}{Losses Modeling}{0}}
+\headcommand {\beamer@sectionpages {4}{16}}
+\headcommand {\beamer@subsectionpages {14}{16}}
+\headcommand {\sectionentry {3}{Blade Modeling}{17}{Blade Modeling}{0}}
+\headcommand {\slideentry {3}{0}{1}{17/17}{}{0}}
 \headcommand {\beamer@framepages {17}{17}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{1}{1}{18}{Profile Losses}}
-\headcommand {\slideentry {3}{1}{2}{18/18}{Losses Modeling}{0}}
+\headcommand {\beamer@subsectionpages {17}{17}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{18}{Losses modeling}}
+\headcommand {\slideentry {3}{1}{1}{18/18}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {18}{18}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{1}{2}{19}{Compressibility Losses}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{1}{3}{19}{Shock Losses}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{1}{4}{19}{Tip Leackage Losses}}
-\headcommand {\beamer@subsectionpages {17}{18}}
-\headcommand {\beamer@subsectionentry {0}{3}{2}{19}{Radial Equilibrium}}
-\headcommand {\slideentry {3}{2}{1}{19/19}{Radial Equilibrium}{0}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{1}{1}{19}{Profile losses}}
+\headcommand {\slideentry {3}{1}{2}{19/19}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {19}{19}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{2}{1}{20}{General Formulation}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{2}{2}{20}{Vortex Model}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{2}{3}{20}{$\mathtt {NISRE}$ Equilibrium Results}}
-\headcommand {\beamer@subsectionpages {19}{19}}
-\headcommand {\beamer@subsectionentry {0}{3}{3}{20}{$\mathtt {turboLIB}$}}
-\headcommand {\slideentry {3}{3}{1}{20/20}{$\mathtt {turboLIB}$}{0}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{1}{2}{20}{Compressibility losses}}
+\headcommand {\slideentry {3}{1}{3}{20/20}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {20}{20}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{3}{1}{21}{Section Analysis \& Optimization}}
-\headcommand {\beamer@subsubsectionentry {0}{3}{3}{2}{21}{$\mathtt {.stl}$ \& $\mathtt {.scad}$ Generation}}
-\headcommand {\beamer@sectionpages {16}{20}}
-\headcommand {\beamer@subsectionpages {20}{20}}
-\headcommand {\sectionentry {4}{Efficiency}{21}{Efficiency}{0}}
-\headcommand {\slideentry {4}{0}{1}{21/21}{}{0}}
+\headcommand {\slideentry {3}{1}{4}{21/21}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {21}{21}}
-\headcommand {\beamer@sectionpages {21}{21}}
-\headcommand {\beamer@subsectionpages {21}{21}}
-\headcommand {\sectionentry {5}{CFD}{22}{CFD}{0}}
-\headcommand {\slideentry {5}{0}{1}{22/22}{}{0}}
+\headcommand {\slideentry {3}{1}{5}{22/22}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {22}{22}}
-\headcommand {\beamer@sectionpages {22}{22}}
-\headcommand {\beamer@subsectionpages {22}{22}}
-\headcommand {\sectionentry {6}{References}{23}{References}{0}}
-\headcommand {\slideentry {6}{0}{1}{23/23}{}{0}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{1}{3}{23}{Shock losses}}
+\headcommand {\slideentry {3}{1}{6}{23/23}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {23}{23}}
-\headcommand {\slideentry {6}{0}{2}{24/24}{}{0}}
+\headcommand {\slideentry {3}{1}{7}{24/24}{Losses modeling}{0}}
 \headcommand {\beamer@framepages {24}{24}}
-\headcommand {\slideentry {6}{0}{3}{25/25}{}{0}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{1}{4}{25}{Tip leackage losses}}
+\headcommand {\beamer@subsectionpages {18}{24}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{25}{Radial equilibrium}}
+\headcommand {\slideentry {3}{2}{1}{25/25}{Radial equilibrium}{0}}
 \headcommand {\beamer@framepages {25}{25}}
-\headcommand {\beamer@partpages {1}{25}}
-\headcommand {\beamer@subsectionpages {23}{25}}
-\headcommand {\beamer@sectionpages {23}{25}}
-\headcommand {\beamer@documentpages {25}}
-\headcommand {\gdef \inserttotalframenumber {25}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{2}{1}{26}{General formulation}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{2}{2}{26}{Vortex model}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{2}{3}{26}{$\mathtt {NISRE}$ equilibrium results}}
+\headcommand {\beamer@subsectionpages {25}{25}}
+\headcommand {\beamer@subsectionentry {0}{3}{3}{26}{$\mathtt {turboLIB}$}}
+\headcommand {\slideentry {3}{3}{1}{26/26}{$\mathtt {turboLIB}$}{0}}
+\headcommand {\beamer@framepages {26}{26}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{3}{1}{27}{Section analysis \& optimization}}
+\headcommand {\beamer@subsubsectionentry {0}{3}{3}{2}{27}{$\mathtt {.stl}$ \& $\mathtt {.scad}$ generation}}
+\headcommand {\beamer@sectionpages {17}{26}}
+\headcommand {\beamer@subsectionpages {26}{26}}
+\headcommand {\sectionentry {4}{Efficiency}{27}{Efficiency}{0}}
+\headcommand {\slideentry {4}{0}{1}{27/27}{}{0}}
+\headcommand {\beamer@framepages {27}{27}}
+\headcommand {\beamer@sectionpages {27}{27}}
+\headcommand {\beamer@subsectionpages {27}{27}}
+\headcommand {\sectionentry {5}{CFD}{28}{CFD}{0}}
+\headcommand {\slideentry {5}{0}{1}{28/28}{}{0}}
+\headcommand {\beamer@framepages {28}{28}}
+\headcommand {\beamer@sectionpages {28}{28}}
+\headcommand {\beamer@subsectionpages {28}{28}}
+\headcommand {\sectionentry {6}{References}{29}{References}{0}}
+\headcommand {\slideentry {6}{0}{1}{29/29}{}{0}}
+\headcommand {\beamer@framepages {29}{29}}
+\headcommand {\slideentry {6}{0}{2}{30/30}{}{0}}
+\headcommand {\beamer@framepages {30}{30}}
+\headcommand {\slideentry {6}{0}{3}{31/31}{}{0}}
+\headcommand {\beamer@framepages {31}{31}}
+\headcommand {\beamer@partpages {1}{31}}
+\headcommand {\beamer@subsectionpages {29}{31}}
+\headcommand {\beamer@sectionpages {29}{31}}
+\headcommand {\beamer@documentpages {31}}
+\headcommand {\gdef \inserttotalframenumber {31}}

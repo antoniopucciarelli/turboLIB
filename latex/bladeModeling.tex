@@ -1,17 +1,79 @@
-\subsection{Losses Modeling}
-\subsubsection{Profile Losses}
-	\begin{frame}{Profile Losses}
-		The profile losses used are related to the \textbf{Leiblein modeling} approach, \cite[Ch. 6]{axial2004}.
-				
+\subsection{Losses modeling}
+\subsubsection{Profile losses}
+	\begin{frame}{Profile losses}
+		The profile losses used are related to the \textbf{Leiblein modeling} approach\footnote{The following equations are interpolated data from \cite[Ch. 6]{axial2004}.}.
+		\newline
+		The model is based on the \textbf{equivalent diffusion factor}, $D_{eq}$:
+		\begin{align}
+			\frac{W_{max}}{W_1} & = 1.12 + 0.61 \ \frac{cos(\beta_1)^2}{\sigma} \cdot \frac{r_1 \ V_{t1} - r_2 \ V_{t2}}{r_1 \ V_{a1}} \nonumber \\
+			D_{eq} & = \frac{W_{max}}{W_1} \cdot \frac{W_1}{W_2} \nonumber  
+		\end{align}
+		$D_{eq}$ will be used for the computation of $\bar{\omega}_{profile}$ as:
+		\begin{equation}
+			\bar{\omega}_{profile} = \frac{0.004 \ \Big( 1 + 3.1 \ \big( D_{eq} - 1 \big)^2 + 0.4 \ \big( D_{eq} - 1 \big)^8 \Big) \ 2 \ \sigma}{cos(\beta_2) \ \Big( \frac{W_1}{W_2} \Big)^2} \nonumber
+		\end{equation}
 	\end{frame}
-\subsubsection{Compressibility Losses}
-\subsubsection{Shock Losses}
-\subsubsection{Tip Leackage Losses}
-\subsection{Radial Equilibrium}
-\subsubsection{General Formulation}
-\subsubsection{Vortex Model}
-\subsubsection{$\mathtt{NISRE}$ Equilibrium Results}
+\subsubsection{Compressibility losses}
+	\begin{frame}{Compressibility losses -- \Romannum{1}}
+		 This losses can be seen as a \textbf{correction} of the \textbf{profile} losses due to the compressibility of the gas along its \textit{journey} in the stage. 
+		 \newline
+		 \newline
+		 The correction referres to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle, $i_c$ and $i_s$. 
+		 \newline
+		 \newline
+		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Ch. 10]{axial2004}}. 
+	\end{frame}
+	\begin{frame}{Compressibility losses -- \Romannum{2}}
+		$\bar{\omega}_{compressibility}$ setup:
+		\begin{itemize}
+			\item $R_c$ \& $R_s$ computation:
+				\begin{align}
+					R_c & = 9 - \Bigg[1 - \Bigg( \frac{30}{\beta_1} \Bigg)^{0.48} \Bigg] \ \frac{\theta}{8.2} \nonumber \\
+					R_s & = 10.3 + \Bigg( 2.92 - \frac{\beta_1}{15.6} \Bigg) \ \frac{\theta}{8.2} \nonumber  
+				\end{align}
+			\item $i_c$ \& $i_s$ computation:
+				\begin{align}
+					i_c & = i^{*} - \frac{R_c}{1 + 0.5 \ M_{1}^{3}} \nonumber \\
+					i_s & = i^{*} + \frac{R_s}{1 + 0.5 \Big( K_{sh} \ M_{1} \Big)^3} \nonumber 
+				\end{align}
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{Compressibility losses -- \Romannum{3}}
+		\begin{itemize}
+			\item $i_m$ computation: $i_m = i_c + \Big( i_s - i_c \Big) \ \frac{R_c}{R_c + R_s}$
+			\item $\bar{\omega}_{m}$ computation: $\bar{\omega}_{m} = \bar{\omega}_{profile} \ \Bigg[ 1 + \frac{\big( i_m - i^{*} \big)^2}{R_s^{2}} \Bigg]$
+			\item $\bar{\omega}_{compressibility}$ computation: 
+				\begin{align}
+					\bar{\omega}_{compressibility} = \bar{\omega}_m + \bar{\omega}_m \ \Bigg[ \frac{i - i_m}{i_c - i_m} \Bigg]^2 \text{, if } i \leq i_m\nonumber \\ 
+					\bar{\omega}_{compressibility} = \bar{\omega}_m + \bar{\omega}_m \ \Bigg[ \frac{i - i_m}{i_s - i_m} \Bigg]^2 \text{, if } i \geq i_m \nonumber 
+				\end{align}
+		\end{itemize}
+	\end{frame}
+\subsubsection{Shock losses}
+	\begin{frame}{Shock losses -- \Romannum{1}}
+		The \textbf{relative} Mach number at the rotor inlet is slightly above \textbf{sonic speed}; a \textbf{shock wave} will be present at the rotor tip. From \cite{manfredi2020transonic}, \textbf{shock pattern} are related to \textbf{Mach number} and \textbf{airfoil shape}.
+		\newline
+		\newline 
+		The \textbf{shock} losses modeling is related to \textbf{K\"onig losses} modeling approach. This model describes a \textbf{2 shock waves loss} using a \textbf{single normal shock} with respect to a computed Mach number, $M_{in}$. 
+		\newline
+		\newline
+		\textbf{K\"onig model} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}, $M_1$.
+	\end{frame}
+	\begin{frame}{Shock losses -- \Romannum{2}}
+		\begin{itemize}
+			\item computation of the \textbf{expansion wave} angle, $\phi$: $\phi = \frac{s \ cos(\psi)}{s \ sin(\psi) \ R_u}$, where $\psi = \psi_{(\beta_1, \gamma, \theta)}$
+			\item computation of $W_s$ and $M_s$ using the \textbf{Prandtl-Meyer} expansion: $\phi = \int_{W_1}^{W_s} \sqrt{M^2 - 1} \ \frac{dW}{W}$
+			\item $M_{in}$ computation: $M_{in} = \sqrt{M_1 \ M_s}$
+			\item \textbf{normal shock} solution and computation of $\Delta P_{T}$
+			\item from $\Delta P_T$, computation of $\bar{\omega}_{shock}$
+		\end{itemize}
+	\end{frame}
+\subsubsection{Tip leackage losses}
+\subsection{Radial equilibrium}
+\subsubsection{General formulation}
+\subsubsection{Vortex model}
+\subsubsection{$\mathtt{NISRE}$ equilibrium results}
 \subsection{$\mathtt{turboLIB}$}
-\subsubsection{Section Analysis \& Optimization}
-\subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ Generation}
+\subsubsection{Section analysis \& optimization}
+\subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
 

@@ -1,12 +1,12 @@
 \BOOKMARK [2][]{Outline0.1}{Problem Description}{}% 1
 \BOOKMARK [2][]{Outline0.2}{Similitude}{}% 2
-\BOOKMARK [3][]{Outline0.2.1.5}{Procedural Steps}{Outline0.2}% 3
-\BOOKMARK [3][]{Outline0.2.2.7}{Main Design Quantities}{Outline0.2}% 4
-\BOOKMARK [3][]{Outline0.2.3.13}{Vtmean, Vamean, Umean \046 velocity triangles}{Outline0.2}% 5
+\BOOKMARK [3][]{Outline0.2.1.5}{Problem setup}{Outline0.2}% 3
+\BOOKMARK [3][]{Outline0.2.2.8}{Main design quantities}{Outline0.2}% 4
+\BOOKMARK [3][]{Outline0.2.3.14}{Vtmean, Vamean, Umean \046 velocity triangles}{Outline0.2}% 5
 \BOOKMARK [2][]{Outline0.3}{Blade Modeling}{}% 6
-\BOOKMARK [3][]{Outline0.3.1.17}{Losses Modeling}{Outline0.3}% 7
-\BOOKMARK [3][]{Outline0.3.2.19}{Radial Equilibrium}{Outline0.3}% 8
-\BOOKMARK [3][]{Outline0.3.3.20}{turboLIB}{Outline0.3}% 9
+\BOOKMARK [3][]{Outline0.3.1.18}{Losses modeling}{Outline0.3}% 7
+\BOOKMARK [3][]{Outline0.3.2.25}{Radial equilibrium}{Outline0.3}% 8
+\BOOKMARK [3][]{Outline0.3.3.26}{turboLIB}{Outline0.3}% 9
 \BOOKMARK [2][]{Outline0.4}{Efficiency}{}% 10
 \BOOKMARK [2][]{Outline0.5}{CFD}{}% 11
 \BOOKMARK [2][]{Outline0.6}{References}{}% 12
