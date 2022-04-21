@@ -27,3 +27,5 @@ In the ```design.py``` file there are the **initial conditions** and **constrain
 ```design.py``` will save the output text in ```compressor_<rD>_<rMean>_<nRotorBlades>_<nStatorBlades>.txt``` and the blade geometry in ```.stl``` format into ```container/```. 
 
 At the end a ```.scad``` file is generated and it can be used with ```openSCAD```.
+
+A summary of the preliminary compressor design is explained by [these slides](https://github.com/antoniopucciarelli/turboLIB/blob/main/latex/main.pdf).
