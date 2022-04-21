@@ -1,0 +1,97 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{axial2004}{article}{}
+    \name{author}{1}{}{%
+      {{hash=ARH}{%
+         family={Aungier},
+         familyi={A\bibinitperiod},
+         given={Ronald\bibnamedelima H.},
+         giveni={R\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ARH1}
+    \strng{fullhash}{ARH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{number}{4}
+    \field{title}{Axial-Flow Compressors: a Strategy for Aerodynamic Design and
+  Analysis}
+    \field{volume}{57}
+    \field{journaltitle}{Appl. Mech. Rev.}
+    \field{year}{2004}
+  \endentry
+
+  \entry{baskharone2006principles}{book}{}
+    \name{author}{1}{}{%
+      {{hash=BEA}{%
+         family={Baskharone},
+         familyi={B\bibinitperiod},
+         given={Erian\bibnamedelima A.},
+         giveni={E\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Cambridge University Press}%
+    }
+    \strng{namehash}{BEA1}
+    \strng{fullhash}{BEA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{title}{Principles of turbomachinery in air-breathing engines}
+    \field{year}{2006}
+  \endentry
+
+  \entry{manfredi2020transonic}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=MM}{%
+         family={Manfredi},
+         familyi={M\bibinitperiod},
+         given={Marco},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=FF}{%
+         family={Fontaneto},
+         familyi={F\bibinitperiod},
+         given={Fabrizio},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {American Society of Mechanical Engineers}%
+    }
+    \strng{namehash}{MMFF1}
+    \strng{fullhash}{MMFF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{booktitle}{Turbo Expo: Power for Land, Sea, and Air}
+    \field{pages}{V02AT32A029}
+    \field{title}{Transonic Axial Compressors Loss Correlations: Part
+  I—Analysis and Update of Loss Models}
+    \field{volume}{84065}
+    \field{year}{2020}
+  \endentry
+\enddatalist
+\endinput

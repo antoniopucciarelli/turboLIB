@@ -1,21 +1,41 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
 \beamer@sectionintoc {1}{Problem Description}{2}{0}{1}
+\defcounter {refsection}{0}\relax 
 \beamer@sectionintoc {2}{Similitude}{4}{0}{2}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {2}{1}{Problem setup}{5}{0}{2}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {2}{2}{Main design quantities}{8}{0}{2}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {2}{3}{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}{14}{0}{2}
+\defcounter {refsection}{0}\relax 
 \beamer@sectionintoc {3}{Models}{17}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {3}{1}{Losses modeling}{18}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {3}{1}{1}{Profile losses}{19}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {3}{1}{2}{Compressibility losses}{20}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {3}{1}{3}{Shock losses}{23}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {3}{1}{4}{Tip leackage losses}{25}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {3}{2}{Radial equilibrium}{26}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {3}{3}{Blade shape}{28}{0}{3}
+\defcounter {refsection}{0}\relax 
 \beamer@sectionintoc {4}{$\mathtt {turboLIB}$ \& Results}{30}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {4}{1}{$\mathtt {turboLIB}$}{31}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{1}{1}{$\mathtt {NISRE}$ results}{33}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{1}{2}{$\mathtt {.stl}$ \& $\mathtt {.scad}$ generation}{34}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {4}{2}{Results}{35}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{2}{1}{$\mathtt {NISRE}$ and main quantities}{36}{0}{4}
+\defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{2}{2}{Efficiency}{42}{0}{4}
-\beamer@sectionintoc {5}{References}{43}{0}{5}

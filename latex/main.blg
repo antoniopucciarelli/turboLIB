@@ -1,5 +1,65 @@
-[0] Config.pm:304> INFO - This is Biber 2.14 (beta)
-[0] Config.pm:307> INFO - Logfile is 'main.blg'
-[71] biber:322> INFO - === Thu Apr 21, 2022, 16:59:02
-[178] Utils.pm:309> ERROR - Cannot find 'main.bcf'!
-[178] Biber.pm:132> INFO - ERRORS: 1
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: main-blx.bib
+Database file #2: biblio.bib
+Biblatex version: 3.13
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 4 entries,
+            6365 wiz_defined-function locations,
+            1212 strings with 9372 characters,
+and the built_in function-call counts, 17927 in all, are:
+= -- 1219
+> -- 403
+< -- 141
++ -- 354
+- -- 119
+* -- 1078
+:= -- 1757
+add.period$ -- 0
+call.type$ -- 4
+change.case$ -- 97
+chr.to.int$ -- 42
+cite$ -- 6
+duplicate$ -- 1664
+empty$ -- 1675
+format.name$ -- 183
+if$ -- 3950
+int.to.chr$ -- 0
+int.to.str$ -- 8
+missing$ -- 0
+newline$ -- 95
+num.names$ -- 195
+pop$ -- 1062
+preamble$ -- 1
+purify$ -- 106
+quote$ -- 0
+skip$ -- 773
+stack$ -- 0
+substring$ -- 2004
+swap$ -- 449
+text.length$ -- 95
+text.prefix$ -- 3
+top$ -- 1
+type$ -- 124
+warning$ -- 0
+while$ -- 227
+width$ -- 0
+write$ -- 92

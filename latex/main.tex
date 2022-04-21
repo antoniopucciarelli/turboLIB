@@ -14,6 +14,9 @@
 \usepackage{lmodern}
 \setbeamertemplate{navigation symbols}{}
 
+\usepackage[natbib=true,style=numeric,backend=bibtex,useprefix=true]{biblatex}
+\addbibresource{biblio.bib}
+
 \usepackage[absolute,overlay]{textpos}
 \usepackage{xcolor}
 \usepackage{latexsym,xcolor,multicol,booktabs,calligra}
@@ -69,18 +72,15 @@
 	%\section{CFD}
 	%\input{verification}
 	    
-	\section{References}
-		
-			\begin{frame}[allowframebreaks]
-%        			\bibliographystyle{unsrt}
-        			\bibliography{biblio.bib}
-			\end{frame}
+	\begin{frame}[allowframebreaks]
+		\printbibliography
+	\end{frame}
 	\begin{frame}
 		\begin{center}
 			{\Huge \emph {\textrm{Thank  ~you!}}}
 		\end{center}
 		
-		\vspace{4cm}
+		\vspace{2cm}
 		
 		\Large{\textbf{Antonio Pucciarelli}        \hfill 974675} \\ 
         
