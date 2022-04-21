@@ -1,0 +1,97 @@
+\subsection{$\mathtt{turboLIB}$}
+	\begin{frame}[fragile]{$\mathtt{turboLIB}$}
+		The preliminary compressor design model program \href{https://github.com/antoniopucciarelli/turboLIB}{\color{blue}{$\mathtt{turboLIB}$}} can be downloaded from github.
+		\begin{block}{Main objects and modules}
+			\begin{itemize}
+				\item \verb|turboClass.turboBlade.blade|: blade object
+				\item \verb|turboCoeff|: engineering coefficients module
+					\begin{itemize}
+						\item \verb|losses|: losses modeling 
+						\item \verb|similarity|: adimensional analysis
+						\item \verb|lieblein|: blade modeling
+					\end{itemize}
+				\item \verb|geometry.bladeGeometry.geometryData|: airfoil object
+			\end{itemize}
+		\end{block}
+	\end{frame}
+\subsubsection{$\mathtt{NISRE}$ results}
+	\begin{frame}[fragile]{$\mathtt{NISRE}$ setup}
+		The \verb|NISRE| in solved through a \textbf{double nested} loop:
+		\begin{itemize}
+			\item \textbf{continuity loop}
+			\item \textbf{entropy loop}
+		\end{itemize}
+		Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is called for the solution of the $V_{a2}^2$ \textbf{ODE}.
+		\newline
+		\newline
+		Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is called for the computation of the blade \textbf{shape}.
+	\end{frame}
+\subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
+	\begin{frame}[fragile]{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
+		At the end of the \verb|NISRE|, all the main blade quantities are avaliable for the \textbf{generation} of the \textbf{3D geometry}. This geometry can be converted into a \verb|.stl| file that can be used in \verb|OpenFOAM| for the flow properties study. In addition a \verb|.scad| file is made for understanding the blades position and check possible contacts between rotor and stator blades.	
+		\newline
+		\newline 
+		\cite{baskharone2006principles} suggested that a good distance between rotor and stator blades is half of the rotor chord\footnote{In the radial equilibrium study losses between rotor \newline and stator blades are \textbf{neglected}.}.
+	\end{frame}
+\subsection{Results}
+	\subsubsection{$\mathtt{NISRE}$ and main quantities}
+	\begin{frame}{\textbf{Rotor} equilibrium results: $\mathtt{NISRE}$}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/rotorVelocity.png}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\textbf{Rotor} equilibrium results: main quantities}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/rotorThermo.png}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\textbf{Stator} equilibrium results: $\mathtt{NISRE}$}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/statorVelocity.png}
+		\end{figure}
+	\end{frame}
+	\begin{frame}{\textbf{Stator} equilibrium results: main quantities}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/statorThermo.png}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{\textbf{Rotor} \& \textbf{stator} blades}
+		\begin{columns}
+			\column{0.5\textwidth}
+				\begin{figure}
+					\hspace{-2cm}
+					\includegraphics[width=1.5\textwidth]{figures/rotor.png}
+					\caption{Rotor blade.}
+				\end{figure}
+			\column{0.5\textwidth}
+				\begin{figure}
+					\hspace{-2cm}
+					\includegraphics[width=1.5\textwidth]{figures/stator.png}
+					\caption{Stator blade.}
+				\end{figure}
+		\end{columns}
+	\end{frame}
+	\begin{frame}{\textbf{Stage} plot}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/compressor.png}
+		\end{figure}
+	\end{frame}
+\subsubsection{Efficiency}
+	\begin{frame}[fragile]{Efficiency}
+		The \textbf{rotor} efficiency is computed with:
+		\begin{equation}
+			\eta_{is_{rotor}} = \frac{W_1^2 - W_{2_{is}}^2}{W_1^2 - W_{2}} \nonumber 
+		\end{equation}
+		The \textbf{stator} efficiency is computed with:
+		\begin{equation}
+			\eta_{is_{stator}} = \frac{\Delta h_{is}}{\Delta h_{real}}
+			\nonumber 
+		\end{equation}
+		The modeling results are stored into \verb|compressor_0.55_0.325_28_28.txt|.
+	\end{frame}

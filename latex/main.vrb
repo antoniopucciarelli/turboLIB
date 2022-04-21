@@ -1,12 +1,11 @@
-\frametitle{$V_{a_{mean}}$, $V_{t_{mean}}$ \& $U_{mean}$}
-\begin{align}
-		U_{mean} & = \frac{L_{eu}}{\psi} \nonumber \\
-		V_{a_{mean}} & = \phi \ U_{mean} \nonumber \\
-		L_{eu} & = U_1 \ V_{t1} - U_0 \ V_{t0} \nonumber \\
-		       & = U_{1_{mean}} \ V_{t1_{mean}} - U_{0_{mean}} \ V_{t0_{mean}} = U_{mean} \ \Delta V_{t_{mean}} \nonumber \\
-		V_{t1} & = \Delta V_{t_{mean}} + V_{t0} \nonumber
-	\end{align}
-	\begin{itemize}
-		\item $\Delta V_{t_{mean}}$ computation allows to get a \textit{first sketch} of the \textbf{velocity triangles}\footnote{\textbf{Free vortex} model based.}
-		\item The first analysis results are stored in \verb|compressor_0.55_0.325_28_28.txt|
-	\end{itemize}
+\frametitle{Efficiency}
+The \textbf{rotor} efficiency is computed with:
+		\begin{equation}
+			\eta_{is_{rotor}} = \frac{W_1^2 - W_{2_{is}}^2}{W_1^2 - W_{2}} \nonumber
+		\end{equation}
+		The \textbf{stator} efficiency is computed with:
+		\begin{equation}
+			\eta_{is_{stator}} = \frac{\Delta h_{is}}{\Delta h_{real}}
+			\nonumber
+		\end{equation}
+		The modeling results are stored into \verb|compressor_0.55_0.325_28_28.txt|.

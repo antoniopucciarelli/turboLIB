@@ -111,5 +111,5 @@ with open(file_path, "w") as file:
         coeff.stageEfficiency(rotorBlade, statorBlade)
 
 # rotor and stator printout
-rotorBlade.printMeridional(save=True, position0='rotorEntropyFlow.pgf', position1='rotorBetaThermo.pgf')
-statorBlade.printMeridional(save=True, position0='statorEntropyFlow.pgf', position1='statorBetaThermo.pgf')
+rotorBlade.printMeridional(save=False, position0='rotorEntropyFlow.pgf', position1='rotorBetaThermo.pgf')
+statorBlade.printMeridional(save=False, position0='statorEntropyFlow.pgf', position1='statorBetaThermo.pgf')
