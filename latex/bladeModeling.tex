@@ -1,7 +1,7 @@
 \subsection{Losses modeling}
 \subsubsection{Profile losses}
 	\begin{frame}{Profile losses}
-		The profile losses used are related to the \textbf{Leiblein modeling} approach\footnote{The following equations are interpolated data from \cite[Ch. 6]{axial2004}.}.
+		The profile losses used are related to the \textbf{Leiblein modeling} approach\footnote{The following equations are interpolated data from \cite[Sec. 6.4]{axial2004}.}.
 		\newline
 		The model is based on the \textbf{equivalent diffusion factor}, $D_{eq}$:
 		\begin{align}
@@ -15,13 +15,13 @@
 	\end{frame}
 \subsubsection{Compressibility losses}
 	\begin{frame}{Compressibility losses -- \Romannum{1}}
-		 This losses can be seen as a \textbf{correction} of the \textbf{profile} losses due to the compressibility of the gas along its \textit{journey} in the stage. 
+		 These losses can be seen as a \textbf{correction} of the \textbf{profile} losses due to the compressibility of the gas along its \textit{journey} in the stage. 
 		 \newline
 		 \newline
-		 The correction referres to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle, $i_c$ and $i_s$. 
+		 The correction refers to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle, $i_c$ and $i_s$. 
 		 \newline
 		 \newline
-		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Ch. 10]{axial2004}}. 
+		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Sec. 6.6]{axial2004}}. 
 	\end{frame}
 	\begin{frame}{Compressibility losses -- \Romannum{2}}
 		$\bar{\omega}_{compressibility}$ setup:
@@ -49,37 +49,41 @@
 				\end{align}
 		\end{itemize}
 	\end{frame}
+\subsubsection{Secondary flow losses}
+	\begin{frame}{Secondary flow losses}
+		Secondary flow losses
+	\end{frame}
 \subsubsection{Shock losses}
 	\begin{frame}{Shock losses -- \Romannum{1}}
-		The \textbf{relative} Mach number at the rotor inlet is slightly above \textbf{sonic speed}; a \textbf{shock wave} will be present at the rotor tip. From \cite{manfredi2020transonic}, \textbf{shock pattern} are related to \textbf{Mach number} and \textbf{airfoil shape}.
+		The \textbf{relative} Mach number at the rotor inlet is slightly above \textbf{sonic speed}; a \textbf{shock wave} will be present at the rotor tip. From \cite{manfredi2020transonic}, \textbf{shock pattern} is related to \textbf{Mach number} and \textbf{airfoil shape}.
 		\newline
 		\newline 
 		The \textbf{shock} losses modeling is related to \textbf{K\"onig losses} modeling approach. This model describes a \textbf{2 shock waves loss} using a \textbf{single normal shock} with respect to a computed Mach number, $M_{in}$. 
 		\newline
 		\newline
-		\textbf{K\"onig model} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}, $M_1$.
+		\textbf{K\"onig model} \cite[Sec. 6.7]{axial2004} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}, $M_1$.
 	\end{frame}
 	\begin{frame}{Shock losses -- \Romannum{2}}
 		\begin{itemize}
 			\item computation of the \textbf{expansion wave} angle, $\phi$: $\phi = \frac{s \ cos(\psi)}{s \ sin(\psi) \ R_u}$, where $\psi = \psi_{(\beta_1, \gamma, \theta)}$
 			\item computation of $W_s$ and $M_s$ using the \textbf{Prandtl-Meyer} expansion: $\phi = \int_{W_1}^{W_s} \sqrt{M^2 - 1} \ \frac{dW}{W}$
 			\item $M_{in}$ computation: $M_{in} = \sqrt{M_1 \ M_s}$
-			\item \textbf{normal shock} solution and computation of $\Delta P_{t}$
-			\item from $\Delta P_t$, computation of $\bar{\omega}_{shock}$
+			\item \textbf{normal shock} solution and computation of $\Delta P_T$
+			\item from $\Delta P_T$, computation of $\bar{\omega}_{shock}$
 		\end{itemize}
 	\end{frame}
 \subsubsection{Tip leackage losses}
 	{\nologo
 	\begin{frame}{Tip leackage losses}
-		Again these losses are computed from \cite{axial2004}. The main concept is: computing a \textbf{total} blade pressure loss and \textbf{assume} to \textbf{distribute} the losses \textbf{linearly} from the hub to the tip. 
+		Again these losses are computed from \cite[Sec. 6.9]{axial2004}. The main concept is: computing a \textbf{total} blade pressure loss and \textbf{assuming linear distribution} of losses from the hub to the tip. 
 		\begin{align}
 			\tau & = \pi \ \delta_c \Big[ r_1 \rho_1 V_{a1_{mean}} + r_2 + \rho_2 V_{a2_{mean}} \Big] \Big[ r_2 V_{t2_{mean}} - r_1 V_{t1_{mean}} \Big] \nonumber \\ 
 			\Delta P & = \frac{\tau}{Z \ r_{tip} \delta_c \ c \ cos(\gamma)} \nonumber \\ 
 			U_c & = 0.816 \frac{\sqrt{\frac{2 \Delta P}{\rho_{mean}}}}{N_{row}^{0.2}} \nonumber \\ 
 			\dot{m_c} & = \rho_{mean} \ U_c \ Z \ \delta_c \ c \ cos(\gamma) \nonumber \\ 
-			\Delta P_t & = \frac{\Delta P \ \dot{m_c}}{\dot{m}} \nonumber  
+			\Delta P_T & = \frac{\Delta P \ \dot{m_c}}{\dot{m}} \nonumber  
 		\end{align}
-		$\Delta P_t$ is the \textbf{overall} total pressure loss due to \textbf{leackage} of the blade.
+		$\Delta P_T$ is the \textbf{overall} total pressure loss due to \textbf{leackage} of the blade.
 	\end{frame}
 	}
 \subsection{Radial equilibrium}
@@ -87,7 +91,7 @@
 		The \textbf{radial equilibrium} equation: $\frac{\partial h_t}{\partial r} = T \frac{\partial s}{\partial r} + V_a \frac{\partial V_a}{\partial r} + V_t \frac{\partial r V_t}{\partial r}$ is converted into, for the exit station\footnote{$1$ is the blade inlet station and $2$ is the blade outlet section.} of the blade, a \textbf{1st order ODE}:
 		\begin{equation}
 			\begin{split}
-				- \frac{1}{2} \frac{\partial V_{a2}^2}{\partial r} + \frac{V_{a2}^2}{2 \ c_P} \frac{\partial s_{2}}{\partial r} = - c_P \frac{\partial T_{t1}}{\partial r} - \omega \ \frac{\partial r V_{t2}}{\partial r} + \omega \ \frac{\partial r V_{t1}}{\partial r} \\ + T_{t1} \ \frac{\partial s_2}{\partial r} + \frac{\omega}{c_P} r V_{t2} \ \frac{\partial s_2}{\partial r} - \frac{\omega}{c_P} r V_{t1} \frac{\partial s_2}{\partial r} - \frac{1}{2 \ c_P} V_{t2}^2 \frac{\partial s_2}{\partial r} + \frac{V_{t2}}{r} \frac{\partial r V_{t2}}{\partial r}	
+				- \frac{1}{2} \frac{\partial V_{a2}^2}{\partial r} + \frac{V_{a2}^2}{2 \ c_P} \frac{\partial s_{2}}{\partial r} = - c_P \frac{\partial T_{T1}}{\partial r} - \omega \ \frac{\partial r V_{t2}}{\partial r} + \omega \ \frac{\partial r V_{t1}}{\partial r} \\ + T_{T1} \ \frac{\partial s_2}{\partial r} + \frac{\omega}{c_P} r V_{t2} \ \frac{\partial s_2}{\partial r} - \frac{\omega}{c_P} r V_{t1} \frac{\partial s_2}{\partial r} - \frac{1}{2 \ c_P} V_{t2}^2 \frac{\partial s_2}{\partial r} + \frac{V_{t2}}{r} \frac{\partial r V_{t2}}{\partial r}	
 			\nonumber
 			\end{split}
 		\end{equation}
@@ -95,7 +99,7 @@
 	\newline
 		$s_2$ is computed from $\sum_i \bar{\omega}_{i}$ treated earlier. 
 	\newline 
-		$\omega, V_{t1}, V_{t2} \& T_{t1}$ are known.
+		$\omega, V_{t1}, V_{t2} \& T_{T1}$ are known.
 		\begin{itemize}
 			\item $r_{1_{mean}} \ V_{t1_{mean}} = r_{1} \ V_{t1_{(r_1)}}$
 			\item $r_{2_{mean}} \ V_{t2_{mean}} = r_{2} \ V_{t2_{(r_2)}}$
@@ -104,7 +108,7 @@
 \subsection{Blade shape}
 	{\nologo
 	\begin{frame}{Blade shape}
-		For the blade shape computation, it has been used the \textbf{Leiblein model} from \cite{axial2004}. 
+		The \textbf{Leiblein model} from \cite[Ch. 6]{axial2004} has been used for the blade shape computation. 
 		\newline 
 		\newline
 		$\mathtt{NACA-65}$ profile has been chosen for the blade generation\footnote{Due to the low tip sonic Mach number it has been chosen to use this profile as well for the blade tip instead of a supersonic adapted profile shape.}.
@@ -116,9 +120,6 @@
 		Due to the many possible blade configurations, an \textbf{optimization} procedure has been used for the computation of $i^{*}$, $\delta$, $\theta$ and $\sigma$. 
 		\newline
 		\newline
-		From $\theta$ and $\mathtt{NACA-65} \ C_{L0}$ surface coordinates, each section airfoil shape is \textbf{computed}.
+		Each section airfoil shape is \textbf{computed} from $\theta$ and $\mathtt{NACA-65} \ C_{L0}$ surface coordinates.
 	\end{frame}
 	}
-
-
-

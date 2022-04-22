@@ -166,7 +166,7 @@ def lossHowell(beta1=0, beta2=0, solidity=0, pitch=0, bladeHeight=0, endWall=Fal
             solidity    -- blade solidity
             pitch       -- cascade pitch 
             bladeHeight -- height of the blade 
-            endWall     -- boolean value for identify if the studied section is close to the wall 
+            endWall     -- boolean value for identify if the Howel relation is for the end wall losses or for the secondary flow losses 
     ''' 
 
     # beta angle check -> beta1 > 0 following ASME 

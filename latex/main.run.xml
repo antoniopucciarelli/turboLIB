@@ -57,8 +57,9 @@
       <file>biblatex.def</file>
       <file>blx-natbib.def</file>
       <file>standard.bbx</file>
-      <file>numeric.bbx</file>
-      <file>numeric.cbx</file>
+      <file>alphabetic.bbx</file>
+      <file>alphabetic-verb.bbx</file>
+      <file>alphabetic-verb.cbx</file>
       <file>biblatex.cfg</file>
       <file>english.lbx</file>
     </requires>

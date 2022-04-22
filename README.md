@@ -15,12 +15,12 @@ The library is subdivided into different modules that allow to design the stage.
     - **losses computation**: ``` losses ```
     - **adimensional desing**: ``` similarity ```  
     
-- ``` geoemtry ``` this class generates the actual blade shape
+- ``` geometry ``` this class generates the actual blade shape
     - **airfoil generator**: ```geometryData```
 
 ## Compressor design
 
-The file ```design.py``` used the ```turboLIB``` program for the preliminary design of a compressor.
+The file ```design.py``` uses the ```turboLIB``` program for the preliminary design of a compressor.
 
 In the ```design.py``` file there are the **initial conditions** and **constraints** of the compressor. 
 

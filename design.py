@@ -73,7 +73,7 @@ with open(file_path, "w") as file:
         # rotor blade geometry allocation
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
-        lossVec = rotorBlade.bladeGenerator(Pt0, Tt0, mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
+        lossVec = rotorBlade.bladeGenerator(mFlux, clearance=1e-3, STLname='rotor', plot=False, nMaxShape=1)
         # computing efficiency
         # getting maximum axial rotor outlet speed 
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
@@ -95,7 +95,7 @@ with open(file_path, "w") as file:
         # stator blade geometry allocation
         statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
         # computing the best shape 
-        statorBlade.bladeGenerator(Pt1, Tt1, mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
+        statorBlade.bladeGenerator(mFlux, clearance=0, STLname='stator', plot=False, nMaxShape=1)
         # computing efficiency
         statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
 
@@ -111,5 +111,5 @@ with open(file_path, "w") as file:
         coeff.stageEfficiency(rotorBlade, statorBlade)
 
 # rotor and stator printout
-rotorBlade.printMeridional(save=False, position0='rotorEntropyFlow.pgf', position1='rotorBetaThermo.pgf')
-statorBlade.printMeridional(save=False, position0='statorEntropyFlow.pgf', position1='statorBetaThermo.pgf')
+rotorBlade.printMeridional(save=False, position0='latex/figures/rotorEntropyFlow.pgf', position1='latex/figures/rotorBetaThermo.pgf')
+statorBlade.printMeridional(save=False, position0='latex/figures/statorEntropyFlow.pgf', position1='latex/figures/statorBetaThermo.pgf')

@@ -1,6 +1,6 @@
 \subsection{$\mathtt{turboLIB}$}
 	\begin{frame}[fragile]{$\mathtt{turboLIB}$}
-		The preliminary compressor design model program \href{https://github.com/antoniopucciarelli/turboLIB}{\color{blue}{$\mathtt{turboLIB}$}} can be downloaded from github.
+		The preliminary compressor design model program \href{https://github.com/antoniopucciarelli/turboLIB}{\color{blue}{$\mathtt{turboLIB}$}} can be downloaded from GitHub.
 		\begin{block}{Main objects and modules}
 			\begin{itemize}
 				\item \verb|turboClass.turboBlade.blade|: blade object
@@ -16,19 +16,19 @@
 	\end{frame}
 \subsubsection{$\mathtt{NISRE}$ results}
 	\begin{frame}[fragile]{$\mathtt{NISRE}$ setup}
-		The \verb|NISRE| in solved through a \textbf{double nested} loop:
+		The \verb|NISRE| is solved through a \textbf{double nested} loop:
 		\begin{itemize}
 			\item \textbf{continuity loop}
 			\item \textbf{entropy loop}
 		\end{itemize}
-		Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is called for the solution of the $V_{a2}^2$ \textbf{ODE}.
+		Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is used for the solution of the $V_{a2}^2$ \textbf{ODE}.
 		\newline
 		\newline
-		Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is called for the computation of the blade \textbf{shape}.
+		Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is used for the computation of the blade \textbf{shape}.
 	\end{frame}
 \subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
 	\begin{frame}[fragile]{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
-		At the end of the \verb|NISRE|, all the main blade quantities are avaliable for the \textbf{generation} of the \textbf{3D geometry}. This geometry can be converted into a \verb|.stl| file that can be used in \verb|OpenFOAM| for the flow properties study. In addition a \verb|.scad| file is made for understanding the blades position and check possible contacts between rotor and stator blades.	
+		At the end of the \verb|NISRE|, all the main blade quantities are avaliable for the \textbf{generation} of the \textbf{3D geometry}. This geometry can be converted into a \verb|.stl| file that can be used in \verb|OpenFOAM| for the flow properties study. In addition a \verb|.scad| file is made for understanding position and checking possible contacts between rotor and stator blades.	
 		\newline
 		\newline 
 		\cite{baskharone2006principles} suggested that a good distance between rotor and stator blades is half of the rotor chord\footnote{In the radial equilibrium study losses between rotor \newline and stator blades are \textbf{neglected}.}.
@@ -59,6 +59,22 @@
 			\includegraphics[width=1\textwidth]{figures/statorThermo.png}
 		\end{figure}
 	\end{frame}
+	{\nologo
+	\begin{frame}{Velocity triangles}
+		\begin{columns}
+			\column{0.5\textwidth}
+				\begin{figure}
+					\centering
+					\includegraphics[width=0.6\textwidth]{figures/rotorVelocityTriangle.png}
+				\end{figure}
+			\column{0.5\textwidth}
+				\begin{figure}
+					\centering
+					\includegraphics[width=0.6\textwidth]{figures/statorVelocityTriangle.png}
+				\end{figure}
+		\end{columns}
+	\end{frame}
+	}
 
 	\begin{frame}{\textbf{Rotor} \& \textbf{stator} blades}
 		\begin{columns}

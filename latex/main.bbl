@@ -16,7 +16,7 @@
   {}
 \endgroup
 
-\datalist[entry]{nty/global//global/global}
+\datalist[entry]{anyt/global//global/global}
   \entry{axial2004}{article}{}
     \name{author}{1}{}{%
       {{hash=ARH}{%
@@ -30,6 +30,7 @@
     \strng{fullhash}{ARH1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{labelalpha}{Aun04}
     \field{sortinit}{A}
     \field{sortinithash}{A}
     \field{number}{4}
@@ -56,6 +57,7 @@
     \strng{fullhash}{BEA1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{labelalpha}{Bas06}
     \field{sortinit}{B}
     \field{sortinithash}{B}
     \field{title}{Principles of turbomachinery in air-breathing engines}
@@ -84,6 +86,7 @@
     \strng{fullhash}{MMFF1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{labelalpha}{MF20}
     \field{sortinit}{M}
     \field{sortinithash}{M}
     \field{booktitle}{Turbo Expo: Power for Land, Sea, and Air}

@@ -68,14 +68,14 @@ class blade:
         for ii in range(nSection):
             if hubRadius != 0:
                 midpoint = hubRadius + ii * height + height / 2 
-                bottom = hubRadius + ii * height
-                tip = hubRadius + (ii+1) * height
-                pitch = 2 * np.pi * midpoint / self.nBlade
+                bottom   = hubRadius + ii * height
+                tip      = hubRadius + (ii+1) * height
+                pitch    = 2 * np.pi * midpoint / self.nBlade
             elif tipRadius != 0:
                 midpoint = tipRadius - ii * height - height/2
-                bottom = tipRadius - (ii+1) * height
-                tip = tipRadius - ii * height 
-                pitch = 2 * np.pi * midpoint / self.nBlade
+                bottom   = tipRadius - (ii+1) * height
+                tip      = tipRadius - ii * height 
+                pitch    = 2 * np.pi * midpoint / self.nBlade
 
             # appending section object to the vector 
             sectionVec.append(section(midpoint, bottom, tip, height, pitch))
@@ -506,18 +506,17 @@ class blade:
             self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, rhotr=rhot0r, s=self.inletSection[ii].s)
             self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, rhotr=rhot1r, s=self.outletSection[ii].s)
 
-    def radialEquilibrium(self, Pt0, Tt0, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=0.5, tolFlux=1e-2, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
+    def radialEquilibrium(self, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=0.5, tolFlux=1e-2, NISRE=True, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
-                Pt0         -- inlet total pressure 
-                Tt0         -- inlet total temperature 
                 mFlux       -- mass flux 
                 clearance   -- rotor tip clearance
                 nMaxS       -- # of entropy loop iterations
                 nMaxFlux    -- # of continuity loop iterations
                 tolS        -- entropy loop relative tolerance
                 tolFlux     -- continuity loop relative tolerance 
+                NISRE       -- boolean value that enables pressure losses study
                 plot        -- boolean value for the plotting of the results
                 save        -- boolean value for the saving of the results
                 position0   -- saving path for the first figure
@@ -655,7 +654,11 @@ class blade:
             # computing losses for the new loop cycle (used if relError > tol) 
             # LOSSES COMPUTATION => target s2
             # computing pressure losses 
-            lossVec = self.computeLosses(mFlux=mFlux, clearance=clearance)
+            # NISRE allows studying the losses
+            if NISRE:
+                lossVec = self.computeLosses(mFlux=mFlux, clearance=clearance)
+            else:
+                lossVec = np.zeros(self.nSection)
 
             # storing s2 old 
             s2old = [self.outletSection[ii].s for ii in range(self.nSection)]
@@ -1054,6 +1057,12 @@ class blade:
             # compressibility effects
             if theta != 0 and i != 0:
                 lossVec[ii] = losses.machLosses(beta1, beta2, theta, i, W1, M1, Ttr, lossVec[ii], solidity)
+            
+            # secondary flow losses
+            lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=solidity, pitch=pitch, bladeHeight=self.inletBladeHeight, endWall=False)
+
+            # end wall losses computation
+            lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=solidity, pitch=pitch, bladeHeight=self.inletBladeHeight, endWall=True)
 
             # shock losses computation 
             if M1 >= 1: 
@@ -1085,12 +1094,10 @@ class blade:
 
         return lossVec
 
-    def bladeGenerator(self, Pt0, Tt0, mFlux, clearance=3e-3, STLname='cad', relTolShape=1e-3, nMaxShape=100, plot=False):
+    def bladeGenerator(self, mFlux, clearance=3e-3, NISRE=True, STLname='cad', relTolShape=1e-3, nMaxShape=100, plot=False):
         '''
         This function computes the final shape of a blade given blade number and total inlet quantites.
             inputs:
-                Pt0         -- total inlet pressure 
-                Tt0         -- total inlet temperature
                 mFlu        -- mass flux
                 clearance   -- rotor tip clearance 
 
@@ -1124,7 +1131,7 @@ class blade:
             print('-' * geometryDim + ' SHAPE ITERATION {0:d} '.format(counterShape) + '-' * geometryDim)
 
             # blade design through iterative process on radial equilibrium 
-            lossVec = self.radialEquilibrium(Pt0=Pt0, Tt0=Tt0, mFlux=mFlux, clearance=clearance, plot=plot)
+            lossVec = self.radialEquilibrium(mFlux=mFlux, clearance=clearance, NISRE=NISRE, plot=plot)
 
             # rotor blade geometry allocation
             self.generateGeometry(pos='data/airfoils/naca65.txt', STLname=STLname, plot=False, printout=False)
@@ -1146,6 +1153,9 @@ class blade:
 
         # check flow chockin in flow passages
         self.checkChoking()
+
+        # computing mean total pressure
+        self.computeMeanPressure(kind='total')
 
         return lossVec
 
@@ -1255,6 +1265,8 @@ class blade:
                 WtIn = self.inletSection[secNum].Wt
                 WaOut = self.outletSection[secNum].Wa
                 WtOut = self.outletSection[secNum].Wt
+                U = self.inletSection[secNum].U
+                print(U)
 
             # finding min and max velocities 
             if VaIn < VaOut:
@@ -1277,10 +1289,11 @@ class blade:
             #deltaVx = VaOut - VaIn 
             #deltaVy = VtOut - VtIn
             #ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='slategray', angles='xy', scale_units='xy', scale=1)
-            # if the blade is from a rotor
             try:
+                # if the blade is from a rotor
                 ax[ii].quiver(0, 0, WaIn, WtIn, color='forestgreen', angles='xy', scale_units='xy', scale=1)
                 ax[ii].quiver(0, 0, WaOut, WtOut, color='darkorange', angles='xy', scale_units='xy', scale=1)
+                ax[ii].quiver(-5, -U/2, 0, U, color='black', angles='xy', scale_units='xy', scale=1)
                 #deltaWx = WaOut - WaIn 
                 #deltaWy = WtOut - WtIn
                 #ax[ii].quiver(WaIn, WtIn, deltaWx, deltaWy, color='black', angles='xy', scale_units='xy', scale=1)
@@ -1297,7 +1310,7 @@ class blade:
 
         fig.suptitle('\n')
         if self.turboType == 'rotor':
-            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$W_{in }$', r'$W_{out }$'], loc='upper center', ncol=2, borderaxespad=0)
+            fig.legend(labels=[r'$V_{in }$', r'$V_{out }$', r'$W_{in }$', r'$W_{out }$', r'$U$'], loc='upper center', ncol=5, borderaxespad=0)
         else:
             fig.legend(labels=[r'$V_{in }$', r'$V_{out }$'], loc='upper center', ncol=3, borderaxespad=0)
         plt.tight_layout()
@@ -1365,14 +1378,6 @@ class blade:
                 # computing efficiency
                 eta[ii] = (W1**2 - W2iso**2) / (W1**2 - W2**2)   
 
-                #print(W1)
-                #print(W2iso)
-                #print(Ptr2iso)
-                #print(W2)
-                #print(Ptr2)
-                #print(eta[ii])
-                #print('')
-
             elif self.turboType == 'stator':
                 # data allocation 
                 Pt1   = self.inletSection[ii].Pt
@@ -1412,4 +1417,38 @@ class blade:
         print('-- minimum efficiency = {0:>4.3f} -- minimum efficiency position = {1:d}'.format(np.min(eta), np.argmin(eta)))
         print('-- maximum efficiency = {0:>4.3f} -- maximum efficiency position = {1:d}'.format(np.max(eta), np.argmax(eta)))
         print('*' * starDim)
-            
+
+    def computeMeanPressure(self, kind='total'):
+        '''
+        This function computes the mean pressure static/total of the outlet section of a blade
+            inputs:
+                kind    -- static/total
+        '''          
+
+        # field points allocation 
+        if kind == 'total':
+            # vector allocation 
+            PVec = [self.outletSection[ii].Pt for ii in range(self.nSection)]
+        elif kind == 'static':
+            # vector allocation 
+            PVec = [self.outletSection[ii].P for ii in range(self.nSection)]
+        
+        # field interpolation 
+        outletMidpoint = [self.outletSection[ii].midpoint for ii in range(self.nSection)]
+        PressureFunc   = interpolate.interp1d(outletMidpoint, PVec, kind='linear', bounds_error=False, fill_value='extrapolate')
+
+        # setting up integration extremes 
+        hub = self.outletSection[0].bottom
+        tip = self.outletSection[-1].tip
+
+        # computing mean pressure 
+        Pmean = integrate.quad(PressureFunc, hub, tip)/(tip - hub)
+
+        # printing results
+        starDim = 82
+        pressureDim = np.int16(np.floor(starDim - len(' MEAN PRESSURE '))/2)
+        print('*' * pressureDim + ' MEAN PRESSURE ' + '*' * pressureDim)
+        print('-- mean ' + kind + ' pressure = {0:>4.3f}'.format(Pmean))
+        print('*' * starDim)
+
+        return Pmean
