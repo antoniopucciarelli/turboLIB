@@ -2,6 +2,7 @@
 from turboClass import turboBlade
 from turboCoeff import similarity
 from turboCoeff import coeff
+from turboClass import bladeStudy
 from geometry import bladeGenerator
 import contextlib
 
@@ -58,6 +59,8 @@ with open(file_path, "w") as file:
         Tt1                = thermo1[3]
         Pt1                = thermo1[4]
 
+
+        
         # rotor study 
         # rotor object generation 
         print('\n\n-- ROTOR STUDY -- # blades {0:d}'.format(nRotorBlades))

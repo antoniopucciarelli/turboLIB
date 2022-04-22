@@ -17,7 +17,7 @@ class section:
             --- blade thermodynamics 
     '''
 
-    def __init__(self, midpoint, bottom, tip, height, pitch):
+    def __init__(self, midpoint, bottom, tip, height, pitch, solidity=1, tbc=0.1):
         '''
         Rotor object declaration: 
             variables:
@@ -34,7 +34,8 @@ class section:
         self.tip      = tip 
         self.height   = height 
         self.pitch    = pitch
-        self.solidity = 1.0
+        self.solidity = solidity
+        self.tbc      = tbc
         self.Cl       = 0.0
         self.s        = 0.0
         self.rD       = 0.0
@@ -51,7 +52,7 @@ class section:
         '''
 
         # rotation speed 
-        self.U  = U 
+        self.U = U 
         
         # absolute quantities
         self.Va    = Va 

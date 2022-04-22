@@ -38,13 +38,13 @@ class blade:
                 airfoilPath         -- path where are stored the airfoil properties 
         '''
 
-        self.ID                 = ID
-        self.turboType          = turboType
-        self.nSection           = nSection
-        self.omega              = omega
-        self.nBlade             = nBlade
-        self.inletBladeHeight   = inletBladeHeight
-        self.outletBladeHeight  = outletBladeHeight
+        self.ID                = ID
+        self.turboType         = turboType
+        self.nSection          = nSection
+        self.omega             = omega
+        self.nBlade            = nBlade
+        self.inletBladeHeight  = inletBladeHeight
+        self.outletBladeHeight = outletBladeHeight
         
         # section objects allocation 
         self.inletSection = self.allocateSection(hubRadius=inletHubRadius, bladeHeight=inletBladeHeight, nSection=nSection)
@@ -812,10 +812,9 @@ class blade:
         # plotting definition
         if plot:
             import random
-            fig = plt.figure()
             ax = plt.axes(projection ='3d')
             number_of_colors = self.nSection + 1
-            color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(number_of_colors)]
+            color = ["#"+''.join([random.choice('0123456789ABCDEF') for _ in range(6)]) for _ in range(number_of_colors)]
 
         # allocation of space for the blade geometry 
         self.blade = [] 
@@ -833,14 +832,20 @@ class blade:
             if self.turboType == 'rotor':
                 # angle allocation
                 if ii == - 1: 
-                    beta0 = self.inletSection[0].beta
-                    beta1 = self.outletSection[0].beta
+                    beta0    = self.inletSection[0].beta
+                    beta1    = self.outletSection[0].beta
+                    solidity = self.inletSection[0].solidity
+                    tbc      = self.inletSection[0].tbc
                 elif ii == self.nSection:
-                    beta0 = self.inletSection[-1].beta
-                    beta1 = self.outletSection[-1].beta
+                    beta0    = self.inletSection[-1].beta
+                    beta1    = self.outletSection[-1].beta
+                    solidity = self.inletSection[-1].solidity
+                    tbc      = self.inletSection[-1].tbc
                 else: 
-                    beta0 = self.inletSection[ii].beta
-                    beta1 = self.outletSection[ii].beta
+                    beta0    = self.inletSection[ii].beta
+                    beta1    = self.outletSection[ii].beta
+                    solidity = self.inletSection[ii].solidity
+                    tbc      = self.inletSection[ii].tbc
                 # chech on angle sign for adopting Lieblein model
                 if beta0 < 0:
                     beta0 = - beta0
@@ -850,14 +855,20 @@ class blade:
             elif self.turboType == 'stator':
                 # angle allocation 
                 if ii == - 1: 
-                    beta0 = self.inletSection[0].alpha
-                    beta1 = self.outletSection[0].alpha
+                    beta0    = self.inletSection[0].alpha
+                    beta1    = self.outletSection[0].alpha
+                    solidity = self.inletSection[0].solidity
+                    tbc      = self.inletSection[0].tbc
                 elif ii == self.nSection:
-                    beta0 = self.inletSection[-1].alpha
-                    beta1 = self.outletSection[-1].alpha
+                    beta0    = self.inletSection[-1].alpha
+                    beta1    = self.outletSection[-1].alpha
+                    solidity = self.inletSection[-1].solidity
+                    tbc      = self.inletSection[-1].tbc
                 else: 
-                    beta0 = self.inletSection[ii].alpha
-                    beta1 = self.outletSection[ii].alpha
+                    beta0    = self.inletSection[ii].alpha
+                    beta1    = self.outletSection[ii].alpha
+                    solidity = self.inletSection[ii].solidity
+                    tbc      = self.inletSection[ii].tbc
                 # chech on angle sign for adopting Lieblein model
                 if beta0 < 0:
                     beta0 = - beta0
@@ -865,10 +876,10 @@ class blade:
                     checkAngle = True 
 
             # optimal angles computation
-            i, delta, theta, solidity, tbc = bladeStudy.optimalAngles(beta0, beta1, printout=printout)
+            i, delta, theta = bladeStudy.optimalAngles(beta0, beta1, solidity, tbc, printout=printout)
 
             # computing optimal alpha angle
-            ac = 0.5 # this is valid only for NACA-65 -> different values of ac need different bladeStudy.alphaFunc()
+            ac    = 0.5 # this is valid only for NACA-65 -> different values of ac need different bladeStudy.alphaFunc()
             alpha = bladeStudy.alphaFunc(ac, solidity, theta, tbc)
 
             # computing stagger angle gamma 
@@ -876,7 +887,7 @@ class blade:
 
             # checking angles sign 
             if checkAngle:
-                i = - i 
+                i     = - i 
                 delta = - delta 
                 theta = - theta
                 alpha = - alpha 
@@ -924,8 +935,8 @@ class blade:
 
             # translation of the airfoil with respect to the hub position 
             if ii == -1: 
-                airfoilHub = airfoil 
-                translationHub = airfoilHub.middleChord()
+                airfoilHub        = airfoil 
+                translationHub    = airfoilHub.middleChord()
                 translationHub[2] = 0.0
             
             # translation of profiles
@@ -938,7 +949,7 @@ class blade:
                 height = self.inletSection[ii].midpoint - self.inletSection[0].bottom
 
             # airfoil section center
-            translationSection = airfoil.middleChord()
+            translationSection    = airfoil.middleChord()
             translationSection[0] = 0 
             translationSection[1] = 0
             # translation vector  
@@ -1050,9 +1061,9 @@ class blade:
 
             # loss computation -> Lieblein model 
             if variableSpeed:
-                lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0)
+                lossVec[ii], _ = losses.profileLosses(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0)
             else:
-                lossVec[ii], _ = losses.lossCoeff(W1=W1, W2=W2, beta1=beta1, beta2=beta2, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, solidity=solidity, D=0)
+                lossVec[ii], _ = losses.profileLosses(W1=W1, W2=W2, beta1=beta1, beta2=beta2, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, solidity=solidity, D=0)
 
             # compressibility effects
             if theta != 0 and i != 0:
@@ -1071,6 +1082,7 @@ class blade:
             # TIP LOSSES 
             # computing tip losses 
             if self.turboType == 'rotor':
+                # data allocation
                 mid       = np.int16(self.nSection/2)
                 r         = self.inletSection[ii].midpoint
                 VaInMid   = self.inletSection[mid].Va
@@ -1089,6 +1101,7 @@ class blade:
                 gammaMid  = self.inletSection[mid].gamma
                 Nrow      = self.ID
                 deltaPiso = self.inletSection[ii].Pt - self.inletSection[ii].P
+
                 # tip loss computation
                 lossVec[ii] = lossVec[ii] + losses.tipLosses(r, clearance, VaInMid, VaOutMid, VtInMid, VtOutMid, rhoInMid, rhoOutMid, rhotMid, r1Mid, r2Mid, rHub, rTip, nBlade, chordMid, gammaMid, Nrow, mFlux, deltaPiso)
 

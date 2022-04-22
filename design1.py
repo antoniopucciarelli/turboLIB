@@ -1,0 +1,82 @@
+# importing libraries
+from turboClass import turboBlade
+from turboCoeff import similarity
+from turboCoeff import coeff
+from turboClass import bladeStudy
+from geometry import bladeGenerator
+import contextlib
+import numpy as np
+
+# data
+# constraints
+mFlux = 100     # mass flux                [kg/s]
+betaP = 1.45    # compression ratio        [--]
+maxD  = 0.9     # maximum tip diameter     [m]
+maxR  = maxD/2  # maximum tip radius       [m]
+
+# inlet values
+Pt0 = 1e+5      # inlet total pressure     [Pa]
+Tt0 = 300       # inlet total temperature  [K]
+
+# stage hypothesis
+# reaction degree
+rD = 0.55
+# stage mean radius -> radius @ inlet blade midspan
+rMean = 0.325
+# rotor inlet tangential velocity
+Vt0Umean = 0
+
+# Vt0 = (1 - rD - lam/4) * Umean -> lam = 4 * (1 - rD - Vt0/Umean) 
+# psi = lam / 2 
+lam = (1 - rD - Vt0Umean) * 4 
+psiTarget = lam / 2
+
+# declaring blades
+nRotorBlades  = 28
+nStatorBlades = 28
+nSection      = 50
+
+# output file generation
+#file_path = 'compressor_' + str(rD) + '_' + str(rMean) + '_' + str(nRotorBlades) + '_' + str(nStatorBlades) + '.txt'
+#with open(file_path, "w") as file:
+#    with contextlib.redirect_stdout(file):
+# generation of mean line properties to be used for the blade assembly 
+adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, _, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True, save=False)
+
+# values allocation 
+Leu                = work[0]
+eta                = adimVec[2]
+omega              = rotationVec[1]
+b0                 = bladeVec[0]
+hubRadius          = rMean - b0/2
+rotorVaMeanInlet   = V0vec[0]
+rotorVtMeanInlet   = V0vec[1] 
+rotorVaMeanOutlet  = V0vec[0]
+rotorVtMeanOutlet  = V1vec[1]
+statorVaMeanInlet  = V0vec[0] 
+statorVtMeanInlet  = V1vec[1]
+statorVaMeanOutlet = V2vec[0]
+statorVtMeanOutlet = V2vec[1]
+Tt1                = thermo1[3]
+Pt1                = thermo1[4]
+
+V1a = V0vec[0]
+V1t = V0vec[1]
+V1  = np.sqrt(V1a**2 + V1t**2)
+
+W1a   = W0vec[0]
+W1t   = W0vec[1]
+W1    = np.sqrt(W1a**2 + W1t**2)
+beta1 = W0vec[2]
+
+V2a = V1vec[0]
+V2t = V1vec[1]
+V2  = np.sqrt(V1a**2 + V1t**2)
+
+W2a   = W1vec[0]
+W2t   = W1vec[1]
+W2    = np.sqrt(W2a**2 + W2t**2)
+beta2 = W1vec[2]
+bladeHeight = b0
+
+bladeStudy.optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=rMean, r2=rMean, Vt1=V1t, Vt2=V2t, Va1=V1a, bladeInterval=[25,50], ARvec=[1.2, 1.5, 1.8, 2], kind='std')

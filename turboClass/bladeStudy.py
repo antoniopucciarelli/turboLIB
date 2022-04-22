@@ -393,12 +393,14 @@ def thetaFunc(beta1, beta2, i, delta):
     
     return theta
 
-def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
+def optimalAngles(beta1, beta2, solidity, tbc=0.1, printout=False):
     '''
     This function computes the optimal incidence angle and deviation angle for a blade section given flow deflections.
         inputs: 
             beta1       -- inlet flow angle 
             beta2       -- outlet flow angle 
+            solidity    -- section solidity 
+            tbc         -- section thickness / chord
             printout    -- boolean value for the printout of the results
     '''
 
@@ -408,27 +410,23 @@ def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
     def deltaTheta(x):
         '''
         This function computes the error made by the choosing theta, tbc, solidity as blade properties.
-            inputs:
-                theta       -- choosed geometrical deflection angle
-                tbc         -- thickness / chord 
+            direct inputs:
+                x/theta     -- choosed geometrical deflection angle
+            global function inputs:
                 solidity    -- chord / pitch 
+                tbc         -- thickness / chord 
                 beta1       -- inlet flow angle 
                 beta2       -- outlet flow angle 
         '''
 
         # variable definition
-        theta    = x[0] # theta allocation
-        solidity = x[1] # solidity allocation
-        if tbc != 0.1:
-            tbc_ = x[2]  # tb/c allocation -> x[2] || in this case set as 0.1 by default 
-        else:
-            tbc_ = 0.1   # tb/c allocation -> if len(x) == 2 -> tbc set to 0.1 
+        theta = x[0] # theta allocation
 
         # incidence angle computation 
-        i = iFunc(beta1, tbc_, solidity, theta)
+        i = iFunc(beta1, tbc, solidity, theta)
 
         # deflection angle computation 
-        delta = deltaFunc(beta1, tbc_, solidity, theta)
+        delta = deltaFunc(beta1, tbc, solidity, theta)
 
         # error computation
         error = np.abs(thetaFunc(beta1, beta2, i, delta) - theta)
@@ -437,35 +435,18 @@ def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
 
     # bounds definition 
     epsilon = beta1 - beta2
-    solidityMin = 0.2
-    solidityMax = 2.2
-    if tbc != 0.1:
-        tbcMin = 0.1
-        tbcMax = tbc * 1.5
-        bounds = [(epsilon, None), (solidityMin, solidityMax), (tbcMin, tbcMax)] # [theta, solitidy, tb/c] 
-    else:
-        bounds = [(epsilon, None), (solidityMin, solidityMax)] # [theta, solitidy, tb/c] || it can be extended also to the study of tb/c with [..., (0.1, None)]
+    bounds  = [(epsilon, None)]
     
     # setting up initial study point 
-    if tbc != 0.1:
-        x0 = (epsilon*1.05, solidityMin*1.05, tbc*1.05) # (theta, solidity, tb/c) || it can be extended also to the study of tb/c with (..., 0.1)
-    else:
-        x0 = (epsilon*1.05, solidityMin*1.05)
+    x0 = (epsilon*1.05)
 
     # minimizing system 
     res = optimize.minimize(deltaTheta, x0, bounds=bounds, tol=5e-7)
 
     # data allocation
-    theta    = res.x[0]
-    solidity = res.x[1]
-    try:
-        tbc   = res.x[2]
-        i     = iFunc(beta1, res.x[2], res.x[1], res.x[0])
-        delta = deltaFunc(beta1, res.x[2], res.x[1], res.x[0])
-    except:
-        tbc   = 0.1
-        i     = iFunc(beta1, tbc, res.x[1], res.x[0])
-        delta = deltaFunc(beta1, tbc, res.x[1], res.x[0])
+    theta = res.x[0]
+    i     = iFunc(beta1, tbc, solidity, theta)
+    delta = deltaFunc(beta1, tbc, solidity, theta)
 
     # results printout
     if printout:
@@ -485,195 +466,70 @@ def optimalAngles(beta1, beta2, tbc=0.1, printout=False):
         print('-- solidity  = {0:>8.3f}'.format(solidity))
         print('-- tb/c      = {0:>8.3f}'.format(tbc))
 
-    return i, delta, theta, solidity, tbc
+    return i, delta, theta
 
-def bladeGenerator(kind, meanValues, b0, b1, Leu, inletValues, nSections, etaVec=1, hubChord=0, nBlades=0, STLname='cad', pos='/data/airfoils/naca65.txt', printout=False, plot=False):
+def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.2, 1.5, 1.8, 2], kind='equivalent', save=False):
     '''
-    This function generates the blade parameters at different sections of the blade. 
+    This function plots the profile losses at the mean line with respect to different aspect ratio and blade number.
         inputs:
-            kind        -- string value that defines rotor or stator 
-                        -- stator/rotor
-            meanValues  -- array that stores main mean values.
-                        -- [rMean, Umean, VaMean, VtMeanIn, VtMeanOut]
-            b0          -- inlet blade height
-            b1          -- outlet blade height
-            Leu         -- work made at each blade section 
-            inletValues -- array that stores the main inlet values for the blade
-                        -- [Tt0, Pt0, T0, P0]
-            nSections   -- # of section to study for the blade 
-            etaVec      -- losses distribution along the blade span 
-            hubChord    -- blade chord dimensions at the hub 
-            nBlades     -- # of blades on the machine
-            STLname     -- name for the .stl file 
-            printout    -- boolean value for the printing of the main parameters 
-            plot        -- boolean value for the plotting of the blade --> simple line composition plot -> for a better plot open in paraview/openscad the .stl model
-    '''
+            beta1           -- inlet relative flow angle @ mean line 
+            beta2           -- outlet relative flow angle @ mean line 
+            bladeHeight     -- inlet blade heigth
+            bladeInterval   -- array that stores the interval of # of blade study 
+            ARvec           -- aspect ratio (bladeHeight / chord) vector of study
+            kind            -- enables Leiblein std/equivalent losses
+                            -- std => profile losses + secondary flow losses
+                            -- equivalent => profile losses 
+            save            -- boolean valure for the saving of the plot
+    ''' 
 
-    # importing libraries 
-    from geometry import bladeGenerator 
+    # importing libraries
+    from turboCoeff import losses
+
+    # markersize
+    markersize=4
+
+    # setting up blade number vector 
+    bladeVec = np.arange(bladeInterval[0], bladeInterval[1]+1, 1)
+
+    # figure generation 
+    fig, ax = plt.subplots(nrows=2, ncols=1)
+
+    # computing profile losses for different blade number and aspect ratio
+    for AR in ARvec:
+        # allocating vectors
+        lossVec = np.zeros(len(bladeVec))
+        Dvec    = np.zeros(len(bladeVec))
+        # chord computation
+        chord = bladeHeight * AR 
     
-    # mean values allocation 
-    rMean     = meanValues[0]
-    Umean     = meanValues[1]
-    VaMean    = meanValues[2]
-    VtMeanIn  = meanValues[3]
-    VtMeanOut = meanValues[4]
-    omega     = Umean / rMean 
+        for ii,nBlades in enumerate(bladeVec):
+            # pitch computation
+            pitch = 2 * np.pi * rMean / nBlades
+            # solidity computation
+            solidity = chord / pitch 
+            
+            # loss and diffusion factor computation
+            lossVec[ii], Dvec[ii] = losses.profileLosses(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, kind=kind)
+
+        # plotting results
+        ax[0].plot(bladeVec, Dvec, linestyle='-', marker='o', markeredgewidth=1.5, markersize=markersize, markeredgecolor='black', label=r'$AR = {0:.2f}$'.format(AR))
+        ax[1].plot(bladeVec, lossVec, linestyle='-', marker='o', markeredgewidth=1.5, markersize=markersize, markeredgecolor='black', label=r'$AR = {0:.2f}$'.format(AR))
     
-    # inlet values allocation 
-    Tt0 = inletValues[0]
-    Pt0 = inletValues[1]
-    T0  = inletValues[2]
-    P0  = inletValues[3]
+    ax[0].legend(loc='upper left', bbox_to_anchor=[1,1])
+    ax[0].set_xlabel('# of blades')
+    ax[0].grid(linestyle='--')
+    if kind == 'std':
+        ax[0].set_ylabel(r'$D$')
+    else: 
+        ax[0].set_ylabel(r'$D_{eq }$')
 
-    # radial position generation 
-    # vector allocation 
-    r0Vec = np.zeros(nSections+1)
-    r1Vec = np.zeros(nSections+1)
+    #ax[1].legend()
+    ax[1].set_ylabel(r'$\bar{\omega }$')
+    ax[1].spines["bottom"].set_position(("axes", 1))
+    ax[1].spines["bottom"].set_position(("axes", 0))
+    ax[1].xaxis.set_ticks_position('top')
+    ax[1].grid(linestyle='--')
 
-    # elements computation 
-    for ii in range(nSections+1):
-        r0Vec[ii] = rMean - b0/2 + ii * b0/nSections
-        r1Vec[ii] = rMean - b1/2 + ii * b1/nSections
-
-    if plot:
-        import random
-        fig = plt.figure()
-        ax = plt.axes(projection ='3d')
-        number_of_colors = nSections+1
-        color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(number_of_colors)]
-
-    # generation of an object array 
-    blade = [] 
-
-    # boolean value for checkin if the studying the hub airfoil section --> needed for the span-wise discretization 
-    hubPos = True 
-
-    for ii in range(nSections+1):
-        # angle computation from a FREE VORTEX model 
-        _, _, _, _, _, _, angleVec, _, _ = bladeStudy(r0Vec[ii], r1Vec[ii], omega, rMean, VaMean, VtMeanIn, VtMeanOut, Leu, Tt0, T0, Pt0, P0, eta=1, printout=False, gamma=1.4, R=287.06)        
-        
-        # this modeling approach works with beta0 >= 0 and beta1 >= 0
-        # -- in order to adopt this model to each blade modeling a boolean 
-        #       value for the change is generated and then used later for the 
-        #       blade geoemetry generation
-        checkAngle = False  
-
-        if kind == 'rotor':
-            # angle allocation
-            beta0 = angleVec[2]
-            beta1 = angleVec[3]
-            # chech on angle sign for adopting Lieblein model
-            if beta0 < 0:
-                beta0 = - beta0
-                beta1 = - beta1
-                checkAngle = True 
-
-        elif kind == 'stator':
-            # angle allocation 
-            beta0 = angleVec[0]
-            beta1 = angleVec[1]
-            # chech on angle sign for adopting Lieblein model
-            if beta0 < 0:
-                beta0 = - beta0
-                beta1 = - beta1
-                checkAngle = True 
-
-        # optimal angles computation
-        i, delta, theta, solidity, tbc = optimalAngles(beta0, beta1, printout=False)
-
-        # computing optimal alpha angle
-        ac = 0.5 # this is valid only for NACA-65
-        alpha = alphaFunc(ac, solidity, theta, tbc)
-
-        # computing stagger angle gamma 
-        gamma = beta0 - alpha
-
-        # checking angles sign 
-        if checkAngle:
-            i = - i 
-            delta = - delta 
-            theta = - theta
-            alpha = - alpha 
-            gamma = - gamma 
-
-        # computing Cl 
-        Cl = ac * np.tan(np.deg2rad(theta)/4) / 0.0551515
-
-        # pitch computation with nBlades 
-        pitch = 2 * np.pi * r0Vec[ii] / nBlades 
-
-        # chord computation from solidity
-        chord = pitch * solidity 
-
-        # computing blade inclination 
-        #zeta = np.rad2deg(np.arctan2(r1Vec[ii]-r0Vec[ii], chord))
-        zeta = np.rad2deg(np.arcsin((r1Vec[ii]-r0Vec[ii])/chord))
-
-        # airfoil object generation 
-        airfoil = bladeGenerator.geometryData(pos)
-
-        # geometry fitting airfoil -> shape and chord dimensions
-        airfoil.geometryFitting(Cl=Cl, chord=chord, plot=False)
-
-        # airfoil 3D rotation
-        airfoil.geometryRotation(gamma, zeta, plot=False)
-
-        # translation of the airfoil with respect to the hub position 
-        if hubPos: 
-            airfoilHub = airfoil 
-            hubPos = False 
-            translationHub = airfoilHub.middleChord()
-            translationHub[2] = 0.0
-        
-        # translation of profiles
-        # translation vector 
-        height = r0Vec[ii] - r0Vec[0]
-        # airfoil section center
-        translationSection = airfoil.middleChord()
-        translationSection[0] = 0 
-        translationSection[1] = 0
-        # translation vector  
-        translationVec = translationHub + translationSection
-        # translation procedure 
-        airfoil.geometryTranslation(translationVec, height, plot=False)
-
-        if plot:
-            ax.plot3D(airfoil.upper[:,0], airfoil.upper[:,1], airfoil.upper[:,2], color=color[ii], label=str(ii))
-            ax.plot3D(airfoil.lower[:,0], airfoil.lower[:,1], airfoil.lower[:,2], color=color[ii])
-
-        # adding airfoil to blade object array
-        blade.append(airfoil)
-
-        # printout 
-        if printout:
-            starDim = 50
-            bladeDim = (starDim - len(' BLADE ANGLES '))/2 
-            print('*' * bladeDim + ' BLADE ANGLES ' + '*' * bladeDim)
-            print('r             = {0:.3f}'.format(r0Vec[ii]))
-            print('i             = {0:.3f}'.format(i))
-            print('delta         = {0:.3f}'.format(delta))
-            print('alpha         = {0:.3f}'.format(alpha))
-            print('beta0 - beta1 = {0:.3f}'.format(beta0 - beta1))
-            print('gamma         = {0:.3f}'.format(gamma))
-            print('theta         = {0:.3f}'.format(theta))
-            print('Cl            = {0:.3f}'.format(np.abs(Cl)))
-            print('s             = {0:.3f}'.format(pitch))
-            print('c             = {0:.3f}'.format(chord))
-            print('zeta          = {0:.3f}\n'.format(zeta))
-            print('*' * starDim + '\n')
-
-    if plot:
-        if nSections < 10:
-            plt.legend()
-        plt.title('Blade')
-        plt.show()
-
-    # STL file generation 
-    bladeGenerator.STLsaving(blade, STLname=STLname)
-
-    # setting up return values 
-    inlet = [blade[0].chord, blade[0].camber[0,0], blade[0].camber[0,1], blade[0].camber[0,2], blade[0].camber[-1,0], blade[0].camber[-1,1], blade[0].camber[-1,2]]
-    outlet = [blade[-1].chord, blade[-1].upper[0,0], blade[-1].upper[0,1], blade[-1].upper[0,2], blade[-1].upper[-1,0], blade[-1].upper[-1,1], blade[-1].upper[-1,2]]
-
-    return inlet, outlet 
+    fig.tight_layout()
+    plt.show()

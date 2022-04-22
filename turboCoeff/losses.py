@@ -62,7 +62,7 @@ def DeqFactor(W1=0, W2=0, beta1=0, beta2=0, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, sol
 
     return Deq
 
-def lossCoeff(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, kind='equivalent', plot=False, save=False, position='losses.pgf'):
+def profileLosses(W1=0, W2=0, beta1=0, beta2=0, solidity=1, D=0, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, kind='equivalent', plot=False, save=False, position='losses.pgf'):
     '''
     This function computes the loss coefficient in a blade section (2D) relating it to a diffusor section (3D). It ONLY applies for design incidence angles.
         inputs:
