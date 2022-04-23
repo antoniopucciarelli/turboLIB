@@ -50,48 +50,6 @@ class blade:
         self.inletSection = self.allocateSection(hubRadius=inletHubRadius, bladeHeight=inletBladeHeight, nSection=nSection)
         self.outletSection = self.allocateSection(hubRadius=outletHubRadius, bladeHeight=outletBladeHeight, nSection=nSection)
 
-    def allocateSection(self, hubRadius=0, tipRadius=0, bladeHeight=0, nSection=0, plot=False):
-        '''
-        This function allocates the section vector in the blade object.
-            inputs:
-                hubRadius   -- radius of the hub 
-                tipRadius   -- radius of the tip 
-                bladeHeight -- blade height 
-                nSection    -- # of sections the blade is composed of 
-        '''
-
-        # computing main quantities 
-        sectionVec = []
-        height = bladeHeight/nSection
-
-        # loop generation for the section generation
-        for ii in range(nSection):
-            if hubRadius != 0:
-                midpoint = hubRadius + ii * height + height / 2 
-                bottom   = hubRadius + ii * height
-                tip      = hubRadius + (ii+1) * height
-                pitch    = 2 * np.pi * midpoint / self.nBlade
-            elif tipRadius != 0:
-                midpoint = tipRadius - ii * height - height/2
-                bottom   = tipRadius - (ii+1) * height
-                tip      = tipRadius - ii * height 
-                pitch    = 2 * np.pi * midpoint / self.nBlade
-
-            # appending section object to the vector 
-            sectionVec.append(section(midpoint, bottom, tip, height, pitch))
-
-        if plot:
-            fig = plt.figure(figsize=(8,8))
-            for ii in range(len(sectionVec)):
-                plt.plot(0, sectionVec[ii].midpoint, 'r*')
-                plt.plot(0, sectionVec[ii].tip, 'ob')
-                plt.plot(0, sectionVec[ii].bottom, 'ok')
-                plt.plot(0, sectionVec[ii].pitch, 'og')
-                plt.grid(linestyle='--')
-            plt.show()
-
-        return sectionVec 
-
     def plotMeridional(self):
         '''
         This function plots the blade sections in the meridional plane.
@@ -397,37 +355,169 @@ class blade:
         else:
             plt.show()
 
-    def allocateKinetics(self, rMean, VtMean, VaMean, omega, section='inlet'):
+    def allocateSection(self, hubRadius=0, tipRadius=0, bladeHeight=0, nSection=0, plot=False):
         '''
-        This function allocates the velocity vectors at each section points using the FREE VORTEX model.
+        This function allocates the section vector in the blade object.
+            inputs:
+                hubRadius   -- radius of the hub 
+                tipRadius   -- radius of the tip 
+                bladeHeight -- blade height 
+                nSection    -- # of sections the blade is composed of 
+        '''
+
+        # computing main quantities 
+        sectionVec = []
+        height     = bladeHeight/nSection
+
+        # loop generation for the section generation
+        for ii in range(nSection):
+            if hubRadius != 0:
+                midpoint = hubRadius + ii * height + height / 2 
+                bottom   = hubRadius + ii * height
+                tip      = hubRadius + (ii+1) * height
+                pitch    = 2 * np.pi * midpoint / self.nBlade
+            elif tipRadius != 0:
+                midpoint = tipRadius - ii * height - height/2
+                bottom   = tipRadius - (ii+1) * height
+                tip      = tipRadius - ii * height 
+                pitch    = 2 * np.pi * midpoint / self.nBlade
+
+            # appending section object to the vector 
+            sectionVec.append(section(midpoint, bottom, tip, height, pitch))
+
+        if plot:
+            fig = plt.figure(figsize=(8,8))
+            for ii in range(len(sectionVec)):
+                plt.plot(0, sectionVec[ii].midpoint, 'r*')
+                plt.plot(0, sectionVec[ii].tip, 'ob')
+                plt.plot(0, sectionVec[ii].bottom, 'ok')
+                plt.plot(0, sectionVec[ii].pitch, 'og')
+                plt.grid(linestyle='--')
+            plt.show()
+
+        return sectionVec 
+
+    def allocateKinetics(self, rMean=0, VtMean=0, VaMean=0, omega=0, Vt1=0, Vt2=0, rMean1=0, rMean2=0, section='inlet', kind='FV', a=0, b=0, n=0):
+        '''
+        This function allocates the velocity vectors at each section points using kind model.
             inputs:
                 rMean   -- mean radius
                 VtMean  -- tangential mean velocity 
                 VaMean  -- axial mean velocity 
                 omega   -- angular velocity
                 section -- inlet/outlet section 
+                kind    -- vortex model 
+                        -- FV  => free vortex model 
+                        -- VVD => variable vortex design
+                        -- MVD => mixed vorted design
+                        -- C   => constant angle model 
+
         '''
 
-        if section == 'inlet':
-            for ii in range(self.nSection):
-                # tangential speed computation with respect to the FREE VORTEX model 
-                Vt = VtMean * rMean / self.inletSection[ii].midpoint
-                # rotation speed 
-                U = self.inletSection[ii].midpoint * omega 
+        if kind == 'FV':
+            if section == 'inlet':
+                for ii in range(self.nSection):
+                    # tangential speed computation with respect to the FREE VORTEX model 
+                    Vt = VtMean * rMean / self.inletSection[ii].midpoint
+                    # rotation speed 
+                    U = self.inletSection[ii].midpoint * omega 
 
-                # data allocation in section object
-                self.inletSection[ii].allocateKinetics(VaMean, Vt, U)
-        elif section == 'outlet':
-            for ii in range(self.nSection):
-                # tangential speed computation with respect to the FREE VORTEX model 
-                Vt = VtMean * rMean / self.outletSection[ii].midpoint
-                # rotation speed 
-                U = self.outletSection[ii].midpoint * omega 
+                    # data allocation in section object
+                    self.inletSection[ii].allocateKinetics(VaMean, Vt, U)
+            elif section == 'outlet':
+                for ii in range(self.nSection):
+                    # tangential speed computation with respect to the FREE VORTEX model 
+                    Vt = VtMean * rMean / self.outletSection[ii].midpoint
+                    # rotation speed 
+                    U = self.outletSection[ii].midpoint * omega 
+
+                    print('Inlet change study')
+                    print('Section = ', ii)
+                    print('VaMean  = ', VaMean)
+                    print('alpha   = ', self.inletSection[ii].beta)
+                    print('Vt      = ', self.inletSection[ii].Vt)
+                    
+                    # data allocation in section object
+                    self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
+
+                    print('Section = ', ii)
+                    print('VaMean  = ', VaMean)
+                    print('Vtcomp  = ', Vt)
+                    print('alpha   = ', self.inletSection[ii].beta)
+                    print('Vt      = ', self.inletSection[ii].Vt)
+
+        elif kind == 'VVD':
+            # variables computation with respect to n 
+            a = (Vt2 * rMean2 + Vt1 * rMean1) / (rMean1**(n+1) + rMean2**(n+1))
+            b = a * rMean1**(n+1) - Vt1 * rMean1
+
+            if section == 'inlet':
+                for ii in range(self.nSection):
+                    # computing variable vortex design inlet velocity
+                    r = self.inletSection[ii].midpoint 
+                    Vt = a * r**n - b / r    
+                    # rotation speed 
+                    U = omega * r 
+
+                    # data allocation
+                    self.inletSection[ii].allocateKinetics(VaMean, Vt, U)    
+            elif section == 'outlet':
+                for ii in range(self.nSection):
+                    # computing variable vortex design inlet velocity
+                    r = self.outletSection[ii].midpoint 
+                    Vt = a * r**n + b / r    
+                    # rotation speed 
+                    U = omega * r 
+
+                    # data allocation
+                    self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
+
+        elif kind == 'MVD':
+            if section == 'inlet':
+                # variables computation 
+                a = (Vt1 - b * rMean1) * rMean1
                 
-                # data allocation in section object
-                self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
+                for ii in range(self.nSection):
+                    # computing mixed vortex design inlet velocity
+                    r = self.inletSection[ii].midpoint
+                    Vt = a / r + b * r
 
-    def allocateThermodynamics(self, Tt0, Pt0, eta, R=287.06, gamma=1.4):
+                    # rotation speed 
+                    U = omega * r
+
+                    # data allocation 
+                    self.inletSection[ii].allocateKinetics(VaMean, Vt, U)
+            elif section == 'outlet':
+                # variables computation 
+                a = (Vt2 - b * rMean2) * rMean2
+
+                for ii in range(self.nSection):
+                    # computing mixed vortex design outlet velocity 
+                    r = self.outletSection[ii].midpoint
+                    Vt = a / r + b * r 
+                    
+                    # rotation speed 
+                    U = omega * r 
+
+                    # data allocation 
+                    self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
+        else:
+            raise ValueError("Invalid vortex model")
+
+        #if section == 'inlet':
+        #    print('Inlet section')
+        #    for ii in range(self.nSection):
+        #        print('Section = ', ii)
+        #        print('alpha   = ', self.inletSection[ii].beta)
+        #        print('Vt      = ', self.inletSection[ii].Vt)
+        #else:
+        #    print('Outlet section')
+        #    for ii in range(self.nSection):
+        #        print('Section = ', ii)
+        #        print('alpha   = ', self.outletSection[ii].beta)
+        #        print('Vt      = ', self.outletSection[ii].Vt)
+
+    def allocateThermodynamics(self, Tt0=0, Pt0=0, eta=1, R=287.06, gamma=1.4):
         '''
         This function allocates the thermodynamic properties to each section.
             inputs:
@@ -441,6 +531,11 @@ class blade:
         cP = gamma / (gamma - 1) * R
 
         for ii in range(self.nSection):
+            # check if the thermodynamics properites are not already computed for the inlet section
+            if Tt0 == 0 and Pt0 == 0:
+                Tt0 = self.inletSection[ii].Tt
+                Pt0 = self.inletSection[ii].Pt
+
             # temperature computation 
             T0 = Tt0 - self.inletSection[ii].V**2 / (2 * cP)
 
@@ -506,7 +601,45 @@ class blade:
             self.inletSection[ii].allocateThermodynamics(Tt=Tt0, Pt=Pt0, T=T0, P=P0, Ttr=Tt0r, Ptr=Pt0r, rho=rho0, rhot=rhot0, rhotr=rhot0r, s=self.inletSection[ii].s)
             self.outletSection[ii].allocateThermodynamics(Tt=Tt1, Pt=Pt1, T=T1, P=P1, Ttr=Tt1r, Ptr=Pt1r, rho=rho1, rhot=rhot1, rhotr=rhot1r, s=self.outletSection[ii].s)
 
-    def radialEquilibrium(self, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=0.5, tolFlux=1e-2, NISRE=True, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
+    def allocateShape(self, bladeHeight, AR, nBlade):
+        '''
+        This function allocates the section geometry. The allocation comes from a first analysis of the profile + secondary losses on the mean line.
+            inputs:
+                bladeHeight -- inlet blade height
+                AR          -- aspect ratio -> bladeHeight / chord
+                nBlade      -- blade number 
+        '''
+
+        # blade number allocation
+        self.nBlade = nBlade
+
+        # computing chord, pitch and solidity
+        try:
+            for ii in range(self.nSection):
+                chord    = bladeHeight * AR[ii]
+                pitch    = self.inletSection[ii].midpoint * 2 * np.pi / nBlade
+                solidity = chord / pitch
+                # allocate data  
+                self.inletSection[ii].chord     = chord 
+                self.inletSection[ii].pitch     = pitch 
+                self.inletSection[ii].solidity  = solidity
+                self.outletSection[ii].chord    = chord 
+                self.outletSection[ii].pitch    = pitch 
+                self.outletSection[ii].solidity = solidity
+        except:
+            for ii in range(self.nSection):
+                chord    = bladeHeight * AR
+                pitch    = self.inletSection[ii].midpoint * 2 * np.pi / nBlade
+                solidity = chord / pitch
+                # allocate data  
+                self.inletSection[ii].chord     = chord 
+                self.inletSection[ii].pitch     = pitch 
+                self.inletSection[ii].solidity  = solidity
+                self.outletSection[ii].chord    = chord 
+                self.outletSection[ii].pitch    = pitch 
+                self.outletSection[ii].solidity = solidity
+
+    def radialEquilibrium(self, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, NISRE=True, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -721,12 +854,13 @@ class blade:
                 for ii in range(self.nSection): 
                     # static temperature computation 
                     self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
-            
+
                     # rotor and stator work with different total pressures
                     # rotor -> total relative pressure
                     # stator -> total pressure 
                     if self.turboType == 'rotor':
                         # total relative temperature computation
+                        #print(self.outletSection[ii].V**2 - self.outletSection[ii].W**2)
                         self.outletSection[ii].Ttr = self.outletSection[ii].Tt - (self.outletSection[ii].V**2 - self.outletSection[ii].W**2) / (2 * cP)
                         # total pressure computation 
                         self.outletSection[ii].Pt = self.outletSection[ii].Ptr * (self.outletSection[ii].Tt/self.outletSection[ii].Ttr)**(gamma/(gamma-1))
@@ -1222,7 +1356,7 @@ class blade:
         print('-- minimum rho*            = {0:>8.3f} kg/m3 -- minimum W*          = {1:>8.3f} m/s'.format(np.min(rhotrVec), np.min(WrVec)))
         print('*' * starDim)
 
-    def copySection(self, blade, fromSection='outlet', toSection='inlet', R=287.06, gamma=1.4):
+    def copySection(self, blade, fromSection='outlet', toSection='inlet'):
         '''
         This function copies the properties of blade another section. 
         The blades must have the same number of sections. The interpolation of data is not available (till now).
@@ -1235,23 +1369,117 @@ class blade:
                             -- inlet/outlet
         '''
 
-        # heat coefficient 
-        cP = gamma / (gamma - 1) * R
-
         if fromSection == 'outlet':
             if toSection == 'inlet':
                 for ii in range(self.nSection):
-                    self.inletSection[ii] = blade.outletSection[ii]
+                    # kinetics allocation 
+                    self.inletSection[ii].Va    = blade.outletSection[ii].Va
+                    self.inletSection[ii].Vt    = blade.outletSection[ii].Vt
+                    self.inletSection[ii].V     = blade.outletSection[ii].V
+                    self.inletSection[ii].alpha = blade.outletSection[ii].alpha
+                    self.inletSection[ii].Wa    = blade.outletSection[ii].Wa
+                    self.inletSection[ii].Wt    = blade.outletSection[ii].Wt
+                    self.inletSection[ii].W     = blade.outletSection[ii].W
+                    self.inletSection[ii].beta  = blade.outletSection[ii].beta
+                    # thermodynamics allocation 
+                    self.inletSection[ii].P     = blade.outletSection[ii].P
+                    self.inletSection[ii].T     = blade.outletSection[ii].T
+                    self.inletSection[ii].rho   = blade.outletSection[ii].rho
+                    self.inletSection[ii].Pt    = blade.outletSection[ii].Pt
+                    self.inletSection[ii].Tt    = blade.outletSection[ii].Tt
+                    self.inletSection[ii].rhot  = blade.outletSection[ii].rhot
+                    self.inletSection[ii].Ptr   = blade.outletSection[ii].Ptr
+                    self.inletSection[ii].Ttr   = blade.outletSection[ii].Ttr
+                    self.inletSection[ii].rhotr = blade.outletSection[ii].rhotr
+                    self.inletSection[ii].a     = blade.outletSection[ii].a
+                    self.inletSection[ii].M     = blade.outletSection[ii].M
+                    self.inletSection[ii].Mr    = blade.outletSection[ii].Mr
+                    self.inletSection[ii].s     = blade.outletSection[ii].s
+                    # section shape properties 
+                    self.inletSection[ii].gamma = blade.outletSection[ii].gamma
+
             elif toSection == 'outlet':
                 for ii in range(self.nSection):
-                    self.outletSection[ii] = blade.outletSection[ii]
-        else:
+                    # kinetics allocation 
+                    self.outletSection[ii].Va    = blade.outletSection[ii].Va
+                    self.outletSection[ii].Vt    = blade.outletSection[ii].Vt
+                    self.outletSection[ii].V     = blade.outletSection[ii].V
+                    self.outletSection[ii].alpha = blade.outletSection[ii].alpha
+                    self.outletSection[ii].Wa    = blade.outletSection[ii].Wa
+                    self.outletSection[ii].Wt    = blade.outletSection[ii].Wt
+                    self.outletSection[ii].W     = blade.outletSection[ii].W
+                    self.outletSection[ii].beta  = blade.outletSection[ii].beta
+                    # thermodynamics allocation 
+                    self.outletSection[ii].P     = blade.outletSection[ii].P
+                    self.outletSection[ii].T     = blade.outletSection[ii].T
+                    self.outletSection[ii].rho   = blade.outletSection[ii].rho
+                    self.outletSection[ii].Pt    = blade.outletSection[ii].Pt
+                    self.outletSection[ii].Tt    = blade.outletSection[ii].Tt
+                    self.outletSection[ii].rhot  = blade.outletSection[ii].rhot
+                    self.outletSection[ii].Ptr   = blade.outletSection[ii].Ptr
+                    self.outletSection[ii].Ttr   = blade.outletSection[ii].Ttr
+                    self.outletSection[ii].rhotr = blade.outletSection[ii].rhotr
+                    self.outletSection[ii].a     = blade.outletSection[ii].a
+                    self.outletSection[ii].M     = blade.outletSection[ii].M
+                    self.outletSection[ii].Mr    = blade.outletSection[ii].Mr
+                    self.outletSection[ii].s     = blade.outletSection[ii].s
+                    # section shape properties 
+                    self.outletSection[ii].gamma = blade.outletSection[ii].gamma
+        elif fromSection == 'inlet':
             if toSection == 'inlet':
                 for ii in range(self.nSection):
-                    self.inletSection[ii] = blade.inletSection[ii]
+                    # kinetics allocation 
+                    self.inletSection[ii].Va    = blade.inletSection[ii].Va
+                    self.inletSection[ii].Vt    = blade.inletSection[ii].Vt
+                    self.inletSection[ii].V     = blade.inletSection[ii].V
+                    self.inletSection[ii].alpha = blade.inletSection[ii].alpha
+                    self.inletSection[ii].Wa    = blade.inletSection[ii].Wa
+                    self.inletSection[ii].Wt    = blade.inletSection[ii].Wt
+                    self.inletSection[ii].W     = blade.inletSection[ii].W
+                    self.inletSection[ii].beta  = blade.inletSection[ii].beta
+                    # thermodynamics allocation 
+                    self.inletSection[ii].P     = blade.inletSection[ii].P
+                    self.inletSection[ii].T     = blade.inletSection[ii].T
+                    self.inletSection[ii].rho   = blade.inletSection[ii].rho
+                    self.inletSection[ii].Pt    = blade.inletSection[ii].Pt
+                    self.inletSection[ii].Tt    = blade.inletSection[ii].Tt
+                    self.inletSection[ii].rhot  = blade.inletSection[ii].rhot
+                    self.inletSection[ii].Ptr   = blade.inletSection[ii].Ptr
+                    self.inletSection[ii].Ttr   = blade.inletSection[ii].Ttr
+                    self.inletSection[ii].rhotr = blade.inletSection[ii].rhotr
+                    self.inletSection[ii].a     = blade.inletSection[ii].a
+                    self.inletSection[ii].M     = blade.inletSection[ii].M
+                    self.inletSection[ii].Mr    = blade.inletSection[ii].Mr
+                    self.inletSection[ii].s     = blade.inletSection[ii].s
+                    # section shape properties 
+                    self.inletSection[ii].gamma = blade.inletSection[ii].gamma
             elif toSection == 'outlet':
                 for ii in range(self.nSection):
-                    self.outletSection[ii] = blade.inletSection[ii]
+                    # kinetics allocation 
+                    self.outletSection[ii].Va    = blade.inletSection[ii].Va
+                    self.outletSection[ii].Vt    = blade.inletSection[ii].Vt
+                    self.outletSection[ii].V     = blade.inletSection[ii].V
+                    self.outletSection[ii].alpha = blade.inletSection[ii].alpha
+                    self.outletSection[ii].Wa    = blade.inletSection[ii].Wa
+                    self.outletSection[ii].Wt    = blade.inletSection[ii].Wt
+                    self.outletSection[ii].W     = blade.inletSection[ii].W
+                    self.outletSection[ii].beta  = blade.inletSection[ii].beta
+                    # thermodynamics allocation 
+                    self.outletSection[ii].P     = blade.inletSection[ii].P
+                    self.outletSection[ii].T     = blade.inletSection[ii].T
+                    self.outletSection[ii].rho   = blade.inletSection[ii].rho
+                    self.outletSection[ii].Pt    = blade.inletSection[ii].Pt
+                    self.outletSection[ii].Tt    = blade.inletSection[ii].Tt
+                    self.outletSection[ii].rhot  = blade.inletSection[ii].rhot
+                    self.outletSection[ii].Ptr   = blade.inletSection[ii].Ptr
+                    self.outletSection[ii].Ttr   = blade.inletSection[ii].Ttr
+                    self.outletSection[ii].rhotr = blade.inletSection[ii].rhotr
+                    self.outletSection[ii].a     = blade.inletSection[ii].a
+                    self.outletSection[ii].M     = blade.inletSection[ii].M
+                    self.outletSection[ii].Mr    = blade.inletSection[ii].Mr
+                    self.outletSection[ii].s     = blade.inletSection[ii].s
+                    # section shape properties 
+                    self.outletSection[ii].gamma = blade.inletSection[ii].gamma
 
     def velocityTriangles(self, sectionNumber, save=False, position='velocityTriangle.pgf'):
         '''
@@ -1299,17 +1527,12 @@ class blade:
             # plotting quiver 
             ax[ii].quiver(0, 0, VaIn, VtIn, color='firebrick', angles='xy', scale_units='xy', scale=1)
             ax[ii].quiver(0, 0, VaOut, VtOut, color='royalblue', angles='xy', scale_units='xy', scale=1)            
-            #deltaVx = VaOut - VaIn 
-            #deltaVy = VtOut - VtIn
-            #ax[ii].quiver(VaIn, VtIn, deltaVx, deltaVy, color='slategray', angles='xy', scale_units='xy', scale=1)
             try:
                 # if the blade is from a rotor
                 ax[ii].quiver(0, 0, WaIn, WtIn, color='forestgreen', angles='xy', scale_units='xy', scale=1)
                 ax[ii].quiver(0, 0, WaOut, WtOut, color='darkorange', angles='xy', scale_units='xy', scale=1)
-                ax[ii].quiver(-5, -U/2, 0, U, color='black', angles='xy', scale_units='xy', scale=1)
-                #deltaWx = WaOut - WaIn 
-                #deltaWy = WtOut - WtIn
-                #ax[ii].quiver(WaIn, WtIn, deltaWx, deltaWy, color='black', angles='xy', scale_units='xy', scale=1)
+                ax[ii].quiver(WaIn, WtIn, 0, U, color='black', angles='xy', scale_units='xy', scale=1)
+                ax[ii].quiver(WaOut, WtOut, 0, U, color='black', angles='xy', scale_units='xy', scale=1)
             except:
                 pass
 
@@ -1455,13 +1678,13 @@ class blade:
         tip = self.outletSection[-1].tip
 
         # computing mean pressure 
-        Pmean = integrate.quad(PressureFunc, hub, tip)/(tip - hub)
+        Pmean = integrate.quad(PressureFunc, hub, tip, epsrel=1e-3)[0]/(tip - hub)
 
         # printing results
         starDim = 82
         pressureDim = np.int16(np.floor(starDim - len(' MEAN PRESSURE '))/2)
         print('*' * pressureDim + ' MEAN PRESSURE ' + '*' * pressureDim)
-        print('-- mean ' + kind + ' pressure = {0:>4.3f}'.format(Pmean))
+        print('-- mean ', kind, ' pressure = {0:>4.3f}'.format(Pmean))
         print('*' * starDim)
 
         return Pmean

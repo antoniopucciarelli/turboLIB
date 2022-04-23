@@ -468,7 +468,7 @@ def optimalAngles(beta1, beta2, solidity, tbc=0.1, printout=False):
 
     return i, delta, theta
 
-def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.2, 1.5, 1.8, 2], kind='equivalent', save=False):
+def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.5, 1.7, 1.8, 2], kind='equivalent', save=False, position='bladeNumber.png'):
     '''
     This function plots the profile losses at the mean line with respect to different aspect ratio and blade number.
         inputs:
@@ -481,6 +481,7 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
                             -- std => profile losses + secondary flow losses
                             -- equivalent => profile losses 
             save            -- boolean valure for the saving of the plot
+            position        -- saving path of the plot
     ''' 
 
     # importing libraries
@@ -512,6 +513,9 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
             # loss and diffusion factor computation
             lossVec[ii], Dvec[ii] = losses.profileLosses(W1=W1, W2=W2, beta1=beta1, beta2=beta2, solidity=solidity, D=0, r1=r1, r2=r2, Vt1=Vt1, Vt2=Vt2, Va1=Va1, kind=kind)
 
+            # end wall losses
+            lossVec[ii] = lossVec[ii] + losses.lossHowell(beta1=beta1, beta2=beta2, solidity=solidity, pitch=pitch, bladeHeight=bladeHeight, endWall=True)
+
         # plotting results
         ax[0].plot(bladeVec, Dvec, linestyle='-', marker='o', markeredgewidth=1.5, markersize=markersize, markeredgecolor='black', label=r'$AR = {0:.2f}$'.format(AR))
         ax[1].plot(bladeVec, lossVec, linestyle='-', marker='o', markeredgewidth=1.5, markersize=markersize, markeredgecolor='black', label=r'$AR = {0:.2f}$'.format(AR))
@@ -524,12 +528,15 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
     else: 
         ax[0].set_ylabel(r'$D_{eq }$')
 
-    #ax[1].legend()
-    ax[1].set_ylabel(r'$\bar{\omega }$')
+    ax[1].set_ylabel(r'$\bar{\omega}_{Howell} + \bar{\omega}_{endWall}$')
     ax[1].spines["bottom"].set_position(("axes", 1))
     ax[1].spines["bottom"].set_position(("axes", 0))
     ax[1].xaxis.set_ticks_position('top')
     ax[1].grid(linestyle='--')
 
     fig.tight_layout()
-    plt.show()
+
+    if save:
+        fig.savefig(position)
+    else:
+        plt.show()

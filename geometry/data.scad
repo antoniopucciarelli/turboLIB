@@ -7,12 +7,12 @@ PROGRAM DESCRIPTION
 
 // VARIABLES ALLOCATION
 // rotor properties
-nRotorBlades         = 28;
+nRotorBlades         = 30;
 rotorHubInletCoords  = [0.0, 0.0, 0.19979275302542335];
-rotorHubOutletCoords = [0.0983789139078375, 0.007018149592698053, 0.19979275302542335];
+rotorHubOutletCoords = [0.44267194622842015, 0.04706124604114874, 0.19979275302542335];
 rotorName            = "../container/rotor.stl";
 // stator properties
-nStatorBlades         = 28;
+nStatorBlades         = 35;
 statorHubInletCoords  = [0.0, 0.0, 0.19979275302542335];
-statorHubOutletCoords = [0.08704197009664004, 0.046392376160981644, 0.19979275302542335];
+statorHubOutletCoords = [0.3788844021642185, -0.04520238906323442, 0.19979275302542335];
 statorName            = "../container/stator.stl";
