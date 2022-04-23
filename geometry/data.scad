@@ -9,10 +9,10 @@ PROGRAM DESCRIPTION
 // rotor properties
 nRotorBlades         = 30;
 rotorHubInletCoords  = [0.0, 0.0, 0.19979275302542335];
-rotorHubOutletCoords = [0.44267194622842015, 0.04706124604114874, 0.19979275302542335];
+rotorHubOutletCoords = [0.44267194614390243, 0.04706124683614711, 0.19979275302542335];
 rotorName            = "../container/rotor.stl";
 // stator properties
 nStatorBlades         = 35;
 statorHubInletCoords  = [0.0, 0.0, 0.19979275302542335];
-statorHubOutletCoords = [0.3788844021642185, -0.04520238906323442, 0.19979275302542335];
+statorHubOutletCoords = [0.41180127400377936, -0.08476628711465628, 0.19979275302542335];
 statorName            = "../container/stator.stl";

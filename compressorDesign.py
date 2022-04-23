@@ -20,9 +20,9 @@ Tt0 = 300       # inlet total temperature  [K]
 
 # stage hypothesis
 # reaction degree
-rD = 0.55 # 0.7
+rD = 0.55
 # stage mean radius -> radius @ inlet blade midspan
-rMean = 0.325 # 0.32
+rMean = 0.325
 # rotor inlet tangential velocity
 Vt0Umean = 0
 

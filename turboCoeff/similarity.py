@@ -950,3 +950,181 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0Umean
         fig1.savefig(position1, bbox_inches='tight')
     else:
         plt.show()
+
+def propertiesStudy(mFlux, betaP, Pt0, Tt0, rDmin=0.5, rDmax=0.73, rMeanMin=0.2, rMeanMax=0.35, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf', gamma=1.4, R=287.06):
+    '''
+    This function allows the study of the rotor tip and rotor hub given as input some constraints.
+        inputs:
+            ** constraints ** 
+            mFlux       -- mass flux 
+            betaP       -- total pressure ratio 
+            rMean       -- blade mean radius
+            Pt0         -- inlet total pressure 
+            Tt0         -- inlet total temperature 
+            ** for analysis ** 
+            rDmin       -- minimum value of study for the reaction degree
+            rDmax       -- maximum value of study for the reaciton degree 
+            Vt0UmeanMin -- Vt0/Umean minimum value of study
+            Vt0UmeanMax -- Vt0/Umean maximum value of study 
+            save        -- boolean value for the saving of the plots 
+            position0   -- path where to save the first figure 
+            position1   -- path where to save the second figure
+    '''
+
+    # vector allocation for the properties study 
+    rDarray = np.linspace(rDmin, rDmax, 30)
+    rMeanArray = np.linspace(rMeanMin, rMeanMax, 30)
+
+    if save:
+        plt.rcParams['text.usetex'] = True
+
+    # figure allocation
+    #fig0, [[ax1_11, ax1_12, ax1_13, ax1_14, ax1_15], [ax1_21, ax1_22, ax1_23, ax1_24, ax1_25]] = plt.subplots(nrows=2, ncols=5, figsize=(20,10))
+    #fig1, [[ax2_11, ax2_12, ax2_13, ax2_14, ax2_15, ax2_16], [ax2_21, ax2_22, ax2_23, ax2_24, ax2_25, ax2_26]] = plt.subplots(nrows=2, ncols=6, figsize=(20,10))
+    #fig, ax = plt.subplots(ncols=1,nrows=1)
+
+    # mesh generation 
+    rD, rMean = np.meshgrid(rDarray, rMeanArray)
+
+    ###### MEAN LINE STUDY ###### 
+    # defining variables
+    def etaFunc(rD, rMean):
+        # lambda computation 
+        Vt0Umean  = 0.0 
+        lam       = (1 - rD - Vt0Umean) * 4
+        psiTarget = lam / 2
+        # data computation
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
+        
+        # efficiency computation
+        eta = adimVec[-1]
+        return eta
+
+    def b0Func(rD, rMean):
+        # lambda computation 
+        Vt0Umean  = 0.0 
+        lam       = (1 - rD - Vt0Umean) * 4
+        psiTarget = lam / 2
+        # data computation
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
+
+        # blade dimensions computation
+        b0 = bladeVec[0]
+        return b0
+
+    def omegaFunc(rD, rMean):    
+        # lambda computation 
+        Vt0Umean  = 0.0 
+        lam       = (1 - rD - Vt0Umean) * 4
+        psiTarget = lam / 2
+        # data computation
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
+
+        # omega computation
+        omega  = rotationVec[1]
+        return omega
+
+    def deltaAlphaRotor(rD, rMean):
+        # lambda computation 
+        Vt0Umean  = 0.0 
+        lam       = (1 - rD - Vt0Umean) * 4
+        psiTarget = lam / 2
+        # data computation
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
+
+        # angle computation 
+        alpha0 = V0vec[2]
+        alpha1 = V1vec[2]
+        return alpha0 - alpha1
+
+    def Mfunc(rD, rMean):
+        # lambda computation 
+        Vt0Umean  = 0.0 
+        lam       = (1 - rD - Vt0Umean) * 4
+        psiTarget = lam / 2
+        # data computation
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
+
+        # mach number computation
+        M = np.sqrt(W0vec[0]**2 + W0vec[1]**2) / np.sqrt(gamma * R * thermo0[0])
+        return M
+
+    # efficiency computation 
+    eta = np.zeros(rD.shape)
+    for ii in range(rD.shape[0]):
+        for jj in range(rD.shape[1]):
+            eta[ii,jj] = etaFunc(rD[ii,jj], rMean[ii,jj])
+
+    # blade height computation 
+    b0 = np.zeros(rD.shape)
+    rTip = np.zeros(rD.shape)
+    rLimit = np.ones(rD.shape)*0.45
+    for ii in range(rD.shape[0]):
+        for jj in range(rD.shape[1]):
+            b0[ii,jj]   = b0Func(rD[ii,jj], rMean[ii,jj])
+            rTip[ii,jj] = rMean[ii,jj] + b0[ii,jj]/2
+
+    # delta alpha computation 
+    deltaAlpha = np.zeros(rD.shape)
+    for ii in range(rD.shape[0]):
+        for jj in range(rD.shape[1]):
+            deltaAlpha[ii,jj] = deltaAlphaRotor(rD[ii,jj], rMean[ii,jj])
+
+    # M computation 
+    M = np.zeros(rD.shape)
+    for ii in range(rD.shape[0]):
+        for jj in range(rD.shape[1]):
+            M[ii,jj] = Mfunc(rD[ii,jj], rMean[ii,jj])
+
+
+    # efficiency plot 
+    fig, ax = plt.subplots(1,1)
+    cp = ax.contourf(rD, rMean, eta)
+    fig.colorbar(cp) # Add a colorbar to a plot
+    ax.set_title('Filled Contours Plot')
+
+    # Creating figure
+    fig0 = plt.figure(figsize =(14, 9))
+    #from matplotlib import cm
+    my_cmap = plt.get_cmap('coolwarm')
+    ax = plt.axes(projection ='3d')
+    
+    # Creating plot
+    #ax.plot_surface(rD, rMean, eta, cmap=my_cmap, edgecolor='none')
+    #ax.set_xlabel(r'$\chi$')
+    #ax.set_ylabel(r'$r_{mean }$')
+    #ax.set_zlabel(r'$\eta$')
+
+    ax.plot_surface(rD, rMean, rTip, cmap=my_cmap, edgecolor='none')
+    #ax.plot_surface(rD, rMean, rLimit, edgecolor='none')
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$r_{tip }$')
+
+    fig1 = plt.figure(figsize =(14, 9))
+    #from matplotlib import cm
+    my_cmap = plt.get_cmap('coolwarm')
+    ax = plt.axes(projection ='3d')
+
+    ax.plot_surface(rD, rMean, deltaAlpha, cmap=my_cmap, edgecolor='none')
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$\Delta \alpha$')
+
+    #ax.plot_surface(rD, rMean, M, cmap=my_cmap, edgecolor='none')
+    #ax.set_xlabel(r'$\chi$')
+    #ax.set_ylabel(r'$r_{mean }$')
+    #ax.set_zlabel(r'$M$')
+
+    if save:
+        pass
+        # figure saving
+        #fig0.savefig(position0, bbox_inches='tight')
+        #fig1.savefig(position1, bbox_inches='tight')
+    else:
+        plt.show()
+
+
+
+
+

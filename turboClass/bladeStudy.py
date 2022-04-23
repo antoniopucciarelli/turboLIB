@@ -468,7 +468,7 @@ def optimalAngles(beta1, beta2, solidity, tbc=0.1, printout=False):
 
     return i, delta, theta
 
-def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.5, 1.7, 1.8, 2], kind='equivalent', save=False, position='bladeNumber.png'):
+def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.5, 1.7, 1.8, 2, 2.1, 2.2], kind='equivalent', save=False, position='bladeNumber.png'):
     '''
     This function plots the profile losses at the mean line with respect to different aspect ratio and blade number.
         inputs:
@@ -502,7 +502,7 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
         lossVec = np.zeros(len(bladeVec))
         Dvec    = np.zeros(len(bladeVec))
         # chord computation
-        chord = bladeHeight * AR 
+        chord = bladeHeight / AR 
     
         for ii,nBlades in enumerate(bladeVec):
             # pitch computation

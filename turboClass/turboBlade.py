@@ -616,7 +616,7 @@ class blade:
         # computing chord, pitch and solidity
         try:
             for ii in range(self.nSection):
-                chord    = bladeHeight * AR[ii]
+                chord    = bladeHeight / AR[ii]
                 pitch    = self.inletSection[ii].midpoint * 2 * np.pi / nBlade
                 solidity = chord / pitch
                 # allocate data  
@@ -628,7 +628,7 @@ class blade:
                 self.outletSection[ii].solidity = solidity
         except:
             for ii in range(self.nSection):
-                chord    = bladeHeight * AR
+                chord    = bladeHeight / AR
                 pitch    = self.inletSection[ii].midpoint * 2 * np.pi / nBlade
                 solidity = chord / pitch
                 # allocate data  
@@ -729,6 +729,15 @@ class blade:
         lineLenght = 80
         iterativeLenght = np.int16((lineLenght - len(' RADIAL EQ. '))/2)
         print('' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
+
+        #if plot:
+        #    fig = plt.figure()
+        #    plt.plot(midpointInlet, s1(midpointInlet), 'r')
+        #    plt.plot(midpointInlet, Tt1(midpointInlet), 'b')
+        #    plt.plot(midpointInlet, rVt1(midpointInlet), 'g')
+        #    plt.plot(midpointInlet, Va1(midpointInlet), 'black')
+        #    plt.plot(midpointOutlet, Vt2(midpointOutlet), 'royalblue')
+        #    plt.show()
 
         # entropy outer loop 
         while  counterS < nMaxS and relErrorS > tolS: 
@@ -913,6 +922,9 @@ class blade:
                     print('-- s2_min  {0:>8.2f} J/kg -- s2_max   {1:>8.2f} J/kg -- rel. error s    {2:>2.4f}'.format(s2Min,s2Max,relErrorS))
                 except: 
                     pass
+                
+                if plot:
+                    self.printMeridional(save=save, position0=position0, position1=position1)
             
             print('*' * lineLenght)
             
