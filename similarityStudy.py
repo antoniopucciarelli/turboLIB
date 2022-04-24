@@ -32,5 +32,8 @@ rMean = [rMean, rMean]
 VtMean = [Vt0, Vt1]
 VaMean = [Va0, Va1]
 
+bVal = (omega - Vt1 * rMean[1]/hubRadius**2)/(1 - rMean[1]**2/hubRadius**2)
+b = [0, bVal]
+
 # angle and velocity study along the blade span
-similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50)
+similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['FV', 'MVD'], a=[0,0], b=b, n=[0,0], nSection=50)

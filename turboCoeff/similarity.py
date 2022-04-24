@@ -1236,12 +1236,12 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
         elif kind[ii] == 'MVD':
             if section == 'inlet':
                 # variables computation 
-                a = (VtMean[0] - b * rMean[0]) * rMean[0]
+                a = (VtMean[0] - b[0] * rMean[0]) * rMean[0]
                 
                 for ii in range(nSection):
                     # computing mixed vortex design inlet velocity
                     r = midpoint[ii]
-                    Vt1[ii] = a / r + b * r
+                    Vt1[ii] = a / r + b[0] * r
                     # rotation speed 
                     U = omega * r
                     # relative tangential speed computation 
@@ -1252,12 +1252,12 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
 
             elif section == 'outlet':
                 # variables computation 
-                a = (VtMean[1] - b * rMean[1]) * rMean[1]
+                a = (VtMean[1] - b[1] * rMean[1]) * rMean[1]
 
                 for ii in range(nSection):
                     # computing mixed vortex design outlet velocity 
                     r = midpoint[ii]
-                    Vt2[ii] = a / r + b * r 
+                    Vt2[ii] = a / r + b[1] * r 
                     # rotation speed 
                     U = omega * r 
                     # relative tangential speed computation 
@@ -1265,6 +1265,7 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     # angle computation 
                     alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
                     beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
+
             else:
                 raise ValueError("Invalid vortex model")
 
