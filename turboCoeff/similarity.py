@@ -1156,7 +1156,7 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
     '''
     This function computes the angle variation between the blade inlet and the blade outlet.
         inputs:
-
+            ...
     '''
 
     # midpoint allocation

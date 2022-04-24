@@ -639,7 +639,7 @@ class blade:
                 self.outletSection[ii].pitch    = pitch 
                 self.outletSection[ii].solidity = solidity
 
-    def radialEquilibrium(self, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=1e-2, tolFlux=1e-2, NISRE=True, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
+    def radialEquilibrium(self, mFlux, clearance, nMaxS=100, nMaxFlux=100, tolS=0.2, tolFlux=1e-2, NISRE=True, plot=False, save=False, position0='entropyFlow.pgf', position1='betaThermo.pgf', R=287.06, gamma=1.4):
         '''
         This function computes the radial equilibrium of the section taking into account losses. 
             inputs:
@@ -730,14 +730,18 @@ class blade:
         iterativeLenght = np.int16((lineLenght - len(' RADIAL EQ. '))/2)
         print('' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
 
-        #if plot:
-        #    fig = plt.figure()
-        #    plt.plot(midpointInlet, s1(midpointInlet), 'r')
-        #    plt.plot(midpointInlet, Tt1(midpointInlet), 'b')
-        #    plt.plot(midpointInlet, rVt1(midpointInlet), 'g')
-        #    plt.plot(midpointInlet, Va1(midpointInlet), 'black')
-        #    plt.plot(midpointOutlet, Vt2(midpointOutlet), 'royalblue')
-        #    plt.show()
+        if plot:
+            fig = plt.figure()
+            plt.plot(s1(midpointInlet),   midpointInlet, 'r')
+            plt.plot(Tt1(midpointInlet),  midpointInlet, 'b')
+            plt.plot(rVt1(midpointInlet), midpointInlet, 'g')
+            plt.plot(Va1(midpointInlet),  midpointInlet, 'black')
+            plt.plot(Vt2(midpointOutlet), midpointInlet, 'royalblue')
+            plt.show()
+
+        for ii in range(self.nSection):
+            self.outletSection[ii].Pt = self.inletSection[ii].Pt
+            self.outletSection[ii].Tt = self.inletSection[ii].Tt
 
         # entropy outer loop 
         while  counterS < nMaxS and relErrorS > tolS: 
@@ -817,7 +821,7 @@ class blade:
                     self.outletSection[ii].Pt = self.inletSection[ii].Pt - lossVec[ii] * (self.inletSection[ii].Pt - self.inletSection[ii].P)
                     # entropy computation
                     self.outletSection[ii].s = self.inletSection[ii].s - R * np.log(self.outletSection[ii].Pt / self.inletSection[ii].Pt) 
-                
+
             # storing new s2 
             s2new = [self.outletSection[ii].s for ii in range(self.nSection)]
 
@@ -853,6 +857,8 @@ class blade:
                
                 for ii in range(self.nSection):
                     Va2[ii] = np.sqrt(Va2_squared[ii])
+                    #print('Va2 ', ii)
+                    #print(Va2[ii])
 
                 # outlet section dynamics allocation
                 for ii in range(self.nSection):
@@ -861,8 +867,13 @@ class blade:
                 # computing all the new thermodynamic quantities after the radial equilibrium is satisfied
                 # computing change in total pressure due to losses 
                 for ii in range(self.nSection): 
-                    # static temperature computation 
+                    # static temperature computation
+                    #print('Temperature ', ii) 
+                    #print(self.outletSection[ii].T)
+                    #print(self.inletSection[ii].Va)
                     self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
+                    #print(self.outletSection[ii].T)
+                    #print(self.outletSection[ii].Va)
 
                     # rotor and stator work with different total pressures
                     # rotor -> total relative pressure
@@ -889,7 +900,10 @@ class blade:
                         self.outletSection[ii].Mr = self.outletSection[ii].W / self.outletSection[ii].a
                     elif self.turboType == 'stator':
                         # static pressure computation
+                        #print('Pressure ', ii)
+                        #print(self.outletSection[ii].P)
                         self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
+                        #print(self.outletSection[ii].P)
                         # static density computation
                         self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
                         # total density computation
@@ -898,6 +912,8 @@ class blade:
                         self.outletSection[ii].a = np.sqrt(gamma * R * self.outletSection[ii].T)
                         # mach number computation
                         self.outletSection[ii].M = self.outletSection[ii].V / self.outletSection[ii].a
+
+                        # printing
 
                 # check mass flux 
                 newFlux = 0
@@ -909,9 +925,15 @@ class blade:
 
                 # setting up initial velocity for the new ODE 
                 if newFlux > mFlux:
-                    y0 = y0 * (1 - relErrorFlux)
+                    if relErrorFlux < 0.25:
+                        y0 = y0 * (1 - relErrorFlux)
+                    else:
+                        y0 = y0 * (1 - 0.25)
                 else: 
-                    y0 = y0 * (1 + relErrorFlux)
+                    if relErrorFlux < 0.25:
+                        y0 = y0 * (1 + relErrorFlux)
+                    else:
+                        y0 = y0 * (1 + 0.25)
 
                 # printing main values
                 innerIterativeLenght = np.int16((lineLenght - len(' INNER ITERATION   '))/2)
@@ -923,8 +945,8 @@ class blade:
                 except: 
                     pass
                 
-                if plot:
-                    self.printMeridional(save=save, position0=position0, position1=position1)
+                #if plot:
+                #    self.printMeridional(save=save, position0=position0, position1=position1)
             
             print('*' * lineLenght)
             
@@ -934,7 +956,9 @@ class blade:
     
                 # reaction degree computation 
                 if self.turboType == 'rotor':
-                    self.inletSection[ii].rD = self.outletSection[ii].rD = np.abs((self.inletSection[ii].T - self.outletSection[ii].T) / (self.inletSection[ii].Tt - self.outletSection[ii].Tt))
+                    reactionDegree = (self.inletSection[ii].T - self.outletSection[ii].T) / (self.inletSection[ii].Tt - self.outletSection[ii].Tt)
+                    self.inletSection[ii].rD = reactionDegree
+                    self.outletSection[ii].rD = reactionDegree
             
         # plotting interpolated functions 
         if plot:
@@ -1385,30 +1409,54 @@ class blade:
             if toSection == 'inlet':
                 for ii in range(self.nSection):
                     # kinetics allocation 
-                    self.inletSection[ii].Va    = blade.outletSection[ii].Va
-                    self.inletSection[ii].Vt    = blade.outletSection[ii].Vt
-                    self.inletSection[ii].V     = blade.outletSection[ii].V
-                    self.inletSection[ii].alpha = blade.outletSection[ii].alpha
-                    self.inletSection[ii].Wa    = blade.outletSection[ii].Wa
-                    self.inletSection[ii].Wt    = blade.outletSection[ii].Wt
-                    self.inletSection[ii].W     = blade.outletSection[ii].W
-                    self.inletSection[ii].beta  = blade.outletSection[ii].beta
+                    Va    = blade.outletSection[ii].Va
+                    Vt    = blade.outletSection[ii].Vt
+                    V     = blade.outletSection[ii].V
+                    alpha = blade.outletSection[ii].alpha
+                    Wa    = blade.outletSection[ii].Wa
+                    Wt    = blade.outletSection[ii].Wt
+                    W     = blade.outletSection[ii].W
+                    beta  = blade.outletSection[ii].beta
+                    # kinetics data allocation
+                    self.inletSection[ii].Va    = Va
+                    self.inletSection[ii].Vt    = Vt
+                    self.inletSection[ii].V     = V
+                    self.inletSection[ii].alpha = alpha
+                    self.inletSection[ii].Wa    = Wa
+                    self.inletSection[ii].Wt    = Wt
+                    self.inletSection[ii].W     = W
+                    self.inletSection[ii].beta  = beta
                     # thermodynamics allocation 
-                    self.inletSection[ii].P     = blade.outletSection[ii].P
-                    self.inletSection[ii].T     = blade.outletSection[ii].T
-                    self.inletSection[ii].rho   = blade.outletSection[ii].rho
-                    self.inletSection[ii].Pt    = blade.outletSection[ii].Pt
-                    self.inletSection[ii].Tt    = blade.outletSection[ii].Tt
-                    self.inletSection[ii].rhot  = blade.outletSection[ii].rhot
-                    self.inletSection[ii].Ptr   = blade.outletSection[ii].Ptr
-                    self.inletSection[ii].Ttr   = blade.outletSection[ii].Ttr
-                    self.inletSection[ii].rhotr = blade.outletSection[ii].rhotr
-                    self.inletSection[ii].a     = blade.outletSection[ii].a
-                    self.inletSection[ii].M     = blade.outletSection[ii].M
-                    self.inletSection[ii].Mr    = blade.outletSection[ii].Mr
-                    self.inletSection[ii].s     = blade.outletSection[ii].s
+                    P     = blade.outletSection[ii].P
+                    T     = blade.outletSection[ii].T
+                    rho   = blade.outletSection[ii].rho
+                    Pt    = blade.outletSection[ii].Pt
+                    Tt    = blade.outletSection[ii].Tt
+                    rhot  = blade.outletSection[ii].rhot
+                    Ptr   = blade.outletSection[ii].Ptr
+                    Ttr   = blade.outletSection[ii].Ttr
+                    rhotr = blade.outletSection[ii].rhotr
+                    a     = blade.outletSection[ii].a
+                    M     = blade.outletSection[ii].M
+                    Mr    = blade.outletSection[ii].Mr
+                    s     = blade.outletSection[ii].s
+                    # thermodynamics data allocation
+                    self.inletSection[ii].P     = P
+                    self.inletSection[ii].T     = T
+                    self.inletSection[ii].rho   = rho
+                    self.inletSection[ii].Pt    = Pt
+                    self.inletSection[ii].Tt    = Tt
+                    self.inletSection[ii].rhot  = rhot
+                    self.inletSection[ii].Ptr   = Ptr
+                    self.inletSection[ii].Ttr   = Ttr
+                    self.inletSection[ii].rhotr = rhotr
+                    self.inletSection[ii].a     = a
+                    self.inletSection[ii].M     = M
+                    self.inletSection[ii].Mr    = Mr
+                    self.inletSection[ii].s     = s
                     # section shape properties 
-                    self.inletSection[ii].gamma = blade.outletSection[ii].gamma
+                    gamma = blade.outletSection[ii].gamma
+                    self.inletSection[ii].gamma = gamma
 
             elif toSection == 'outlet':
                 for ii in range(self.nSection):
@@ -1519,7 +1567,6 @@ class blade:
                 WaOut = self.outletSection[secNum].Wa
                 WtOut = self.outletSection[secNum].Wt
                 U = self.inletSection[secNum].U
-                print(U)
 
             # finding min and max velocities 
             if VaIn < VaOut:
@@ -1550,8 +1597,10 @@ class blade:
 
             ax[ii].set_xlim(-10, maxVelAx * 1.1)
             ax[ii].set_ylim(-50 + minVelTan * 1.1, maxVelTan * 1.1 + 50)
-            ax[ii].set_title('section {0:d}\n'.format(secNum+1) + r'$U = {0:.2f} \frac{{m }}{{s }}$'.format(self.inletSection[secNum].U) + '\t' + r'$\Delta V_t = {0:.2f} \frac{{m }}{{s }}$'.format(VtOut - VtIn))
-
+            try:
+                ax[ii].set_title('section {0:d}\n'.format(secNum+1) + r'$U = {0:.2f} \frac{{m }}{{s }}$'.format(self.inletSection[secNum].U) + '\t' + r'$\Delta V_t = {0:.2f} \frac{{m }}{{s }}$'.format(VtOut - VtIn))
+            except:
+                ax[ii].set_title('section {0:d}\n'.format(secNum+1) + '\t' + r'$\Delta V_t = {0:.2f} \frac{{m }}{{s }}$'.format(VtOut - VtIn))
             ax[ii].grid(linestyle='--')
             ax[ii].set_xlabel(r'$V_a \ [\frac{{m }}{{s }}]$')   
             ax[ii].set_ylabel(r'$V_t \ [\frac{{m }}{{s }}]$')
