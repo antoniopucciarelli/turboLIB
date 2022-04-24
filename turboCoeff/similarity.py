@@ -7,6 +7,7 @@
 #  
 
 # importing libraries
+from tkinter import NS
 import numpy as np 
 import matplotlib.pyplot as plt 
 from scipy import interpolate
@@ -951,7 +952,7 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0Umean
     else:
         plt.show()
 
-def propertiesStudy(mFlux, betaP, Pt0, Tt0, rDmin=0.5, rDmax=0.73, rMeanMin=0.2, rMeanMax=0.35, Vt0UmeanMin=0, Vt0UmeanMax=0.25, save=False, position0='reactionStudy0.pgf', position1='reactionStudy1.pgf', gamma=1.4, R=287.06):
+def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, rMeanMin=0.2, rMeanMax=0.35, Vt0Umean=0, save=False, position='meanLineProperties.png', gamma=1.4, R=287.06):
     '''
     This function allows the study of the rotor tip and rotor hub given as input some constraints.
         inputs:
@@ -978,153 +979,323 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, rDmin=0.5, rDmax=0.73, rMeanMin=0.2,
     if save:
         plt.rcParams['text.usetex'] = True
 
-    # figure allocation
-    #fig0, [[ax1_11, ax1_12, ax1_13, ax1_14, ax1_15], [ax1_21, ax1_22, ax1_23, ax1_24, ax1_25]] = plt.subplots(nrows=2, ncols=5, figsize=(20,10))
-    #fig1, [[ax2_11, ax2_12, ax2_13, ax2_14, ax2_15, ax2_16], [ax2_21, ax2_22, ax2_23, ax2_24, ax2_25, ax2_26]] = plt.subplots(nrows=2, ncols=6, figsize=(20,10))
-    #fig, ax = plt.subplots(ncols=1,nrows=1)
-
     # mesh generation 
     rD, rMean = np.meshgrid(rDarray, rMeanArray)
 
-    ###### MEAN LINE STUDY ###### 
-    # defining variables
-    def etaFunc(rD, rMean):
-        # lambda computation 
-        Vt0Umean  = 0.0 
-        lam       = (1 - rD - Vt0Umean) * 4
-        psiTarget = lam / 2
-        # data computation
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
-        
-        # efficiency computation
-        eta = adimVec[-1]
-        return eta
-
-    def b0Func(rD, rMean):
-        # lambda computation 
-        Vt0Umean  = 0.0 
-        lam       = (1 - rD - Vt0Umean) * 4
-        psiTarget = lam / 2
-        # data computation
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
-
-        # blade dimensions computation
-        b0 = bladeVec[0]
-        return b0
-
-    def omegaFunc(rD, rMean):    
-        # lambda computation 
-        Vt0Umean  = 0.0 
-        lam       = (1 - rD - Vt0Umean) * 4
-        psiTarget = lam / 2
-        # data computation
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
-
-        # omega computation
-        omega  = rotationVec[1]
-        return omega
-
-    def deltaAlphaRotor(rD, rMean):
-        # lambda computation 
-        Vt0Umean  = 0.0 
-        lam       = (1 - rD - Vt0Umean) * 4
-        psiTarget = lam / 2
-        # data computation
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
-
-        # angle computation 
-        alpha0 = V0vec[2]
-        alpha1 = V1vec[2]
-        return alpha0 - alpha1
-
-    def Mfunc(rD, rMean):
-        # lambda computation 
-        Vt0Umean  = 0.0 
-        lam       = (1 - rD - Vt0Umean) * 4
-        psiTarget = lam / 2
-        # data computation
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, _, _, thermo0, _, _, work = stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=False)
-
-        # mach number computation
-        M = np.sqrt(W0vec[0]**2 + W0vec[1]**2) / np.sqrt(gamma * R * thermo0[0])
-        return M
-
     # efficiency computation 
-    eta = np.zeros(rD.shape)
-    for ii in range(rD.shape[0]):
-        for jj in range(rD.shape[1]):
-            eta[ii,jj] = etaFunc(rD[ii,jj], rMean[ii,jj])
-
-    # blade height computation 
-    b0 = np.zeros(rD.shape)
-    rTip = np.zeros(rD.shape)
-    rLimit = np.ones(rD.shape)*0.45
-    for ii in range(rD.shape[0]):
-        for jj in range(rD.shape[1]):
-            b0[ii,jj]   = b0Func(rD[ii,jj], rMean[ii,jj])
-            rTip[ii,jj] = rMean[ii,jj] + b0[ii,jj]/2
-
-    # delta alpha computation 
+    eta        = np.zeros(rD.shape)
+    omega      = np.zeros(rD.shape)
+    b0         = np.zeros(rD.shape)
+    rTip       = np.zeros(rD.shape)
+    deltaBeta  = np.zeros(rD.shape)
     deltaAlpha = np.zeros(rD.shape)
+    M          = np.zeros(rD.shape)
+
     for ii in range(rD.shape[0]):
         for jj in range(rD.shape[1]):
-            deltaAlpha[ii,jj] = deltaAlphaRotor(rD[ii,jj], rMean[ii,jj])
+            # lambda computation 
+            lam       = (1 - rD[ii,jj] - Vt0Umean) * 4
+            psiTarget = lam / 2
 
-    # M computation 
-    M = np.zeros(rD.shape)
-    for ii in range(rD.shape[0]):
-        for jj in range(rD.shape[1]):
-            M[ii,jj] = Mfunc(rD[ii,jj], rMean[ii,jj])
+            # computing results
+            adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, _, thermo0, _, _, work = stageProperties(rD[ii,jj], psiTarget, rMean[ii,jj], mFlux, Tt0, Pt0, betaP, T1real=False)
+            
+            # efficiency computation
+            eta[ii,jj] = adimVec[-1]
+            # blade dimensions computation
+            b0[ii,jj] = bladeVec[0]
+            # computing rTip 
+            rTip[ii,jj] = rMean[ii,jj] + b0[ii,jj]/2
+            # omega computation
+            omega[ii,jj] = rotationVec[1]
+            # rotor angle computation 
+            beta0 = W0vec[2]
+            beta1 = W1vec[2]
+            deltaBeta[ii,jj] = beta0 - beta1
+            # rotor angle computation 
+            alpha1 = V1vec[2]
+            alpha2 = V2vec[2]
+            deltaAlpha[ii,jj] = alpha1 - alpha2
+            # mach computation
+            M[ii,jj] = np.sqrt(W0vec[0]**2 + W0vec[1]**2) / np.sqrt(gamma * R * thermo0[0])
 
+    if input != [0,0]:
+        # lambda computation 
+            lam       = (1 - input[0] - Vt0Umean) * 4
+            psiTarget = lam / 2
+
+            # computing results
+            adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, _, thermo0, _, _, work = stageProperties(input[0], psiTarget, input[1], mFlux, Tt0, Pt0, betaP, T1real=False)
+            
+            # efficiency computation
+            etaOut = adimVec[-1]
+            # blade dimensions computation
+            b0Out = bladeVec[0]
+            # computing rTip 
+            rTipOut = input[1] + b0Out/2
+            # omega computation
+            omegaOut = rotationVec[1]
+            # rpm computation
+            rpmOut = rotationVec[2]
+            # rotor angle computation 
+            beta0 = W0vec[2]
+            beta1 = W1vec[2]
+            deltaBetaOut = beta0 - beta1
+            # rotor angle computation 
+            alpha1 = V1vec[2]
+            alpha2 = V2vec[2]
+            deltaAlphaOut = alpha1 - alpha2
+            # mach computation
+            MOut = np.sqrt(W0vec[0]**2 + W0vec[1]**2) / np.sqrt(gamma * R * thermo0[0])
+
+    # figure
+    fig = plt.figure(figsize=(16,8))
+    #from matplotlib import cm
+    my_cmap = plt.get_cmap('turbo')
 
     # efficiency plot 
-    fig, ax = plt.subplots(1,1)
-    cp = ax.contourf(rD, rMean, eta)
-    fig.colorbar(cp) # Add a colorbar to a plot
-    ax.set_title('Filled Contours Plot')
+    ax = fig.add_subplot(2, 3, 1, projection='3d')
+    ax.plot_surface(rD, rMean, eta, cmap=my_cmap, edgecolor='none')
+    try:
+        ax.set_title(r'$\eta = {0:.3f}$'.format(etaOut))
+    except:
+        pass
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$\eta$')
+    ax.azim = 210
+    ax.dist = 10
+    ax.elev = 30
 
-    # Creating figure
-    fig0 = plt.figure(figsize =(14, 9))
-    #from matplotlib import cm
-    my_cmap = plt.get_cmap('coolwarm')
-    ax = plt.axes(projection ='3d')
-    
-    # Creating plot
-    #ax.plot_surface(rD, rMean, eta, cmap=my_cmap, edgecolor='none')
-    #ax.set_xlabel(r'$\chi$')
-    #ax.set_ylabel(r'$r_{mean }$')
-    #ax.set_zlabel(r'$\eta$')
+    # omega plot
+    ax = fig.add_subplot(2, 3, 2, projection='3d')
+    ax.plot_surface(rD, rMean, omega, rstride=1, cstride=1, cmap=my_cmap, linewidth=0, antialiased=False)
+    try:
+        ax.set_title(r'$\omega = {0:.2f} \frac{{rad }}{{s }}, rpm = {1:.0f}$'.format(omegaOut,rpmOut))
+    except:
+        pass
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$\omega$')
+    ax.azim = 120
+    ax.dist = 10
+    ax.elev = 30
 
+    # rTip plot 
+    ax = fig.add_subplot(2, 3, 3, projection='3d')
     ax.plot_surface(rD, rMean, rTip, cmap=my_cmap, edgecolor='none')
-    #ax.plot_surface(rD, rMean, rLimit, edgecolor='none')
+    try:
+        ax.set_title(r'$r_{{tip }} = {0:.3f} m, b_{{0 }} = {1:.3f} m$'.format(rTipOut, b0Out))
+    except:
+        pass
     ax.set_xlabel(r'$\chi$')
     ax.set_ylabel(r'$r_{mean }$')
     ax.set_zlabel(r'$r_{tip }$')
+    ax.azim = -45
+    ax.dist = 10
+    ax.elev = 30
 
-    fig1 = plt.figure(figsize =(14, 9))
-    #from matplotlib import cm
-    my_cmap = plt.get_cmap('coolwarm')
-    ax = plt.axes(projection ='3d')
-
-    ax.plot_surface(rD, rMean, deltaAlpha, cmap=my_cmap, edgecolor='none')
+    # delta alpha rotor
+    ax = fig.add_subplot(2, 3, 4, projection='3d')
+    ax.plot_surface(rD, rMean, deltaBeta, rstride=1, cstride=1, cmap=my_cmap, linewidth=0, antialiased=False)
+    try:
+        ax.set_title(r'$\Delta \beta = {0:.2f}^{{\circ }}$'.format(deltaBetaOut))
+    except:
+        pass
     ax.set_xlabel(r'$\chi$')
     ax.set_ylabel(r'$r_{mean }$')
-    ax.set_zlabel(r'$\Delta \alpha$')
+    ax.set_zlabel(r'$\Delta \beta$')
+    ax.azim = 210
+    ax.dist = 10
+    ax.elev = 30
 
-    #ax.plot_surface(rD, rMean, M, cmap=my_cmap, edgecolor='none')
-    #ax.set_xlabel(r'$\chi$')
-    #ax.set_ylabel(r'$r_{mean }$')
-    #ax.set_zlabel(r'$M$')
+    # delta alpha stator
+    ax = fig.add_subplot(2, 3, 5, projection='3d')
+    ax.plot_surface(rD, rMean, deltaAlpha, rstride=1, cstride=1, cmap=my_cmap, linewidth=0, antialiased=False)
+    try:
+        ax.set_title(r'$\Delta \alpha_{{stator }} = {0:.2f}^{{\circ }}$'.format(deltaAlphaOut))
+    except:
+        pass
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$\Delta \alpha_{stator }$')
+    ax.azim = 45
+    ax.dist = 10
+    ax.elev = 30
 
-    if save:
+    # M plot
+    ax = fig.add_subplot(2, 3, 6, projection='3d')
+    ax.plot_surface(rD, rMean, M, rstride=1, cstride=1, cmap=my_cmap, linewidth=0, antialiased=False)
+    try:
+        ax.set_title(r'$M_{{r }} = {0:.2f}$'.format(MOut))
+    except:
+        pass
+    ax.set_xlabel(r'$\chi$')
+    ax.set_ylabel(r'$r_{mean }$')
+    ax.set_zlabel(r'$M_{r }}$')
+    ax.azim = 210
+    ax.dist = 10
+    ax.elev = 30
+
+    fig.suptitle(r'$\chi = {0:.2f}, r_{{mean }} = {1:.2f}$'.format(input[0], input[1]))
+
+    if save:    
         pass
         # figure saving
-        #fig0.savefig(position0, bbox_inches='tight')
-        #fig1.savefig(position1, bbox_inches='tight')
+        fig.savefig(position, bbox_inches='tight')
     else:
         plt.show()
 
+    # return data 
+    try:
+        return V0vec, V1vec, V2vec, bladeVec, rotationVec
+    except:
+        pass
 
+def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0,0], omega=0, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50):
+    '''
+    This function computes the angle variation between the blade inlet and the blade outlet.
+        inputs:
 
+    '''
 
+    # midpoint allocation
+    midpoint = np.zeros(nSection)
+    for ii in range(nSection):
+        midpoint[ii] = hubRadius + bladeHeight / nSection * ii 
 
+    # vector allocation 
+    Vt1    = np.zeros(nSection)
+    Vt2    = np.zeros(nSection)
+    Wt1    = np.zeros(nSection)
+    Wt2    = np.zeros(nSection)
+    beta1  = np.zeros(nSection)
+    beta2  = np.zeros(nSection)
+    alpha1 = np.zeros(nSection)
+    alpha2 = np.zeros(nSection)
+
+    for ii,section in enumerate(['inlet', 'outlet']):
+        if kind[ii] == 'FV':
+            if section == 'inlet':
+                for ii in range(nSection):
+                    # tangential speed computation with respect to the FREE VORTEX model 
+                    r = midpoint[ii]
+                    Vt1[ii] = VtMean[0] * rMean[0] / r
+                    # rotation speed 
+                    U = midpoint[ii] * omega 
+                    # relative tangential speed computation 
+                    Wt1[ii] = Vt1[ii] - U
+                    # angle computation 
+                    alpha1[ii] = np.rad2deg(np.arctan(Vt1[ii]/VaMean[0]))
+                    beta1[ii] = np.rad2deg(np.arctan(Wt1[ii]/VaMean[0]))
+
+            elif section == 'outlet':
+                for ii in range(nSection):
+                    # tangential speed computation with respect to the FREE VORTEX model 
+                    r = midpoint[ii]
+                    Vt2[ii] = VtMean[1] * rMean[1] / r
+                    # rotation speed 
+                    U = midpoint[ii] * omega 
+                    # relative tangential speed computation 
+                    Wt2[ii] = Vt2[ii] - U
+                    # angle computation 
+                    alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
+                    beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
+
+        elif kind[ii] == 'VVD':
+            # variables computation with respect to n 
+            a = (VtMean[1] * rMean[1] + VtMean[0] * rMean[0]) / (rMean[0]**(n+1) + rMean[1]**(n+1))
+            b = a * rMean[0]**(n+1) - VtMean[0] * rMean[0]
+
+            if section == 'inlet':
+                for ii in range(nSection):
+                    # computing variable vortex design inlet velocity
+                    r = midpoint[ii] 
+                    Vt1[ii] = a * r**n - b / r    
+                    # rotation speed 
+                    U = omega * r 
+                    # relative tangential speed computation 
+                    Wt1[ii] = Vt1[ii] - U
+                    # angle computation 
+                    alpha1[ii] = np.rad2deg(np.arctan(Vt1[ii]/VaMean[0]))
+                    beta1[ii] = np.rad2deg(np.arctan(Wt1[ii]/VaMean[0]))
+    
+            elif section == 'outlet':
+                for ii in range(nSection):
+                    # computing variable vortex design inlet velocity
+                    r = midpoint[ii] 
+                    Vt2[ii] = a * r**n + b / r    
+                    # rotation speed 
+                    U = omega * r 
+                    # relative tangential speed computation 
+                    Wt2[ii] = Vt2[ii] - U
+                    # angle computation 
+                    alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
+                    beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
+
+        elif kind[ii] == 'MVD':
+            if section == 'inlet':
+                # variables computation 
+                a = (VtMean[0] - b * rMean[0]) * rMean[0]
+                
+                for ii in range(nSection):
+                    # computing mixed vortex design inlet velocity
+                    r = midpoint[ii]
+                    Vt1[ii] = a / r + b * r
+                    # rotation speed 
+                    U = omega * r
+                    # relative tangential speed computation 
+                    Wt1[ii] = Vt1[ii] - U
+                    # angle computation 
+                    alpha1[ii] = np.rad2deg(np.arctan(Vt1[ii]/VaMean[0]))
+                    beta1[ii] = np.rad2deg(np.arctan(Wt1[ii]/VaMean[0]))
+
+            elif section == 'outlet':
+                # variables computation 
+                a = (VtMean[1] - b * rMean[1]) * rMean[1]
+
+                for ii in range(nSection):
+                    # computing mixed vortex design outlet velocity 
+                    r = midpoint[ii]
+                    Vt2[ii] = a / r + b * r 
+                    # rotation speed 
+                    U = omega * r 
+                    # relative tangential speed computation 
+                    Wt2[ii] = Vt2[ii] - U
+                    # angle computation 
+                    alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
+                    beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
+            else:
+                raise ValueError("Invalid vortex model")
+
+    # plotting angles and velocities
+    fig, ax = plt.subplots(ncols=2, nrows=1, figsize=(16,9))
+
+    # angle plotting 
+    ax[0].plot(alpha1, midpoint, linestyle='--', marker='p', markersize=6, color='royalblue', markeredgewidth=1.5, markeredgecolor='black', label=r'$\alpha_1$')
+    ax[0].plot(alpha2, midpoint, linestyle='--', marker='p', markersize=6, color='firebrick', markeredgewidth=1.5, markeredgecolor='black', label=r'$\alpha_2$')
+    ax[0].plot(alpha2 - alpha1, midpoint, linestyle='--', marker='p', markersize=6, color='forestgreen', markeredgewidth=1.5, markeredgecolor='black', label=r'$\Delta \alpha$')
+    if omega != 0:
+        ax[0].plot(beta1, midpoint, linestyle='-', marker='D', markersize=6, color='orange', markeredgewidth=1.5, markeredgecolor='black', label=r'$\beta_1$')
+        ax[0].plot(beta2, midpoint, linestyle='-', marker='D', markersize=6, color='lightseagreen', markeredgewidth=1.5, markeredgecolor='black', label=r'$\beta_2$')
+        ax[0].plot(beta2 - beta1, midpoint, linestyle='-', marker='D', markersize=6, color='gold', markeredgewidth=1.5, markeredgecolor='black', label=r'$\Delta \beta$')
+    ax[0].grid(linestyle='--')
+    ax[0].set_xlabel(r'$angles \ [^{{\circ}}]$')
+    ax[0].set_title('Angle')
+    ax[0].spines["left"].set_position(("axes", 1))
+    ax[0].yaxis.set_ticks_position('right')
+    ax[0].spines["left"].set_position(("axes", 0))
+    ax[0].legend(loc='upper right', bbox_to_anchor=[0,1])
+    ax[0].set_xticks(np.arange(-80,90,10))
+
+    # velocity plotting
+    ax[1].plot(Vt1, midpoint, linestyle='--', marker='o', markersize=6, color='royalblue', markeredgewidth=1.5, markeredgecolor='black', label=r'$V_{{t1 }}$')
+    ax[1].plot(Vt2, midpoint, linestyle='--', marker='o', markersize=6, color='firebrick', markeredgewidth=1.5, markeredgecolor='black', label=r'$V_{{t2 }}$')
+    ax[1].plot(Vt2 - Vt1, midpoint, linestyle='-', marker='o', markersize=6, color='forestgreen', markeredgewidth=1.5, markeredgecolor='black', label=r'$\Delta V_{{t }}$')
+    ax[1].grid(linestyle='--')
+    ax[1].set_xlabel(r'$velocity \ [\frac{{m }}{{s }}]$')
+    ax[1].set_ylabel(r'$r \ [m]$')
+    ax[1].set_title('Velocity')
+    ax[1].legend(loc='upper left', bbox_to_anchor=[1,1])
+
+    plt.show()
