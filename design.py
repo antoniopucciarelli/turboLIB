@@ -64,7 +64,7 @@ statorVtMeanOutlet = V2vec[1]
 Tt1                = thermo1[3]
 Pt1                = thermo1[4]
 
-WtTarget = -omega*hubRadius/5
+WtTarget = -omega*hubRadius/8
 bVal = (WtTarget + omega * hubRadius - rotorVtMeanOutlet * rMean/hubRadius)/(hubRadius - rMean**2/hubRadius)
 
 # rotor study 
@@ -86,7 +86,7 @@ lossVec = rotorBlade.bladeGenerator(mFlux, clearance=1e-3, NISRE=True, STLname='
 # plotting velocity triangles
 #rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=True, position='latex/figures/rotorVelocityTriangle.png')
 # computing efficiency
-rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
+#rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
 
 # stator study 
 # stator object generation
@@ -99,7 +99,25 @@ statorBlade.allocateShape(bladeHeight=b0, AR=ARstator, nBlade=nStatorBlades)
 statorBlade.copySection(blade=rotorBlade, fromSection='outlet', toSection='outlet')
 statorBlade.copySection(blade=rotorBlade, fromSection='outlet', toSection='inlet')
 # blade dimensions allocation -> kinetics outlet
-statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanOutlet, VaMean=rotorBlade.outletSection[0].Va, omega=0, section='outlet', kind='FV')
+WtTarget = -omega*hubRadius*1.5
+bVal1 = (WtTarget + omega * hubRadius - statorVtMeanOutlet * rMean/hubRadius)/(hubRadius - rMean**2/hubRadius)
+#statorBlade.allocateKinetics(rMean2=rMean, Vt2=statorVtMeanOutlet, VaMean=statorVaMeanOutlet, omega=0, section='outlet', kind='MVD', b=bVal1)
+def func(r):
+    a = (statorVtMeanOutlet - bVal1 * rMean) * rMean
+    Vt2new = a / r + bVal1 * r 
+    if Vt2new < 0:
+        Vt2new = 0
+    
+    return Vt2new
+
+VtTarget = 50
+def func(r):
+    a = 4 * VtTarget / b0**2
+    Vtnew = a * (r - rMean)**2
+
+    return Vtnew
+    
+statorBlade.allocateKinetics(rMean=rMean, VtMean=statorVtMeanOutlet, VaMean=statorVaMeanOutlet, omega=0, section='outlet', kind='eqn', func=func)
 # blade dimensions allocation -> thermodynamics inlet/outlet
 #statorBlade.printMeridional()
 # stator blade geometry allocation

@@ -1152,7 +1152,7 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
     except:
         pass
 
-def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0,0], omega=0, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50):
+def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0,0], omega=0, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50, func=0):
     '''
     This function computes the angle variation between the blade inlet and the blade outlet.
         inputs:
@@ -1265,9 +1265,35 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     # angle computation 
                     alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
                     beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
-
-            else:
-                raise ValueError("Invalid vortex model")
+        elif kind[ii] == 'eqn':
+            if section == 'inlet':
+                for ii in range(nSection):
+                    # getting position
+                    r = midpoint[ii]
+                    # computing tangential velocity
+                    Vt1[ii] = func(r)
+                    # computing rotation speed
+                    U = omega * r
+                    # relative tangential speed computation 
+                    Wt1[ii] = Vt1[ii] - U
+                    # angle computation 
+                    alpha1[ii] = np.rad2deg(np.arctan(Vt1[ii]/VaMean[0]))
+                    beta1[ii] = np.rad2deg(np.arctan(Wt1[ii]/VaMean[0]))
+            elif section == 'outlet':
+                for ii in range(nSection):
+                    # getting position
+                    r = midpoint[ii]
+                    # computing tangential velocity
+                    Vt2[ii] = func(r)
+                    # computing rotation speed
+                    U = omega * r
+                    # relative tangential speed computation 
+                    Wt2[ii] = Vt2[ii] - U
+                    # angle computation 
+                    alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[0]))
+                    beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[0]))
+        else:
+            raise ValueError("Invalid vortex model")
 
     # plotting angles and velocities
     fig, ax = plt.subplots(ncols=2, nrows=1, figsize=(16,9))

@@ -397,7 +397,7 @@ class blade:
 
         return sectionVec 
 
-    def allocateKinetics(self, rMean=0, VtMean=0, VaMean=0, omega=0, Vt1=0, Vt2=0, rMean1=0, rMean2=0, section='inlet', kind='FV', a=0, b=0, n=0):
+    def allocateKinetics(self, rMean=0, VtMean=0, VaMean=0, omega=0, Vt1=0, Vt2=0, rMean1=0, rMean2=0, section='inlet', kind='FV', a=0, b=0, n=0, func=0):
         '''
         This function allocates the velocity vectors at each section points using kind model.
             inputs:
@@ -431,21 +431,8 @@ class blade:
                     # rotation speed 
                     U = self.outletSection[ii].midpoint * omega 
 
-                    print('Inlet change study')
-                    print('Section = ', ii)
-                    print('VaMean  = ', VaMean)
-                    print('alpha   = ', self.inletSection[ii].beta)
-                    print('Vt      = ', self.inletSection[ii].Vt)
-                    
                     # data allocation in section object
                     self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
-
-                    print('Section = ', ii)
-                    print('VaMean  = ', VaMean)
-                    print('Vtcomp  = ', Vt)
-                    print('alpha   = ', self.inletSection[ii].beta)
-                    print('Vt      = ', self.inletSection[ii].Vt)
-
         elif kind == 'VVD':
             # variables computation with respect to n 
             a = (Vt2 * rMean2 + Vt1 * rMean1) / (rMean1**(n+1) + rMean2**(n+1))
@@ -471,7 +458,6 @@ class blade:
 
                     # data allocation
                     self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
-
         elif kind == 'MVD':
             if section == 'inlet':
                 # variables computation 
@@ -500,6 +486,31 @@ class blade:
                     U = omega * r 
 
                     # data allocation 
+                    self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
+        elif kind == 'eqn':
+            if section == 'inlet':
+                for ii in range(self.nSection):
+                    # section position 
+                    r = self.inletSection[ii].midpoint
+                    # Vt computation 
+                    Vt = func(r)
+
+                    # rotation speed 
+                    U = omega * r
+
+                    # data allocation
+                    self.inletSection[ii].allocateKinetics(VaMean, Vt, U)
+            elif section == 'outlet':
+                for ii in range(self.nSection):
+                    # section position 
+                    r = self.outletSection[ii].midpoint
+                    # Vt computation 
+                    Vt = func(r)
+
+                    # rotation speed 
+                    U = omega * r
+
+                    # data allocation
                     self.outletSection[ii].allocateKinetics(VaMean, Vt, U)
         else:
             raise ValueError("Invalid vortex model")
