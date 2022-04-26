@@ -952,7 +952,7 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0Umean
     else:
         plt.show()
 
-def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, rMeanMin=0.2, rMeanMax=0.35, Vt0Umean=0, save=False, position='meanLineProperties.png', gamma=1.4, R=287.06):
+def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, rMeanMin=0.2, rMeanMax=0.35, Vt0Umean=0, plot=False, save=False, position='meanLineProperties.png', gamma=1.4, R=287.06):
     '''
     This function allows the study of the rotor tip and rotor hub given as input some constraints.
         inputs:
@@ -1143,7 +1143,7 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
         pass
         # figure saving
         fig.savefig(position, bbox_inches='tight')
-    else:
+    elif plot:
         plt.show()
 
     # return data 
@@ -1152,7 +1152,7 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
     except:
         pass
 
-def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0,0], omega=0, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50, func=0):
+def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0,0], omega=0, kind=['FV', 'FV'], a=[0,0], b=[0,0], n=[0,0], nSection=50, func1=0, func2=0, funcVec=[0,0], save=False, position='angles.png'):
     '''
     This function computes the angle variation between the blade inlet and the blade outlet.
         inputs:
@@ -1174,8 +1174,8 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
     alpha1 = np.zeros(nSection)
     alpha2 = np.zeros(nSection)
 
-    for ii,section in enumerate(['inlet', 'outlet']):
-        if kind[ii] == 'FV':
+    for jj,section in enumerate(['inlet', 'outlet']):
+        if kind[jj] == 'FV':
             if section == 'inlet':
                 for ii in range(nSection):
                     # tangential speed computation with respect to the FREE VORTEX model 
@@ -1202,7 +1202,7 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
                     beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
 
-        elif kind[ii] == 'VVD':
+        elif kind[jj] == 'VVD':
             # variables computation with respect to n 
             a = (VtMean[1] * rMean[1] + VtMean[0] * rMean[0]) / (rMean[0]**(n+1) + rMean[1]**(n+1))
             b = a * rMean[0]**(n+1) - VtMean[0] * rMean[0]
@@ -1233,7 +1233,7 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
                     beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
 
-        elif kind[ii] == 'MVD':
+        elif kind[jj] == 'MVD':
             if section == 'inlet':
                 # variables computation 
                 a = (VtMean[0] - b[0] * rMean[0]) * rMean[0]
@@ -1265,13 +1265,16 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     # angle computation 
                     alpha2[ii] = np.rad2deg(np.arctan(Vt2[ii]/VaMean[1]))
                     beta2[ii] = np.rad2deg(np.arctan(Wt2[ii]/VaMean[1]))
-        elif kind[ii] == 'eqn':
+        elif kind[jj] == 'eqn':
             if section == 'inlet':
                 for ii in range(nSection):
                     # getting position
                     r = midpoint[ii]
                     # computing tangential velocity
-                    Vt1[ii] = func(r)
+                    if jj == 0:
+                        Vt1[ii] = func1(r)
+                    else:
+                        Vt1[ii] = func2(r)
                     # computing rotation speed
                     U = omega * r
                     # relative tangential speed computation 
@@ -1284,7 +1287,10 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
                     # getting position
                     r = midpoint[ii]
                     # computing tangential velocity
-                    Vt2[ii] = func(r)
+                    if jj == 0:
+                        Vt2[ii] = func1(r)
+                    else:
+                        Vt2[ii] = func2(r)
                     # computing rotation speed
                     U = omega * r
                     # relative tangential speed computation 
@@ -1297,6 +1303,9 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
 
     # plotting angles and velocities
     fig, ax = plt.subplots(ncols=2, nrows=1, figsize=(16,9))
+    if save:
+        plt.rcParams['text.usetex'] = True
+        fig = plt.figure()
 
     # angle plotting 
     ax[0].plot(alpha1, midpoint, linestyle='--', marker='p', markersize=6, color='royalblue', markeredgewidth=1.5, markeredgecolor='black', label=r'$\alpha_1$')
@@ -1325,4 +1334,8 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
     ax[1].set_title('Velocity')
     ax[1].legend(loc='upper left', bbox_to_anchor=[1,1])
 
-    plt.show()
+    if save:
+        fig.tight_layout()
+        fig.savefig(position)
+    else:
+        plt.show()

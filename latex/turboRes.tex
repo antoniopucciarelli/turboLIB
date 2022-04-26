@@ -14,6 +14,21 @@
 			\end{itemize}
 		\end{block}
 	\end{frame}
+\subsubsection{Blade number}
+	\begin{frame}{Blade number}
+		In order to define a proper number of blades for the rotor and the stator, \textbf{Howell}'s relations have been used for the estimation of the \textbf{losses}. These relations, \cite[Ch. 6]{axial2004}, are:
+		\begin{itemize}
+			\item $\bar{\omega}_{profile + secondary}$, this is a relation that takes into account \textbf{profile} and \textbf{3D} losses
+			\item $\bar{\omega}_{endWall}$, this is previous expalined \textbf{end wall} loss
+		\end{itemize}
+	\end{frame}
+	\begin{columns}
+		\column{0.5\textwidth}
+			\begin{figure}
+			\end{figure}
+		\column{0.5\textwidth}
+			\begin{figure}
+			\end{figure}
 \subsubsection{$\mathtt{NISRE}$ results}
 	\begin{frame}[fragile]{$\mathtt{NISRE}$ setup}
 		The \verb|NISRE| is solved through a \textbf{double nested} loop:
@@ -63,11 +78,19 @@
 	\begin{frame}{Velocity triangles}
 		\begin{columns}
 			\column{0.5\textwidth}
+				\begin{itemize}	
+					\item Inlet: \textbf{free vortex} model
+					\item Outlet: \textbf{mixed vortex} model
+				\end{itemize}
 				\begin{figure}
 					\centering
 					\includegraphics[width=0.6\textwidth]{figures/rotorVelocityTriangle.png}
 				\end{figure}
 			\column{0.5\textwidth}
+				\begin{itemize}	
+					\item Inlet: \textbf{mixed vortex} model
+					\item Outlet: \textbf{second order} function 
+				\end{itemize}
 				\begin{figure}
 					\centering
 					\includegraphics[width=0.6\textwidth]{figures/statorVelocityTriangle.png}
@@ -75,7 +98,6 @@
 		\end{columns}
 	\end{frame}
 	}
-
 	\begin{frame}{\textbf{Rotor} \& \textbf{stator} blades}
 		\begin{columns}
 			\column{0.5\textwidth}

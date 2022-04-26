@@ -134,10 +134,12 @@ class blade:
         twiny1 = ax[0].twiny()
         twiny2 = ax[0].twiny() 
         twiny3 = ax[0].twiny()
+        twiny4 = ax[0].twiny()
         # moving axis position
         twiny1.spines["top"].set_position(("axes", 1))
         twiny2.spines["top"].set_position(("axes", 1.2))
         twiny3.spines["top"].set_position(("axes", 1.1))
+        twiny4.spines["top"].set_position(("axes", 1.3))
         
         # vector declaration
         midpoint = np.zeros(self.nSection)
@@ -145,6 +147,7 @@ class blade:
         Vt       = np.zeros(self.nSection)
         Pt       = np.zeros(self.nSection)
         s        = np.zeros(self.nSection)
+        Tt       = np.zeros(self.nSection)
 
         # vector allocation
         for ii in range(self.nSection):
@@ -153,12 +156,14 @@ class blade:
             Vt[ii]       = self.inletSection[ii].Vt 
             Pt[ii]       = self.inletSection[ii].Pt / 1e+5
             s[ii]        = self.inletSection[ii].s 
+            Tt[ii]       = self.inletSection[ii].Tt
 
         # plotting ax0
         ax[0].plot(Va,  midpoint, linestyle='-',  linewidth=2, marker='o', markersize=markersize, markeredgecolor=markeredgecolor, color='g', markeredgewidth=markeredgewidth, label=r'$V_a$')
         twiny1.plot(Vt, midpoint, linestyle='-',  linewidth=2, marker='s', markersize=markersize, markeredgecolor=markeredgecolor, color='m', markeredgewidth=markeredgewidth, label=r'$V_t$')
         twiny2.plot(Pt, midpoint, linestyle='--', linewidth=2, marker='^', markersize=markersize, markeredgecolor=markeredgecolor, color='b', markeredgewidth=markeredgewidth, label=r'$P_t$')
         twiny3.plot(s,  midpoint, linestyle='--', linewidth=2, marker='D', markersize=markersize, markeredgecolor=markeredgecolor, color='r', markeredgewidth=markeredgewidth, label=r'$s$')
+        twiny4.plot(Tt,  midpoint, linestyle='--', linewidth=2, marker='p', markersize=markersize, markeredgecolor=markeredgecolor, color='gold', markeredgewidth=markeredgewidth, label=r'$T_t$')
         
         # ax0 setup
         ax[0].set_ylim(self.outletSection[0].midpoint, self.outletSection[-1].midpoint)
@@ -166,6 +171,7 @@ class blade:
         twiny1.set_xlabel(r'$V_t \ [\frac{{m}}{{s}}]$')
         twiny2.set_xlabel(r'$P_t \ [bar]$')
         twiny3.set_xlabel(r'$s \ [\frac{{J}}{{kg }}]$')
+        twiny4.set_xlabel(r'$T \ [K]$')
 
         # setting up axes 
         ax[0].set_title('Inlet')
@@ -176,10 +182,12 @@ class blade:
         twiny21 = ax[1].twiny()
         twiny22 = ax[1].twiny() 
         twiny23 = ax[1].twiny()
+        twiny24 = ax[1].twiny()
         # moving axis position
         twiny21.spines["top"].set_position(("axes", 1))
         twiny22.spines["top"].set_position(("axes", 1.2))
         twiny23.spines["top"].set_position(("axes", 1.1))
+        twiny24.spines["top"].set_position(("axes", 1.3))
 
         # vector allocation
         for ii in range(self.nSection):
@@ -188,12 +196,14 @@ class blade:
             Vt[ii]       = self.outletSection[ii].Vt 
             Pt[ii]       = self.outletSection[ii].Pt / 1e+5
             s[ii]        = self.outletSection[ii].s 
+            Tt[ii]       = self.outletSection[ii].Tt
 
         # plotting ax1
         ax[1].plot(Va,   midpoint, linestyle='-',  marker='o', color='g', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$V_a$')
         twiny21.plot(Vt, midpoint, linestyle='-',  marker='s', color='m', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$V_t$')
         twiny22.plot(Pt, midpoint, linestyle='--', marker='^', color='b', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$P_t$')
         twiny23.plot(s,  midpoint, linestyle='--', marker='D', color='r', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$s$')
+        twiny24.plot(Tt,  midpoint, linestyle='--', marker='p', color='gold', markersize=markersize, markeredgewidth=markeredgewidth, markeredgecolor=markeredgecolor, label=r'$T_t$')
         
         # ax1 setup
         ax[1].set_title('Outlet')
@@ -203,11 +213,12 @@ class blade:
         twiny21.set_xlabel(r'$V_t \ [\frac{{m}}{{s}}]$')
         twiny22.set_xlabel(r'$P_t \ [bar]$')
         twiny23.set_xlabel(r'$s \ [\frac{{J}}{{kg }}]$')
+        twiny24.set_xlabel(r'$T \ [K]$')
     
         # getting labels information for the legend plot
         lines  = []
         labels = []
-        axVec = [ax[1],twiny21, twiny22, twiny23]
+        axVec = [ax[1],twiny21, twiny22, twiny23, twiny24]
         for ax in axVec:
             Line, Label = ax.get_legend_handles_labels()
             lines.extend(Line)
@@ -339,7 +350,7 @@ class blade:
         ax1[1].set_xlabel(r'$P \ [bar]$')
         twiny41.set_xlabel(r'$T \ [K]$')
         twiny42.set_xlabel(r'$M$')
-        twiny42.set_xlim(0.3,1.1)
+        twiny42.set_xlim(0,1.1)
 
         # legend generation 
         ax1[1].legend(handles=[p40,p41,p42,p43,p44,p45,p46,p47,p48,p49], loc='upper left', bbox_to_anchor=[1,1])
@@ -701,6 +712,12 @@ class blade:
         # midpoint --> blade inlet  
         midpointInlet = [self.inletSection[ii].midpoint for ii in range(self.nSection)]
 
+        if self.turboType == 'stator':
+            for ii in range(self.nSection):
+                self.outletSection[ii].Pt = self.inletSection[ii].Pt
+                self.outletSection[ii].Tt = self.inletSection[ii].Tt
+                #lossVec = self.computeLosses(mFlux=mFlux, clearance=clearance)
+
         # s1 function generation --> blade inlet 
         s1 = [self.inletSection[ii].s for ii in range(self.nSection)]
         s1 = interpolate.interp1d(midpointInlet, s1, kind='linear', bounds_error=False, fill_value='extrapolate')
@@ -741,18 +758,14 @@ class blade:
         iterativeLenght = np.int16((lineLenght - len(' RADIAL EQ. '))/2)
         print('' + '*' * iterativeLenght + ' RADIAL EQ. ' + '*' * iterativeLenght)
 
-        if plot:
-            fig = plt.figure()
-            plt.plot(s1(midpointInlet),   midpointInlet, 'r')
-            plt.plot(Tt1(midpointInlet),  midpointInlet, 'b')
-            plt.plot(rVt1(midpointInlet), midpointInlet, 'g')
-            plt.plot(Va1(midpointInlet),  midpointInlet, 'black')
-            plt.plot(Vt2(midpointOutlet), midpointInlet, 'royalblue')
-            plt.show()
-
-        for ii in range(self.nSection):
-            self.outletSection[ii].Pt = self.inletSection[ii].Pt
-            self.outletSection[ii].Tt = self.inletSection[ii].Tt
+        #if plot:
+        #    fig = plt.figure()
+        #    plt.plot(s1(midpointInlet),   midpointInlet, 'r')
+        #    plt.plot(Tt1(midpointInlet),  midpointInlet, 'b')
+        #    plt.plot(rVt1(midpointInlet), midpointInlet, 'g')
+        #    plt.plot(Va1(midpointInlet),  midpointInlet, 'black')
+        #    plt.plot(Vt2(midpointOutlet), midpointInlet, 'royalblue')
+        #    plt.show()
 
         # entropy outer loop 
         while  counterS < nMaxS and relErrorS > tolS: 
@@ -792,12 +805,75 @@ class blade:
                 ds2 = derivative(s2, t, dx=dx, n=1, order=3)
 
                 # y derivative computation
-                dydt = 2 * (y / (2 * cP) * ds2 - Tt1(t) * ds2 - omega * rVt2(t) / cP * ds2  + omega * rVt1(t) / cP * ds2 + Vt2(t)**2 / (2 * cP) * ds2 - Vt2(t) / t * drVt2 + cP * dTt1 + omega * drVt2 - omega * drVt1)
+                dydt = 2 * (y / (2 * cP) * ds2 - Tt1(t) * ds2 - omega * rVt2(t) / cP * ds2  + omega * rVt1(t) / cP * ds2 + Vt2(t)**2 / (2 * cP) * ds2 - Vt2(t) / t * drVt2 +  dTt1 + omega * drVt2 - omega * drVt1)
 
                 return dydt 
             
             # radius vector allocation 
             t = midpointOutlet 
+
+            def radialFunc1(y, t):
+                '''
+                Radial equilibrium ODE. 
+                    y = Va2**2
+                    t = r 
+                '''
+
+                # derivative step setup
+                dx = 1e-3
+
+                # derivative computation
+                # dTt1 / dr  
+                dTt1 = derivative(Tt1, t, dx=dx, n=1, order=3)
+                # drVt2 / dr 
+                drVt2 = derivative(rVt2, t, dx=dx, n=1, order=3)
+                # drVt1 / dr
+                drVt1 = derivative(rVt1, t, dx=dx, n=1, order=3)
+                # ds2 / dr
+                ds2 = derivative(s2, t, dx=dx, n=1, order=3)
+
+                # y derivative computation
+                dydt = 2 * (y / (2 * cP) * ds2 - Tt1(t) * ds2 - omega * rVt2(t) / cP * ds2  + omega * rVt1(t) / cP * ds2 + Vt2(t)**2 / (2 * cP) * ds2 - Vt2(t) / t * drVt2 + cP * dTt1 + omega * drVt2 - omega * drVt1)
+                
+                Tt1ds2 = Tt1(t) * ds2
+                Vt22ds2 = Vt2(t)**2 / (2 * cP) * ds2
+                Vt2rdrVt2 = Vt2(t) / t * drVt2
+                cpdTt1 = cP * dTt1
+
+                return dydt/2, Tt1(t), ds2, rVt2(t), rVt1(t), Vt2(t), drVt2, drVt1, -Tt1ds2, Vt22ds2, -Vt2rdrVt2, cpdTt1
+
+            #if plot:
+            #    dydtval = np.zeros(self.nSection) 
+            #    Tt1val = np.zeros(self.nSection)
+            #    ds2val = np.zeros(self.nSection) 
+            #    rVt2val = np.zeros(self.nSection) 
+            #    rVt1val = np.zeros(self.nSection) 
+            #    Vt2val = np.zeros(self.nSection) 
+            #    drVt2val = np.zeros(self.nSection) 
+            #    drVt1val = np.zeros(self.nSection)
+            #    Tt1ds2val = np.zeros(self.nSection)
+            #    Vt22ds2val = np.zeros(self.nSection)
+            #    Vt2rdrVt2val = np.zeros(self.nSection)
+            #    cpdTt1val = np.zeros(self.nSection)
+            #    for ii in range(self.nSection):
+            #        dydtval[ii], Tt1val[ii], ds2val[ii], rVt2val[ii], rVt1val[ii], Vt2val[ii], drVt2val[ii], drVt1val[ii], Tt1ds2val[ii], Vt22ds2val[ii], Vt2rdrVt2val[ii], cpdTt1val[ii] = radialFunc1(0, t[ii])
+            #
+            #    fig2 = plt.figure()
+            #    plt.plot(dydtval, t, 'r', label='dydt')
+            #    plt.plot(Tt1ds2val, t, 'b', label='Vt2 ds2/sr')
+            #    plt.plot(Vt2rdrVt2val, t, 'g', label='Vt2/r d r Vt2 / dr')
+            #    plt.plot(cpdTt1val, t, 'k', label='cp dTt1 / dr')
+            #    fig3 = plt.figure()
+            #    plt.plot(Tt1val, t, 'b', label='Tt1')
+            #    plt.plot(ds2val, t, 'k', label='ds2/dr')
+            #    plt.plot(rVt2val, t, 'gold', label='r Vt2')
+            #    plt.plot(rVt1val, t, 'green', label='r Vt1')
+            #    plt.plot(Vt2val, t, 'magenta', label='Vt2')
+            #    plt.plot(drVt2val, t, 'pink', label = 'd r Vt2 / dr')
+            #    plt.plot(drVt1val, t, 'slategray', label = 'd r Vt1 / dr')
+            #    fig3.legend()
+            #    fig2.legend()
+            #    plt.show()
 
             # setting up boundary condition
             y0 = self.outletSection[0].Va**2
@@ -868,8 +944,6 @@ class blade:
                
                 for ii in range(self.nSection):
                     Va2[ii] = np.sqrt(Va2_squared[ii])
-                    #print('Va2 ', ii)
-                    #print(Va2[ii])
 
                 # outlet section dynamics allocation
                 for ii in range(self.nSection):
@@ -879,12 +953,7 @@ class blade:
                 # computing change in total pressure due to losses 
                 for ii in range(self.nSection): 
                     # static temperature computation
-                    #print('Temperature ', ii) 
-                    #print(self.outletSection[ii].T)
-                    #print(self.inletSection[ii].Va)
                     self.outletSection[ii].T = self.outletSection[ii].Tt - self.outletSection[ii].V**2 / (2 * cP)
-                    #print(self.outletSection[ii].T)
-                    #print(self.outletSection[ii].Va)
 
                     # rotor and stator work with different total pressures
                     # rotor -> total relative pressure
@@ -911,10 +980,7 @@ class blade:
                         self.outletSection[ii].Mr = self.outletSection[ii].W / self.outletSection[ii].a
                     elif self.turboType == 'stator':
                         # static pressure computation
-                        #print('Pressure ', ii)
-                        #print(self.outletSection[ii].P)
                         self.outletSection[ii].P = self.outletSection[ii].Pt * (self.outletSection[ii].T/self.outletSection[ii].Tt)**(gamma/(gamma-1))
-                        #print(self.outletSection[ii].P)
                         # static density computation
                         self.outletSection[ii].rho = self.outletSection[ii].P / (R * self.outletSection[ii].T)
                         # total density computation
@@ -955,10 +1021,7 @@ class blade:
                     print('-- s2_min  {0:>8.2f} J/kg -- s2_max   {1:>8.2f} J/kg -- rel. error s    {2:>2.4f}'.format(s2Min,s2Max,relErrorS))
                 except: 
                     pass
-                
-                #if plot:
-                #    self.printMeridional(save=save, position0=position0, position1=position1)
-            
+
             print('*' * lineLenght)
             
             # reallocating the entropy for the next iteration 
@@ -1288,7 +1351,7 @@ class blade:
 
         return lossVec
 
-    def bladeGenerator(self, mFlux, clearance=3e-3, NISRE=True, STLname='cad', relTolShape=1e-3, nMaxShape=100, plot=False):
+    def bladeGenerator(self, mFlux, clearance=3e-3, NISRE=True, STLname='cad', relTolShape=1e-3, nMaxShape=100, nMaxFlux=100, nMaxS=10, plot=False):
         '''
         This function computes the final shape of a blade given blade number and total inlet quantites.
             inputs:
@@ -1325,7 +1388,7 @@ class blade:
             print('-' * geometryDim + ' SHAPE ITERATION {0:d} '.format(counterShape) + '-' * geometryDim)
 
             # blade design through iterative process on radial equilibrium 
-            lossVec = self.radialEquilibrium(mFlux=mFlux, clearance=clearance, NISRE=NISRE, plot=plot)
+            lossVec = self.radialEquilibrium(mFlux=mFlux, clearance=clearance, NISRE=NISRE, plot=plot, nMaxFlux=nMaxFlux, nMaxS=nMaxS)
 
             # rotor blade geometry allocation
             self.generateGeometry(pos='data/airfoils/naca65.txt', STLname=STLname, plot=False, printout=False)

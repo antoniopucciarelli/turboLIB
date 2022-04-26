@@ -51,7 +51,26 @@
 	\end{frame}
 \subsubsection{Secondary flow losses}
 	\begin{frame}{Secondary flow losses}
-		Secondary flow losses
+		These losses are relative to the \textbf{secondary flow} inside the compressor and are \textit{usually} \textbf{greater} than the other losses. These losses are related to \textbf{eddies} generated with the \textbf{blade-flow} interaction and \textbf{streamlines} displacement due to the presence of \textbf{pressure gradients}. 
+		\newline 
+		These losses are computed with \textbf{Howell}'s model\footnote{Howell computed a secondary flow loss model that is automatically embedded into $\bar{\omega}_{profile}$: this model is used for the \textbf{estimation} of the stator/rotor \textbf{blade number}.}:
+		\begin{align}
+			\bar{\beta} & = \frac{arctan( ( tan( \beta_1 ) + tan( \beta_2 ) ) )}{2}; & \text{\Romannum{1}} \nonumber \\ 
+			C_{L} & = 2 \ cos( \bar{\beta} ) \cdot \frac{tan( \beta_1 ) - tan( \beta_2 )}{\sigma}; & \text{\Romannum{2}} \nonumber \\
+			C_{D} & = 0.18 \ C_{L}^2; & \text{\Romannum{3}} \nonumber \\
+			\bar{\omega}_{secondary} & = C_{D} \ \sigma \cdot \frac{cos( \beta_1 )^2}{cos( \bar{\beta} )^3}; & \text{loss computation} \nonumber 
+		\end{align}
+	\end{frame}
+\subsubsection{End wall losses}
+	\begin{frame}{End wall losses}
+		These losses are related the interaction between the flow and the \textbf{compressor case}. They are \textit{lower} than the \textbf{secondary flow} losses.
+		\newline
+		It has been used a simple and fast relation made by \textbf{Howell}\footnote{This loss is kept into account in the \textbf{blade numbering} study.}:
+		\begin{align}
+			C_{D} & = 0.02 \ \frac{s}{b_{0}} \nonumber \\ 
+			\bar{\omega}_{endWall} & = C_{D} \ \sigma \cdot \frac{cos( \beta_1 )^2}{cos( \bar{\beta} )^3}; & \text{loss computation} \nonumber 
+		\end{align}
+		
 	\end{frame}
 \subsubsection{Shock losses}
 	\begin{frame}{Shock losses -- \Romannum{1}}
