@@ -16,7 +16,7 @@ rD    = 0.58
 rMean = 0.32
 
 # mean line properties study 
-V0vec, V1vec, V2vec, bladeVec, rotationVec = similarity.propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[rD, rMean], rDmin=0.5, rDmax=0.73, rMeanMin=0.25, rMeanMax=0.4, Vt0Umean=0, plot=False, save=True, position='latex/rMeanChi.png')
+V0vec, V1vec, V2vec, bladeVec, rotationVec = similarity.propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[rD, rMean], rDmin=0.5, rDmax=0.73, rMeanMin=0.25, rMeanMax=0.4, Vt0Umean=0, plot=False, save=True, position='latex/figures/rMeanChi.pdf')
 
 # data allocation 
 Va0 = V0vec[0]
@@ -40,7 +40,7 @@ def func(r):
     return Vt2new
 
 # angle and velocity study along the blade span
-similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['FV', 'MVD'], a=[0,0], b=b, n=[0,0], nSection=50, save=True, position='latex/figures/betaAngles.png')
+similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['FV', 'MVD'], a=[0,0], b=b, n=[0,0], nSection=50, save=True, position='latex/figures/betaAngles.pdf')
 
 # data allocation 
 Va1 = V1vec[0]
@@ -64,4 +64,4 @@ def func(r):
     return Vt
 
 # stator angles and velocity study 
-similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['MVD', 'eqn'], a=[0,0], b=b, n=[0,0], nSection=50, func2=func, save=True, position='latex/figures/alphaAngles.png')
+similarity.deltaAngleStudy(hubRadius, bladeHeight, rMean, VtMean, VaMean, omega, kind=['MVD', 'eqn'], a=[0,0], b=b, n=[0,0], nSection=50, func2=func, save=True, position='latex/figures/alphaAngles.pdf')

@@ -115,7 +115,6 @@ class blade:
 
         # setting up saving options
         if save:
-            # setting matplotlib LaTeX export 
             import matplotlib
             matplotlib.use("pgf")
             matplotlib.rcParams.update({
@@ -361,8 +360,8 @@ class blade:
         fig1.suptitle(self.turboType)
 
         if save:
-            fig0.savefig(position0)
-            fig1.savefig(position1)
+            fig0.savefig(position0, bbox_inches='tight')
+            fig1.savefig(position1, bbox_inches='tight')
         else:
             plt.show()
 

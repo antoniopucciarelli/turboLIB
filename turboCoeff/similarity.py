@@ -7,12 +7,11 @@
 #  
 
 # importing libraries
-from tkinter import NS
 import numpy as np 
 import matplotlib.pyplot as plt 
 from scipy import interpolate
 
-def efficiency(phi=0, rD=0, plot=False, save=False, position='efficiency.pgf'):
+def efficiency(phi=0, rD=0, plot=False, save=False, position='latex/figures/efficiency.pdf'):
     '''
     This function describes the adimensional parameters for the turbomachinery design.
         inputs: 
@@ -78,8 +77,15 @@ def efficiency(phi=0, rD=0, plot=False, save=False, position='efficiency.pgf'):
     
     if plot or save:
         if save:
-            plt.rcParams['text.usetex'] = True
-            fig = plt.figure()
+            import matplotlib
+            matplotlib.use("pgf")
+            matplotlib.rcParams.update({
+                "pgf.texsystem": "pdflatex",
+                'font.family': 'serif',
+                'text.usetex': True,
+                'pgf.rcfonts': False,
+            })
+            fig = plt.figure(figsize=(5,5))
         else:
             # plotting
             plt.figure(figsize=(8,8))
@@ -116,7 +122,7 @@ def efficiency(phi=0, rD=0, plot=False, save=False, position='efficiency.pgf'):
     if rD != 0 and phi != 0:
         return eta
 
-def stagePerf(phi=0, psi=0, perc=1, rD=0.5, phiVec=np.linspace(0,1.5,1000), plot=True, save=False, position='latex/figures/stagePerf.png'):
+def stagePerf(phi=0, psi=0, perc=1, rD=0.5, phiVec=np.linspace(0,1.5,1000), plot=True, save=False, position='latex/figures/stagePerf.pdf'):
     '''
     This function plots the phi and psi parameter with respect to ASME axial compressor design constraints
         The main constraints for the study of the adimensional parameters are:
@@ -178,7 +184,14 @@ def stagePerf(phi=0, psi=0, perc=1, rD=0.5, phiVec=np.linspace(0,1.5,1000), plot
 
     if plot or save:
         if save:
-            plt.rcParams['text.usetex'] = True
+            import matplotlib
+            matplotlib.use("pgf")
+            matplotlib.rcParams.update({
+                "pgf.texsystem": "pdflatex",
+                'font.family': 'serif',
+                'text.usetex': True,
+                'pgf.rcfonts': False,
+            })
             fig = plt.figure()
         else:
             # plotting
@@ -713,7 +726,14 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0Umean
     Vt0UmeanArray = np.linspace(Vt0UmeanMin, Vt0UmeanMax, 20)
 
     if save:
-        plt.rcParams['text.usetex'] = True
+        import matplotlib
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
 
     # figure allocation
     fig0, [[ax1_11, ax1_12, ax1_13, ax1_14, ax1_15], [ax1_21, ax1_22, ax1_23, ax1_24, ax1_25]] = plt.subplots(nrows=2, ncols=5, figsize=(20,10))
@@ -931,8 +951,6 @@ def reactionStudy(mFlux, betaP, rMean, Pt0, Tt0, rDmin=0.5, rDmax=0.73, Vt0Umean
     ax2_26.set_ylabel(r'$\Delta \beta \ @ \ r_{{tip }}$')
     ax2_26.grid(linestyle='--')
 
-    #fig0.suptitle(r'$r_{{mean}} = {0:.3f} m$   $\dot{{m}} = {1:.2f} \frac{{kg}}{{s}}$    $\beta_{{T}} = {2:.2f}$'.format(rMean, mFlux, betaP))
-    #fig1.suptitle(r'$r_{{mean}} = {0:.3f} m$   $\dot{{m}} = {1:.2f} \frac{{kg}}{{s}}$    $\beta_{{T}} = {2:.2f}$'.format(rMean, mFlux, betaP))
     fig0.suptitle(' ')
     fig1.suptitle(' ')
 
@@ -1050,6 +1068,16 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
 
     # figure
     fig = plt.figure(figsize=(16,8))
+    if save:
+        import matplotlib
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
+
     #from matplotlib import cm
     my_cmap = plt.get_cmap('turbo')
 
@@ -1132,7 +1160,7 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
         pass
     ax.set_xlabel(r'$\chi$')
     ax.set_ylabel(r'$r_{mean }$')
-    ax.set_zlabel(r'$M_{r }}$')
+    ax.set_zlabel(r'$M_{{r }}$')
     ax.azim = 210
     ax.dist = 10
     ax.elev = 30
@@ -1140,7 +1168,6 @@ def propertiesStudy(mFlux, betaP, Pt0, Tt0, input=[0,0], rDmin=0.5, rDmax=0.73, 
     fig.suptitle(r'$\chi = {0:.2f}, r_{{mean }} = {1:.2f}$'.format(input[0], input[1]))
 
     if save:    
-        pass
         # figure saving
         fig.savefig(position, bbox_inches='tight')
     elif plot:
@@ -1158,6 +1185,16 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
         inputs:
             ...
     '''
+
+    if save:
+        import matplotlib
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
 
     # midpoint allocation
     midpoint = np.zeros(nSection)
@@ -1303,9 +1340,6 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
 
     # plotting angles and velocities
     fig, ax = plt.subplots(ncols=2, nrows=1, figsize=(16,9))
-    if save:
-        plt.rcParams['text.usetex'] = True
-        fig = plt.figure()
 
     # angle plotting 
     ax[0].plot(alpha1, midpoint, linestyle='--', marker='p', markersize=6, color='royalblue', markeredgewidth=1.5, markeredgecolor='black', label=r'$\alpha_1$')
@@ -1335,7 +1369,6 @@ def deltaAngleStudy(hubRadius, bladeHeight, rMean=[0,0], VtMean=[0,0], VaMean=[0
     ax[1].legend(loc='upper left', bbox_to_anchor=[1,1])
 
     if save:
-        fig.tight_layout()
-        fig.savefig(position)
+        fig.savefig(position, bbox_inches='tight')
     else:
         plt.show()

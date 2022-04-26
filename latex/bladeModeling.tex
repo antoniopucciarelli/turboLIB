@@ -13,6 +13,7 @@
 			\bar{\omega}_{profile} = \frac{0.004 \ \Big( 1 + 3.1 \ \big( D_{eq} - 1 \big)^2 + 0.4 \ \big( D_{eq} - 1 \big)^8 \Big) \ 2 \ \sigma}{cos(\beta_2) \ \Big( \frac{W_1}{W_2} \Big)^2} \nonumber
 		\end{equation}
 	\end{frame}
+
 \subsubsection{Compressibility losses}
 	\begin{frame}{Compressibility losses -- \Romannum{1}}
 		 These losses can be seen as a \textbf{correction} of the \textbf{profile} losses due to the compressibility of the gas along its \textit{journey} in the stage. 
@@ -23,6 +24,7 @@
 		 \newline
 		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Sec. 6.6]{axial2004}}. 
 	\end{frame}
+
 	\begin{frame}{Compressibility losses -- \Romannum{2}}
 		$\bar{\omega}_{compressibility}$ setup:
 		\begin{itemize}
@@ -38,6 +40,7 @@
 				\end{align}
 		\end{itemize}
 	\end{frame}
+
 	\begin{frame}{Compressibility losses -- \Romannum{3}}
 		\begin{itemize}
 			\item $i_m$ computation: $i_m = i_c + \Big( i_s - i_c \Big) \ \frac{R_c}{R_c + R_s}$
@@ -49,6 +52,7 @@
 				\end{align}
 		\end{itemize}
 	\end{frame}
+
 \subsubsection{Secondary flow losses}
 	\begin{frame}{Secondary flow losses}
 		These losses are relative to the \textbf{secondary flow} inside the compressor and are \textit{usually} \textbf{greater} than the other losses. These losses are related to \textbf{eddies} generated with the \textbf{blade-flow} interaction and \textbf{streamlines} displacement due to the presence of \textbf{pressure gradients}. 
@@ -61,6 +65,7 @@
 			\bar{\omega}_{secondary} & = C_{D} \ \sigma \cdot \frac{cos( \beta_1 )^2}{cos( \bar{\beta} )^3}; & \text{loss computation} \nonumber 
 		\end{align}
 	\end{frame}
+
 \subsubsection{End wall losses}
 	\begin{frame}{End wall losses}
 		These losses are related the interaction between the flow and the \textbf{compressor case}. They are \textit{lower} than the \textbf{secondary flow} losses.
@@ -69,9 +74,9 @@
 		\begin{align}
 			C_{D} & = 0.02 \ \frac{s}{b_{0}} \nonumber \\ 
 			\bar{\omega}_{endWall} & = C_{D} \ \sigma \cdot \frac{cos( \beta_1 )^2}{cos( \bar{\beta} )^3}; & \text{loss computation} \nonumber 
-		\end{align}
-		
+		\end{align}		
 	\end{frame}
+
 \subsubsection{Shock losses}
 	\begin{frame}{Shock losses -- \Romannum{1}}
 		The \textbf{relative} Mach number at the rotor inlet is slightly above \textbf{sonic speed}; a \textbf{shock wave} will be present at the rotor tip. From \cite{manfredi2020transonic}, \textbf{shock pattern} is related to \textbf{Mach number} and \textbf{airfoil shape}.
@@ -82,6 +87,7 @@
 		\newline
 		\textbf{K\"onig model} \cite[Sec. 6.7]{axial2004} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}, $M_1$.
 	\end{frame}
+	
 	\begin{frame}{Shock losses -- \Romannum{2}}
 		\begin{itemize}
 			\item computation of the \textbf{expansion wave} angle, $\phi$: $\phi = \frac{s \ cos(\psi)}{s \ sin(\psi) \ R_u}$, where $\psi = \psi_{(\beta_1, \gamma, \theta)}$
@@ -91,6 +97,7 @@
 			\item from $\Delta P_T$, computation of $\bar{\omega}_{shock}$
 		\end{itemize}
 	\end{frame}
+
 \subsubsection{Tip leackage losses}
 	{\nologo
 	\begin{frame}{Tip leackage losses}
@@ -105,6 +112,7 @@
 		$\Delta P_T$ is the \textbf{overall} total pressure loss due to \textbf{leackage} of the blade.
 	\end{frame}
 	}
+
 \subsection{Radial equilibrium}
 	\begin{frame}{Radial equilibrium}
 		The \textbf{radial equilibrium} equation: $\frac{\partial h_t}{\partial r} = T \frac{\partial s}{\partial r} + V_a \frac{\partial V_a}{\partial r} + V_t \frac{\partial r V_t}{\partial r}$ is converted into, for the exit station\footnote{$1$ is the blade inlet station and $2$ is the blade outlet section.} of the blade, a \textbf{1st order ODE}:
@@ -114,16 +122,17 @@
 			\nonumber
 			\end{split}
 		\end{equation}
-	The \textbf{ODE} will be solved for $V_{a2}^2$.
-	\newline
+		The \textbf{ODE} will be solved for $V_{a2}^2$.
+		\newline
 		$s_2$ is computed from $\sum_i \bar{\omega}_{i}$ treated earlier. 
-	\newline 
+		\newline 
 		$\omega, V_{t1}, V_{t2} \& T_{T1}$ are known.
 		\begin{itemize}
 			\item $r_{1_{mean}} \ V_{t1_{mean}} = r_{1} \ V_{t1_{(r_1)}}$
 			\item $r_{2_{mean}} \ V_{t2_{mean}} = r_{2} \ V_{t2_{(r_2)}}$
 		\end{itemize}
 	\end{frame}
+	
 \subsection{Blade shape}
 	{\nologo
 	\begin{frame}{Blade shape}

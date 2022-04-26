@@ -468,7 +468,7 @@ def optimalAngles(beta1, beta2, solidity, tbc=0.1, printout=False):
 
     return i, delta, theta
 
-def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.5, 1.7, 1.8, 2, 2.1, 2.2], kind='equivalent', save=False, position='bladeNumber.png'):
+def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1=0, Vt2=0, Va1=0, bladeInterval=[25,50], ARvec=[1.5, 1.7, 1.8, 2, 2.1, 2.2], kind='equivalent', save=False, position='bladeNumber.png', title=None):
     '''
     This function plots the profile losses at the mean line with respect to different aspect ratio and blade number.
         inputs:
@@ -494,7 +494,18 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
     bladeVec = np.arange(bladeInterval[0], bladeInterval[1]+1, 1)
 
     # figure generation 
-    fig, ax = plt.subplots(nrows=2, ncols=1)
+    if save:
+        import matplotlib
+        matplotlib.use("pgf")
+        matplotlib.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
+        fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10,8))
+    else:
+        fig, ax = plt.subplots(nrows=2, ncols=1)
 
     # computing profile losses for different blade number and aspect ratio
     for AR in ARvec:
@@ -521,7 +532,7 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
         ax[1].plot(bladeVec, lossVec, linestyle='-', marker='o', markeredgewidth=1.5, markersize=markersize, markeredgecolor='black', label=r'$AR = {0:.2f}$'.format(AR))
     
     ax[0].legend(loc='upper left', bbox_to_anchor=[1,1])
-    ax[0].set_xlabel('# of blades')
+    ax[0].set_xlabel('No. of blades')
     ax[0].grid(linestyle='--')
     if kind == 'std':
         ax[0].set_ylabel(r'$D$')
@@ -534,9 +545,10 @@ def optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=0, r2=0, Vt1
     ax[1].xaxis.set_ticks_position('top')
     ax[1].grid(linestyle='--')
 
-    fig.tight_layout()
+    if title != None:
+        fig.suptitle(title)
 
     if save:
-        fig.savefig(position)
+        fig.savefig(position, bbox_inches='tight')
     else:
         plt.show()

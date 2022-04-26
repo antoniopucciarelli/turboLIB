@@ -43,7 +43,7 @@ file_path = 'compressor_' + str(rD) + '_' + str(rMean) + '_' + str(nRotorBlades)
 with open(file_path, "w") as file:
     with contextlib.redirect_stdout(file):
         # generation of mean line properties to be used for the blade assembly 
-        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, W2vec, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True, save=False)
+        adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, W2vec, thermo0, thermo1, _, work = similarity.stageProperties(rD, psiTarget, rMean, mFlux, Tt0, Pt0, betaP, T1real=True, printout=True, save=True, )
 
         # values allocation 
         Leu                = work[0]
@@ -84,8 +84,10 @@ with open(file_path, "w") as file:
         rotorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='rotor', plot=False, printout=False)
         # computing the best shape 
         lossVec = rotorBlade.bladeGenerator(mFlux, clearance=1e-3, NISRE=True, STLname='rotor', plot=False, nMaxShape=1)
+        # plotting meridional flow 
+        rotorBlade.printMeridional(save=True, position0='latex/figures/rotorEntropyFlow.pdf', position1='latex/figures/rotorBetaThermo.pdf')
         # plotting velocity triangles
-        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=False, position='latex/figures/rotorVelocityTriangle.png')
+        rotorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=True, position='latex/figures/rotorVelocityTriangle.pdf')
         # computing efficiency
         rotorBlade.computeBladeEfficiency(Va=rotorVaMeanOutlet, lossVec=lossVec)
 
@@ -119,9 +121,11 @@ with open(file_path, "w") as file:
         # stator blade geometry allocation
         statorBlade.generateGeometry(pos='data/airfoils/naca65.txt', STLname='stator', plot=False, printout=False)
         # computing the best shape 
-        lossVec = statorBlade.bladeGenerator(mFlux, clearance=0, NISRE=True, STLname='stator', plot=True, nMaxShape=1, nMaxFlux=100, nMaxS=1)
+        lossVec = statorBlade.bladeGenerator(mFlux, clearance=0, NISRE=True, STLname='stator', plot=False, nMaxShape=1, nMaxFlux=100, nMaxS=1)
+        # plotting meridional quantities
+        statorBlade.printMeridional(save=True, position0='latex/figures/statorEntropyFlow.pdf', position1='latex/figures/statorBetaThermo.pdf')
         # plotting velocity triangle
-        statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=False, position='latex/figures/statorVelocityTriangle.png')
+        statorBlade.velocityTriangles(sectionNumber=[0, int(nSection/2-1), nSection-1], save=True, position='latex/figures/statorVelocityTriangle.pdf')
         # computing efficiency
         statorBlade.computeBladeEfficiency(Va=statorVaMeanOutlet, lossVec=lossVec)
 

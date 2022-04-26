@@ -14,21 +14,30 @@
 			\end{itemize}
 		\end{block}
 	\end{frame}
+
 \subsubsection{Blade number}
+	{\nologo
 	\begin{frame}{Blade number}
 		In order to define a proper number of blades for the rotor and the stator, \textbf{Howell}'s relations have been used for the estimation of the \textbf{losses}. These relations, \cite[Ch. 6]{axial2004}, are:
 		\begin{itemize}
 			\item $\bar{\omega}_{profile + secondary}$, this is a relation that takes into account \textbf{profile} and \textbf{3D} losses
 			\item $\bar{\omega}_{endWall}$, this is previous expalined \textbf{end wall} loss
 		\end{itemize}
+		
+		\begin{columns}
+			\column{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{figures/rotorBlades.pdf}
+			\end{figure}
+			\column{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{figures/statorBlades.pdf}
+			\end{figure}
+		\end{columns}
 	\end{frame}
-	\begin{columns}
-		\column{0.5\textwidth}
-			\begin{figure}
-			\end{figure}
-		\column{0.5\textwidth}
-			\begin{figure}
-			\end{figure}
+	}
 \subsubsection{$\mathtt{NISRE}$ results}
 	\begin{frame}[fragile]{$\mathtt{NISRE}$ setup}
 		The \verb|NISRE| is solved through a \textbf{double nested} loop:
@@ -41,6 +50,7 @@
 		\newline
 		Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is used for the computation of the blade \textbf{shape}.
 	\end{frame}
+
 \subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
 	\begin{frame}[fragile]{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
 		At the end of the \verb|NISRE|, all the main blade quantities are avaliable for the \textbf{generation} of the \textbf{3D geometry}. This geometry can be converted into a \verb|.stl| file that can be used in \verb|OpenFOAM| for the flow properties study. In addition a \verb|.scad| file is made for understanding position and checking possible contacts between rotor and stator blades.	
@@ -48,32 +58,37 @@
 		\newline 
 		\cite{baskharone2006principles} suggested that a good distance between rotor and stator blades is half of the rotor chord\footnote{In the radial equilibrium study losses between rotor \newline and stator blades are \textbf{neglected}.}.
 	\end{frame}
+
 \subsection{Results}
 	\subsubsection{$\mathtt{NISRE}$ and main quantities}
 	\begin{frame}{\textbf{Rotor} equilibrium results: $\mathtt{NISRE}$}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1\textwidth]{figures/rotorVelocity.png}
+			\includegraphics[width=1\textwidth]{figures/rotorEntropyFlow.pdf}
 		\end{figure}
 	\end{frame}
+	
 	\begin{frame}{\textbf{Rotor} equilibrium results: main quantities}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1\textwidth]{figures/rotorThermo.png}
+			\includegraphics[width=1\textwidth]{figures/rotorBetaThermo.pdf}
 		\end{figure}
 	\end{frame}
+	
 	\begin{frame}{\textbf{Stator} equilibrium results: $\mathtt{NISRE}$}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1\textwidth]{figures/statorVelocity.png}
+			\includegraphics[width=1\textwidth]{figures/statorEntropyFlow.pdf}
 		\end{figure}
 	\end{frame}
+	
 	\begin{frame}{\textbf{Stator} equilibrium results: main quantities}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1\textwidth]{figures/statorThermo.png}
+			\includegraphics[width=1\textwidth]{figures/statorBetaThermo.pdf}
 		\end{figure}
 	\end{frame}
+	
 	{\nologo
 	\begin{frame}{Velocity triangles}
 		\begin{columns}
@@ -84,7 +99,7 @@
 				\end{itemize}
 				\begin{figure}
 					\centering
-					\includegraphics[width=0.6\textwidth]{figures/rotorVelocityTriangle.png}
+					\includegraphics[width=0.5\textwidth]{figures/rotorVelocityTriangle.pdf}
 				\end{figure}
 			\column{0.5\textwidth}
 				\begin{itemize}	
@@ -93,11 +108,12 @@
 				\end{itemize}
 				\begin{figure}
 					\centering
-					\includegraphics[width=0.6\textwidth]{figures/statorVelocityTriangle.png}
+					\includegraphics[width=0.5\textwidth]{figures/statorVelocityTriangle.pdf}
 				\end{figure}
 		\end{columns}
 	\end{frame}
 	}
+	
 	\begin{frame}{\textbf{Rotor} \& \textbf{stator} blades}
 		\begin{columns}
 			\column{0.5\textwidth}
@@ -114,12 +130,14 @@
 				\end{figure}
 		\end{columns}
 	\end{frame}
+	
 	\begin{frame}{\textbf{Stage} plot}
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{figures/compressor.png}
 		\end{figure}
 	\end{frame}
+
 \subsubsection{Efficiency}
 	\begin{frame}[fragile]{Efficiency}
 		The \textbf{rotor} efficiency is computed with:

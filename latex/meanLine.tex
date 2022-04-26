@@ -1,21 +1,22 @@
 \subsection{Problem setup}
 	{\nologo
 	\begin{frame}{Problem setup: hypothesis}
-	\begin{alertblock}{Hypothesis}
-		\begin{itemize}
-			\item \textbf{not using} an \textbf{inlet guide vane} for simplicity of design\footnote{$V_{t0} = 0 \frac{m}{s}$ and $\chi$ dictate the behaviour of $\lambda$.}
-			\item keeping, in the similarity/adimensional analysis of the compressor, $V_{a_{mean}}$ \textbf{constant}\footnote{$\dot{m}$ corrections will be made later on in the \textbf{radial equilibrium} solution.}  
-			\item keeping the blade height, $b_0$, \textbf{constant} both in rotor and stator\footnote{In order to keep each \textbf{blade streamtube section} as simple as possible.}
-			\item using a \textbf{mixed vortex} model for the \textbf{rotor} velocity triangles
-			\item using a \textbf{second order} function for the \textbf{stator} velocity triangles 
-			\item neglecting inlet \textbf{entropy} generation and assuming \textbf{rotor inlet} quantities \textbf{constant}
-			\item \textbf{shrouding} at blade tip not present
-			\item \textbf{rotor-stator} losses neglected
-		\end{itemize}
-	\end{alertblock}
+		\begin{alertblock}{Hypothesis}
+			\begin{itemize}
+				\item \textbf{not using} an \textbf{inlet guide vane} for simplicity of design\footnote{$V_{t0} = 0 \frac{m}{s}$ and $\chi$ dictate the behaviour of $\lambda$.}
+				\item keeping, in the similarity/adimensional analysis of the compressor, $V_{a_{mean}}$ \textbf{constant}\footnote{$\dot{m}$ corrections will be made later on in the \textbf{radial equilibrium} solution.}  
+				\item keeping the blade height, $b_0$, \textbf{constant} both in rotor and stator\footnote{In order to keep each \textbf{blade streamtube section} as simple as possible.}
+				\item using a \textbf{mixed vortex} model for the \textbf{rotor} velocity triangles
+				\item using a \textbf{second order} function for the \textbf{stator} velocity triangles 
+				\item neglecting inlet \textbf{entropy} generation and assuming \textbf{rotor inlet} quantities \textbf{constant}
+				\item \textbf{shrouding} at blade tip not present
+				\item \textbf{rotor-stator} losses neglected
+			\end{itemize}
+		\end{alertblock}
 	\end{frame}
 	}
-		\begin{frame}{Problem setup: solution steps}
+	
+	\begin{frame}{Problem setup: solution steps}
 		\begin{block}{Main procedural steps:}
 			\begin{itemize}
 				\item $\lambda$ and $\psi$ computation from $\chi$ and $V_{t0}$
@@ -27,33 +28,38 @@
 			\end{itemize}
 		\end{block}
 	\end{frame}
+
 \subsection{Main design quantities}
+	{\nologo
 	\begin{frame}{Graph analysis: $\chi$ \& $r_{mean}$}
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{figures/rMeanChi.png}
+			\includegraphics[width=\textwidth]{figures/rMeanChi.pdf}
+		\end{figure}
+	\end{frame}	
+
+	\begin{frame}{Graph analysis: \textbf{rotor} $\alpha$, $\beta$ \& $V_{t}$}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{figures/betaAngles.pdf}
 		\end{figure}
 	\end{frame}
-	\begin{frame}{Graph analysis: $\alpha$ \& $\beta$}
-		\begin{columns}
-			\column{0.5\textwidth}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\textwidth]{figures/betaAngles.png}
-				\end{figure}
-			\column{0.5\textwidth}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\textwidth]{figures/alphaAngles.png}
-				\end{figure}
+	
+	\begin{frame}{Graph analysis: \textbf{stator} $\alpha$ \& $V_{t}$}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{figures/alphaAngles.pdf}
+		\end{figure}
 	\end{frame}
+	}
+
 	\begin{frame}{$\lambda$ \& $\psi$}
 		From the previous \textbf{graphs}:
-			\begin{itemize}
-				\item $\chi = 0.55$
-				\item $r_{mean} = 0.325 m$
-				\item $\frac{V_{t0}}{U_{mean}} = 0$
-			\end{itemize}
+		\begin{itemize}
+			\item $\chi = 0.55$
+			\item $r_{mean} = 0.325 m$
+			\item $\frac{V_{t0}}{U_{mean}} = 0$
+		\end{itemize}
 		Taking into account the previous modeling \textbf{hypothesis}:
 		\begin{align}
 			\lambda & = \Bigg( 1 - \chi - \frac{V_{t0}}{U_{mean}} \Bigg) \cdot 4 \nonumber \\
@@ -65,16 +71,17 @@
 		From \cite[Sec. 10.4]{axial2004} it is imposed that $\frac{W_2}{W_1} \geq 0.7$ with a \textit{safety} margin of $3 \%$.  
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.7\textwidth]{figures/stagePerf.png}
+			\includegraphics[width=0.7\textwidth]{figures/stagePerf.pdf}
 		\end{figure}
 	\end{frame}
+
 	\begin{frame}{$\eta$ \& $L_{eu}$}
 		$\eta$ is computed from an \textbf{Lieblein} efficiency chart\footnote{This chart has been interpolated from the course slides charts.} given $\phi$ and $\chi$. This parameter will be used for the computation of $L_{eu}$ given the $\beta_{TT}$ target.
 		\begin{columns}
 			\column{0.5\textwidth}
 				\begin{figure}
 					\centering 
-					\includegraphics[width=1\textwidth]{figures/efficiency.png}
+					\includegraphics[width=1\textwidth]{figures/efficiency.pdf}
 				\end{figure}
 			\column{0.5\textwidth}
 			\begin{align}
@@ -83,7 +90,8 @@
 			\end{align}
 		\end{columns}
 	\end{frame}
-\subsection{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}
+
+	\subsection{$V_{t_{mean}}$, $V_{a_{mean}}$, $U_{mean}$ \& velocity triangles}
 \begin{frame}[fragile]{$V_{a_{mean}}$, $V_{t_{mean}}$ \& $U_{mean}$}
 	\begin{align}
 		U_{mean} & = \frac{L_{eu}}{\psi} \nonumber \\ 

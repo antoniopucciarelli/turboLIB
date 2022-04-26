@@ -45,14 +45,16 @@ adimVec, bladeVec, rotationVec, V0vec, V1vec, V2vec, W0vec, W1vec, W2vec, thermo
 
 # values allocation 
 Leu                = work[0]
+Lis                = work[1]
 eta                = adimVec[2]
-omega              = rotationVec[1]
+omega              = rotationVec[1] * 1.05
 b0                 = bladeVec[0]
 hubRadius          = rMean - b0/2
 rotorVaMeanInlet   = V0vec[0]
 rotorVtMeanInlet   = V0vec[1] 
+rotorVtMeanOutlet  = Lis/0.82 / (rMean * omega) + rotorVtMeanInlet
 rotorVaMeanOutlet  = V0vec[0]
-rotorVtMeanOutlet  = V1vec[1]
+#rotorVtMeanOutlet  = V1vec[1]
 statorVaMeanInlet  = V0vec[0] 
 statorVtMeanInlet  = V1vec[1]
 statorVaMeanOutlet = V2vec[0]
@@ -81,7 +83,7 @@ W2    = np.sqrt(W2a**2 + W2t**2)
 beta2 = W1vec[2]
 bladeHeight = b0
 
-bladeStudy.optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=rMean, r2=rMean, Vt1=V1t, Vt2=V2t, Va1=V1a, bladeInterval=[25,50], kind='std')
+bladeStudy.optimalBladeNumber(W1, W2, beta1, beta2, rMean, bladeHeight, r1=rMean, r2=rMean, Vt1=V1t, Vt2=V2t, Va1=V1a, bladeInterval=[25,50], kind='std', save=True, position='latex/figures/rotorBlades.pdf', title='Rotor')
 
 # stator
 V3a = V1vec[0]
@@ -104,6 +106,4 @@ W4    = np.sqrt(W4a**2 + W4t**2)
 beta4 = V2vec[2]
 bladeHeight = b0
 
-bladeStudy.optimalBladeNumber(W3, W4, beta3, beta4, rMean, bladeHeight, r1=rMean, r2=rMean, Vt1=V3t, Vt2=V4t, Va1=V3a, bladeInterval=[25,50], kind='std')
-
-exit()
+bladeStudy.optimalBladeNumber(W3, W4, beta3, beta4, rMean, bladeHeight, r1=rMean, r2=rMean, Vt1=V3t, Vt2=V4t, Va1=V3a, bladeInterval=[25,50], kind='std', save=True, position='latex/figures/statorBlades.pdf', title='Stator')
