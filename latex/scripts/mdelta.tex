@@ -1,9 +1,0 @@
-W_I.u = '\delta_{lat}'; % weight input
-W_I.y = 'z'; % weight output
-G_n = getNominal(G); % nominal plant
-G_n.u = 'u_delta_{lat}'; % input of nominal plant
-Sum_u = sumblk('u_delta_{lat} = \delta_{lat} + w'); % multipicative sum
-eOuter_new = sumblk('e_{\phi} = - \phi'); % not considering setpoint in sum block
-M = connect(Rphi, eInner, Rp, W_I, Sum_u, G_n, eOuter_new,{'w'}, {'z'}); % M TF
-M_s = minreal(M); % simplified M TF
-get(M_s)

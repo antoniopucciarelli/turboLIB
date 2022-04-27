@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  26 APR 2022 19:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  27 APR 2022 11:26
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1788,11 +1788,7 @@ LaTeX Font Info:    Font shape `U/lasy/b/n' in size <9> not available
 LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <9> not available
 (Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 16.
 
-
-Overfull \vbox (18.58488pt too high) detected at line 16
- []
-
-[6
+ [6
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
@@ -1806,10 +1802,11 @@ File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
 Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 32.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [8
+
+[8
 
 ]
-<figures/rMeanChi.pdf, id=666, 927.57147pt x 529.18639pt>
+<figures/rMeanChi.pdf, id=665, 927.57147pt x 529.18639pt>
 File: figures/rMeanChi.pdf Graphic file (type pdf)
 <use figures/rMeanChi.pdf>
 Package pdftex.def Info: figures/rMeanChi.pdf  used on input line 39.
@@ -1824,7 +1821,7 @@ LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <12> not available
  [9
 
  <./figures/rMeanChi.pdf>]
-<figures/betaAngles.pdf, id=771, 1025.48624pt x 567.63269pt>
+<figures/betaAngles.pdf, id=770, 1025.48624pt x 567.63269pt>
 File: figures/betaAngles.pdf Graphic file (type pdf)
 <use figures/betaAngles.pdf>
 Package pdftex.def Info: figures/betaAngles.pdf  used on input line 46.
@@ -1832,7 +1829,7 @@ Package pdftex.def Info: figures/betaAngles.pdf  used on input line 46.
  [10
 
  <./figures/betaAngles.pdf>]
-<figures/alphaAngles.pdf, id=855, 1025.48624pt x 567.63269pt>
+<figures/alphaAngles.pdf, id=854, 1025.48624pt x 567.63269pt>
 File: figures/alphaAngles.pdf Graphic file (type pdf)
 <use figures/alphaAngles.pdf>
 Package pdftex.def Info: figures/alphaAngles.pdf  used on input line 53.
@@ -1847,7 +1844,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 68.
  [12
 
 ]
-<figures/stagePerf.pdf, id=994, 455.30101pt x 339.66899pt>
+<figures/stagePerf.pdf, id=993, 455.30101pt x 339.66899pt>
 File: figures/stagePerf.pdf Graphic file (type pdf)
 <use figures/stagePerf.pdf>
 Package pdftex.def Info: figures/stagePerf.pdf  used on input line 76.
@@ -1859,7 +1856,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 76.
  [13
 
  <./figures/stagePerf.pdf>]
-<figures/efficiency.pdf, id=1076, 354.12299pt x 354.12299pt>
+<figures/efficiency.pdf, id=1075, 354.12299pt x 354.12299pt>
 File: figures/efficiency.pdf Graphic file (type pdf)
 <use figures/efficiency.pdf>
 Package pdftex.def Info: figures/efficiency.pdf  used on input line 92.
@@ -1980,7 +1977,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 54.
  [22
 
 ]
-Overfull \vbox (12.80759pt too high) detected at line 67
+Overfull \vbox (13.41594pt too high) detected at line 67
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
@@ -2020,20 +2017,20 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 116.
  [28
 
 ]
-Overfull \hbox (3.72372pt too wide) detected at line 134
+Overfull \hbox (3.72372pt too wide) detected at line 130
 []
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 134.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 130.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [29
 
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 136.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 132.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [30
 
@@ -2097,12 +2094,12 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 16.
  [34
 
 ]
-<figures/rotorBlades.pdf, id=2356, 704.98183pt x 517.45322pt>
+<figures/rotorBlades.pdf, id=2358, 704.98183pt x 517.45322pt>
 File: figures/rotorBlades.pdf Graphic file (type pdf)
 <use figures/rotorBlades.pdf>
 Package pdftex.def Info: figures/rotorBlades.pdf  used on input line 39.
 (pdftex.def)             Requested size: 153.64493pt x 112.77412pt.
-<figures/statorBlades.pdf, id=2357, 704.98183pt x 517.45322pt>
+<figures/statorBlades.pdf, id=2359, 704.98183pt x 517.45322pt>
 File: figures/statorBlades.pdf Graphic file (type pdf)
 <use figures/statorBlades.pdf>
 Package pdftex.def Info: figures/statorBlades.pdf  used on input line 39.
@@ -2137,110 +2134,110 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 62.
  [38
 
 ]
-<figures/rotorEntropyFlow.pdf, id=2625, 1293.56775pt x 654.49818pt>
+<figures/rotorEntropyFlow.pdf, id=2627, 1293.56775pt x 654.49818pt>
 File: figures/rotorEntropyFlow.pdf Graphic file (type pdf)
 <use figures/rotorEntropyFlow.pdf>
-Package pdftex.def Info: figures/rotorEntropyFlow.pdf  used on input line 69.
+Package pdftex.def Info: figures/rotorEntropyFlow.pdf  used on input line 70.
 (pdftex.def)             Requested size: 307.28987pt x 155.47488pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 69.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 70.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 
 [39
 
  <./figures/rotorEntropyFlow.pdf>]
-<figures/rotorBetaThermo.pdf, id=2699, 1293.63306pt x 680.99721pt>
+<figures/rotorBetaThermo.pdf, id=2701, 1293.63306pt x 680.99721pt>
 File: figures/rotorBetaThermo.pdf Graphic file (type pdf)
 <use figures/rotorBetaThermo.pdf>
-Package pdftex.def Info: figures/rotorBetaThermo.pdf  used on input line 76.
+Package pdftex.def Info: figures/rotorBetaThermo.pdf  used on input line 77.
 (pdftex.def)             Requested size: 307.28987pt x 161.7593pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 76.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 77.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [40
 
  <./figures/rotorBetaThermo.pdf>]
-<figures/statorEntropyFlow.pdf, id=2784, 1292.50677pt x 654.49818pt>
+<figures/statorEntropyFlow.pdf, id=2786, 1292.50677pt x 654.49818pt>
 File: figures/statorEntropyFlow.pdf Graphic file (type pdf)
 <use figures/statorEntropyFlow.pdf>
-Package pdftex.def Info: figures/statorEntropyFlow.pdf  used on input line 83.
+Package pdftex.def Info: figures/statorEntropyFlow.pdf  used on input line 84.
 (pdftex.def)             Requested size: 307.28987pt x 155.60472pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 83.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 84.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 
 [41
 
  <./figures/statorEntropyFlow.pdf>]
-<figures/statorBetaThermo.pdf, id=2855, 1293.63306pt x 679.22354pt>
+<figures/statorBetaThermo.pdf, id=2857, 1293.63306pt x 679.22354pt>
 File: figures/statorBetaThermo.pdf Graphic file (type pdf)
 <use figures/statorBetaThermo.pdf>
-Package pdftex.def Info: figures/statorBetaThermo.pdf  used on input line 90.
+Package pdftex.def Info: figures/statorBetaThermo.pdf  used on input line 91.
 (pdftex.def)             Requested size: 307.28987pt x 161.33798pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 90.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 91.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [42
 
  <./figures/statorBetaThermo.pdf>]
-<figures/rotorVelocityTriangle.pdf, id=2935, 361.35pt x 722.7pt>
+<figures/rotorVelocityTriangle.pdf, id=2937, 361.35pt x 722.7pt>
 File: figures/rotorVelocityTriangle.pdf Graphic file (type pdf)
 <use figures/rotorVelocityTriangle.pdf>
 Package pdftex.def Info: figures/rotorVelocityTriangle.pdf  used on input line 
-114.
+115.
 (pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
-<figures/statorVelocityTriangle.pdf, id=2936, 361.35pt x 722.7pt>
+<figures/statorVelocityTriangle.pdf, id=2938, 361.35pt x 722.7pt>
 File: figures/statorVelocityTriangle.pdf Graphic file (type pdf)
 <use figures/statorVelocityTriangle.pdf>
 Package pdftex.def Info: figures/statorVelocityTriangle.pdf  used on input line
- 114.
+ 115.
 (pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
 
-Overfull \vbox (2.70277pt too high) detected at line 114
+Overfull \vbox (2.70277pt too high) detected at line 115
  []
 
 [43
 
  <./figures/rotorVelocityTriangle.pdf> <./figures/statorVelocityTriangle.pdf>]
-<figures/rotor.png, id=3039, 2862.695pt x 1555.8125pt>
+<figures/rotor.png, id=3041, 2862.695pt x 1555.8125pt>
 File: figures/rotor.png Graphic file (type png)
 <use figures/rotor.png>
-Package pdftex.def Info: figures/rotor.png  used on input line 132.
+Package pdftex.def Info: figures/rotor.png  used on input line 133.
 (pdftex.def)             Requested size: 230.46739pt x 125.25095pt.
 
-Overfull \hbox (76.82246pt too wide) in paragraph at lines 132--132
+Overfull \hbox (76.82246pt too wide) in paragraph at lines 133--133
  [] 
  []
 
-<figures/stator.png, id=3041, 2862.695pt x 1555.8125pt>
+<figures/stator.png, id=3043, 2862.695pt x 1555.8125pt>
 File: figures/stator.png Graphic file (type png)
 <use figures/stator.png>
-Package pdftex.def Info: figures/stator.png  used on input line 132.
+Package pdftex.def Info: figures/stator.png  used on input line 133.
 (pdftex.def)             Requested size: 230.46739pt x 125.25095pt.
 
-Overfull \hbox (76.82246pt too wide) in paragraph at lines 132--132
+Overfull \hbox (76.82246pt too wide) in paragraph at lines 133--133
  [] 
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 132.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 133.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [44
 
  <./figures/rotor.png> <./figures/stator.png>]
-<figures/compressor.png, id=3100, 2050.66125pt x 1022.31938pt>
+<figures/compressor.png, id=3102, 2050.66125pt x 1022.31938pt>
 File: figures/compressor.png Graphic file (type png)
 <use figures/compressor.png>
-Package pdftex.def Info: figures/compressor.png  used on input line 139.
+Package pdftex.def Info: figures/compressor.png  used on input line 140.
 (pdftex.def)             Requested size: 307.28987pt x 153.18529pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 139.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 140.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [45
 
@@ -2250,7 +2247,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 139.
  (./main.vrb)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 153.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 154.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [46
 
@@ -2294,7 +2291,7 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 Here is how much of TeX's memory you used:
  35065 strings out of 481239
  677297 string characters out of 5920377
- 1362343 words of memory out of 5000000
+ 1361343 words of memory out of 5000000
  49372 multiletter control sequences out of 15000+600000
  674285 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2330,10 +2327,10 @@ s/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb>
 /public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/s
 hare/texmf/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/publi
 c/lm/lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (48 pages, 2485104 bytes).
+Output written on main.pdf (48 pages, 2484210 bytes).
 PDF statistics:
- 3457 PDF objects out of 3580 (max. 8388607)
- 3257 compressed objects within 33 object streams
+ 3459 PDF objects out of 3580 (max. 8388607)
+ 3259 compressed objects within 33 object streams
  124 named destinations out of 1000 (max. 500000)
  250 words of extra memory for PDF output out of 10000 (max. 10000000)
 

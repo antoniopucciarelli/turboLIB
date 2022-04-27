@@ -8,4 +8,4 @@ The \textbf{rotor} efficiency is computed with:
 			\eta_{is_{stator}} = \frac{\Delta h_{is}}{\Delta h_{real}}
 			\nonumber
 		\end{equation}
-		The modeling results are stored into \verb|compressor_0.55_0.325_28_28.txt|.
+		The modeling results are stored into \verb|compressor_0.58_0.32_45_35.txt|.
