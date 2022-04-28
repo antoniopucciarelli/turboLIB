@@ -59,7 +59,7 @@
 		\newline 
 		These losses are computed with \textbf{Howell}'s model \cite[Ch. 6]{axial2004}\footnote{Howell computed a secondary flow loss model that is automatically embedded into $\bar{\omega}_{profile}$: this model is used for the \textbf{estimation} of the stator/rotor \textbf{blade number}.}:
 		\begin{align}
-			\bar{\beta} & = \frac{arctan( ( tan( \beta_1 ) + tan( \beta_2 ) ) )}{2}; & \text{\Romannum{1}} \nonumber \\ 
+			\bar{\beta} & = \frac{arctan( tan( \beta_1 ) + tan( \beta_2 ) )}{2}; & \text{\Romannum{1}} \nonumber \\ 
 			C_{L} & = 2 \ cos( \bar{\beta} ) \cdot \frac{tan( \beta_1 ) - tan( \beta_2 )}{\sigma}; & \text{\Romannum{2}} \nonumber \\
 			C_{D} & = 0.18 \ C_{L}^2; & \text{\Romannum{3}} \nonumber \\
 			\bar{\omega}_{secondary} & = C_{D} \ \sigma \cdot \frac{cos( \beta_1 )^2}{cos( \bar{\beta} )^3}; & \text{loss computation} \nonumber 
@@ -103,7 +103,7 @@
 	\begin{frame}{Tip leackage losses}
 		Again these losses are computed from \cite[Sec. 6.9]{axial2004}. The main concept is: computing a \textbf{total} blade pressure loss and \textbf{assuming linear distribution} of losses from the hub to the tip. 
 		\begin{align}
-			\tau & = \pi \ \delta_c \Big[ r_1 \rho_1 V_{a1_{mean}} + r_2 + \rho_2 V_{a2_{mean}} \Big] \Big[ r_2 V_{t2_{mean}} - r_1 V_{t1_{mean}} \Big] \nonumber \\ 
+			\tau & = \pi \ \delta_c \Big[ r_1 \rho_1 V_{a1_{mean}} + r_2 \rho_2 V_{a2_{mean}} \Big] \Big[ r_2 V_{t2_{mean}} - r_1 V_{t1_{mean}} \Big] \nonumber \\ 
 			\Delta P & = \frac{\tau}{Z \ r_{tip} \delta_c \ c \ cos(\gamma)} \nonumber \\ 
 			U_c & = 0.816 \frac{\sqrt{\frac{2 \Delta P}{\rho_{mean}}}}{N_{row}^{0.2}} \nonumber \\ 
 			\dot{m_c} & = \rho_{mean} \ U_c \ Z \ \delta_c \ c \ cos(\gamma) \nonumber \\ 

@@ -20,11 +20,15 @@ The library is subdivided into different modules that allow to design the stage.
 
 ## Compressor design
 
-The file ```design.py``` uses the ```turboLIB``` program for the preliminary design of a compressor.
+The initial design steps are related to the choice of the **number of blades**, this choice has been made using ```bladeDesign.py``` outputs. 
 
-In the ```design.py``` file there are the **initial conditions** and **constraints** of the compressor. 
+The **mean line** study is made with ```similarityStudy.py``` script and it allows to set the **mean flow behaviour** to follow for the generation of the **3D blades**.
 
-```design.py``` will save the output text in ```compressor_<rD>_<rMean>_<nRotorBlades>_<nStatorBlades>.txt``` and the blade geometry in ```.stl``` format into ```container/```. 
+The file ```compressorDesign.py``` uses the ```turboLIB``` program for the preliminary design of a compressor.
+
+In the ```compressorDesign.py``` file there are the **initial conditions** and **constraints** of the compressor. 
+
+```compressorDesign.py``` will save the output text in ```compressor_<rD>_<rMean>_<nRotorBlades>_<nStatorBlades>.txt``` and the blade geometry in ```.stl``` format into ```container/```. 
 
 At the end a ```.scad``` file is generated and it can be used with ```openSCAD```.
 
