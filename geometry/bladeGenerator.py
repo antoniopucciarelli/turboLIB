@@ -242,7 +242,7 @@ def writeFacet(file, versor, vec1, vec2, vec3):
     file.write('\t\tendloop\n')
     file.write('\tendfacet\n')
 
-def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor', checkVersor=[False,False]):
+def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor'):
     '''
     This function saves the blade in .stl format.
         inputs: 
@@ -264,10 +264,16 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
 
         # upper surface stl face generation 
         for ii in range(airfoils[jj].upper.shape[0]-1):
-            # vertex allocation
-            vec1 = np.array(airfoils[jj].upper[ii,:])
-            vec2 = np.array(airfoils[jj].upper[ii+1,:])
-            vec3 = np.array(airfoils[jj+1].upper[ii,:])
+            # vertex allocation            
+            if kind == 'stator':
+                vec1 = np.array(airfoils[jj].upper[ii+1,:])
+                vec2 = np.array(airfoils[jj].upper[ii,:])
+                vec3 = np.array(airfoils[jj+1].upper[ii,:])
+            else: 
+                vec1 = np.array(airfoils[jj].upper[ii,:])
+                vec2 = np.array(airfoils[jj].upper[ii+1,:])
+                vec3 = np.array(airfoils[jj+1].upper[ii,:])
+            
             # versor generation
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
             # vector normalization
@@ -276,27 +282,34 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
             writeFacet(file, versor, vec1, vec2, vec3)
 
             # vertex allocation
-            vec1 = np.array(airfoils[jj].upper[ii+1,:])
-            vec2 = np.array(airfoils[jj+1].upper[ii+1,:])
-            vec3 = np.array(airfoils[jj+1].upper[ii,:])
-            # verson generation
+            if kind == 'stator':
+                vec1 = np.array(airfoils[jj].upper[ii+1,:])
+                vec2 = np.array(airfoils[jj+1].upper[ii,:])
+                vec3 = np.array(airfoils[jj+1].upper[ii+1,:])
+            else:
+                vec1 = np.array(airfoils[jj].upper[ii+1,:])
+                vec2 = np.array(airfoils[jj+1].upper[ii+1,:])
+                vec3 = np.array(airfoils[jj+1].upper[ii,:])
+
+            # versor generation
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
             # vector normalization 
             versor = versor / np.linalg.norm(versor)
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
 
-        if checkVersor[0]:
-            plt.plot(airfoils[0].lower[:,0], airfoils[0].lower[:,1], 'r')
-            plt.plot(airfoils[0].upper[:,0], airfoils[0].upper[:,1], 'b')
-            plt.plot([0,versor[0]], [0,versor[1]], 'b')
-
         # lower surface stl face generation 
         for ii in range(airfoils[jj].lower.shape[0]-1):
             # vertex allocation
-            vec1 = np.array(airfoils[jj].lower[ii+1,:])
-            vec2 = np.array(airfoils[jj].lower[ii,:])
-            vec3 = np.array(airfoils[jj+1].lower[ii,:])
+            if kind == 'stator':
+                vec1 = np.array(airfoils[jj].lower[ii,:])
+                vec2 = np.array(airfoils[jj].lower[ii+1,:])
+                vec3 = np.array(airfoils[jj+1].lower[ii,:])
+            else:
+                vec1 = np.array(airfoils[jj].lower[ii+1,:])
+                vec2 = np.array(airfoils[jj].lower[ii,:])
+                vec3 = np.array(airfoils[jj+1].lower[ii,:])
+            
             # versor generation
             versor = - np.cross(vec3 - vec1, vec2 - vec1)
             # vectorn normalization
@@ -305,21 +318,21 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
             writeFacet(file, versor, vec1, vec2, vec3)
 
             # vertex allocation
-            vec1 = np.array(airfoils[jj+1].lower[ii,:])
-            vec2 = np.array(airfoils[jj+1].lower[ii+1,:])
-            vec3 = np.array(airfoils[jj].lower[ii+1,:])
+            if kind == 'stator':
+                vec1 = np.array(airfoils[jj+1].lower[ii+1,:])
+                vec2 = np.array(airfoils[jj+1].lower[ii,:])
+                vec3 = np.array(airfoils[jj].lower[ii+1,:])
+            else:
+                vec1 = np.array(airfoils[jj+1].lower[ii,:])
+                vec2 = np.array(airfoils[jj+1].lower[ii+1,:])
+                vec3 = np.array(airfoils[jj].lower[ii+1,:])
+
             # versor computation
             versor = - np.cross(vec3 - vec1, vec2 - vec1) 
             # vector normalization
             versor = versor / np.linalg.norm(versor)
             # writing data
             writeFacet(file, versor, vec1, vec2, vec3)
-        
-        if checkVersor[1]:
-            plt.plot(airfoils[0].lower[:,0], airfoils[0].lower[:,1], 'r')
-            plt.plot(airfoils[0].upper[:,0], airfoils[0].upper[:,1], 'b')
-            plt.plot([0,versor[0]], [0,versor[1]], 'r')
-            plt.show()
     
     # end blade 
     file.write('endsolid bladeSurface\n')
@@ -330,9 +343,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
     # closing airfoil [hub]
     for ii in range(airfoils[0].upper.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[0].camber[ii+1,:])
-        vec2 = np.array(airfoils[0].upper[ii+1,:])
-        vec3 = np.array(airfoils[0].upper[ii,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].upper[ii,:])
+            vec3 = np.array(airfoils[0].upper[ii+1,:])
+        else:
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].upper[ii+1,:])
+            vec3 = np.array(airfoils[0].upper[ii,:])
+
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -342,9 +361,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
 
     for ii in range(airfoils[0].lower.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[0].camber[ii+1,:])
-        vec2 = np.array(airfoils[0].lower[ii,:])
-        vec3 = np.array(airfoils[0].lower[ii+1,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].lower[ii+1,:])
+            vec3 = np.array(airfoils[0].lower[ii,:])
+        else:
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].lower[ii,:])
+            vec3 = np.array(airfoils[0].lower[ii+1,:])
+
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -354,9 +379,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
 
     for ii in range(airfoils[0].upper.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[0].camber[ii+2,:])
-        vec2 = np.array(airfoils[0].upper[ii+1,:])
-        vec3 = np.array(airfoils[0].camber[ii+1,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].upper[ii+1,:])
+            vec3 = np.array(airfoils[0].camber[ii+2,:])
+        else:
+            vec1 = np.array(airfoils[0].camber[ii+2,:])
+            vec2 = np.array(airfoils[0].upper[ii+1,:])
+            vec3 = np.array(airfoils[0].camber[ii+1,:])
+
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -366,9 +397,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
     
     for ii in range(airfoils[0].lower.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[0].camber[ii+1,:])
-        vec2 = np.array(airfoils[0].lower[ii+1,:])
-        vec3 = np.array(airfoils[0].camber[ii+2,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[0].camber[ii+2,:])
+            vec2 = np.array(airfoils[0].lower[ii+1,:])
+            vec3 = np.array(airfoils[0].camber[ii+1,:])
+        else:
+            vec1 = np.array(airfoils[0].camber[ii+1,:])
+            vec2 = np.array(airfoils[0].lower[ii+1,:])
+            vec3 = np.array(airfoils[0].camber[ii+2,:])
+
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -385,9 +422,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
     # closing airfoil [tip]
     for ii in range(airfoils[-1].upper.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[-1].camber[ii+1,:])
-        vec2 = np.array(airfoils[-1].upper[ii,:])
-        vec3 = np.array(airfoils[-1].upper[ii+1,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].upper[ii+1,:])
+            vec3 = np.array(airfoils[-1].upper[ii,:])
+        else:
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].upper[ii,:])
+            vec3 = np.array(airfoils[-1].upper[ii+1,:])
+        
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -397,9 +440,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
 
     for ii in range(airfoils[-1].lower.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[-1].camber[ii+1,:])
-        vec2 = np.array(airfoils[-1].lower[ii+1,:])
-        vec3 = np.array(airfoils[-1].lower[ii,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].lower[ii,:])
+            vec3 = np.array(airfoils[-1].lower[ii+1,:])
+        else:
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].lower[ii+1,:])
+            vec3 = np.array(airfoils[-1].lower[ii,:])
+        
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -409,9 +458,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
 
     for ii in range(airfoils[-1].upper.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[-1].camber[ii+1,:])
-        vec2 = np.array(airfoils[-1].upper[ii+1,:])
-        vec3 = np.array(airfoils[-1].camber[ii+2,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[-1].camber[ii+2,:])
+            vec2 = np.array(airfoils[-1].upper[ii+1,:])
+            vec3 = np.array(airfoils[-1].camber[ii+1,:])
+        else:
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].upper[ii+1,:])
+            vec3 = np.array(airfoils[-1].camber[ii+2,:])
+        
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization
@@ -421,9 +476,15 @@ def STLsaving(airfoils, STLname='cad', containerPath='container/', kind='rotor',
     
     for ii in range(airfoils[-1].upper.shape[0]-2):
         # versor computation 
-        vec1 = np.array(airfoils[-1].camber[ii+2,:])
-        vec2 = np.array(airfoils[-1].lower[ii+1,:])
-        vec3 = np.array(airfoils[-1].camber[ii+1,:])
+        if kind == 'stator':
+            vec1 = np.array(airfoils[-1].camber[ii+1,:])
+            vec2 = np.array(airfoils[-1].lower[ii+1,:])
+            vec3 = np.array(airfoils[-1].camber[ii+2,:])
+        else:
+            vec1 = np.array(airfoils[-1].camber[ii+2,:])
+            vec2 = np.array(airfoils[-1].lower[ii+1,:])
+            vec3 = np.array(airfoils[-1].camber[ii+1,:])
+
         # versor computation 
         versor = - np.cross(vec3 - vec1, vec2 - vec1)
         # vector normalization

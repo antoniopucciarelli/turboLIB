@@ -1243,7 +1243,7 @@ class blade:
             plt.show()
 
         # STL file generation 
-        bladeGenerator.STLsaving(self.blade, STLname=STLname)
+        bladeGenerator.STLsaving(self.blade, STLname=STLname, kind=self.turboType)
 
     def computeLosses(self, mFlux, clearance=3e-3, variableSpeed=False):
         '''
