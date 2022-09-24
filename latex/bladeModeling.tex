@@ -90,13 +90,23 @@
 		The \textbf{shock} losses modeling is related to \textbf{K\"onig losses} modeling approach. This model describes a \textbf{2 shock waves loss} using a \textbf{single normal shock} with respect to a computed Mach number, $M_{in}$. 
 		\newline
 		\newline
-		\textbf{K\"onig model} \cite[Sec. 6.7]{axial2004} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}, $M_1$.
+		\textbf{K\"onig model} depends mainly on \textbf{blade deflection angle}, $\theta$, and \textbf{relative inlet Mach}\footnote{\textbf{Leading edge radius} is not taken into account due to the \\ \textit{approximated nature} of the model.}, $M_1$.
 	\end{frame}
 	
 	\begin{frame}{Shock losses -- \Romannum{2}}
+		\textbf{Swan} and \textbf{Miller}, \cite[Sec. 6.7]{axial2004}, derived a \textbf{shock loss formulation} from \textbf{K\"onig model}. 
+		\newline 
+		\newline
+		The following are the steps made for the computation of the \textbf{shock loss}, $\bar{\omega}_{shock}$, at each \textbf{blade section}:
 		\begin{itemize}
-			\item computation of the \textbf{expansion wave} angle, $\phi$: $\phi = \frac{s \ cos(\psi)}{s \ sin(\psi) \ R_u}$, where $\psi = \psi_{(\beta_1, \gamma, \theta)}$
-			\item computation of $W_s$ and $M_s$ using the \textbf{Prandtl-Meyer} expansion: $\phi = \int_{W_1}^{W_s} \sqrt{M^2 - 1} \ \frac{dW}{W}$
+			\item computation of the \textbf{expansion wave} angle, $\phi$: 
+				\begin{equation}
+					\phi = \frac{s \ cos(\psi)}{s \ sin(\psi) \ R_u}; \text{ where } \psi = \psi_{(\beta_1, \ \gamma, \ \theta)} \nonumber
+				\end{equation}
+			\item computation of $W_s$ and $M_s$ using \textbf{Prandtl-Meyer} expansion: 
+			\begin{equation}
+				\phi = \int_{W_1}^{W_s} \sqrt{M^2 - 1} \ \frac{dW}{W} \nonumber
+			\end{equation}
 			\item $M_{in}$ computation: $M_{in} = \sqrt{M_1 \ M_s}$
 			\item \textbf{normal shock} solution and computation of $\Delta P_T$
 			\item from $\Delta P_T$, computation of $\bar{\omega}_{shock}$
@@ -142,7 +152,7 @@
 		\end{equation}
 		The \textbf{entropy variation} is computed as: 
 		\begin{equation}
-			 s_2 - s_1 = c_P \log{\frac{T_{T2,r}}{T_{T1,r}}} - R \log{\frac{P_{T2,r}}{P_{T1,r}}} \nonumber
+			\Delta s = s_2 - s_1 = c_P \log{\frac{T_{T2,r}}{T_{T1,r}}} - R \log{\frac{P_{T2,r}}{P_{T1,r}}} \nonumber
 		\end{equation}
 		\vspace{-0.5cm}
 		\begin{alertblock}{Frames}

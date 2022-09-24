@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  24 SEP 2022 11:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  24 SEP 2022 16:07
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -2222,12 +2222,12 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 94.
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 104.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 114.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [26
 
 ]
-Overfull \vbox (2.2299pt too high) detected at line 119
+Overfull \vbox (2.2299pt too high) detected at line 129
  []
 
 [27
@@ -2235,35 +2235,35 @@ Overfull \vbox (2.2299pt too high) detected at line 119
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 122.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 132.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [28
 
 ]
-Overfull \hbox (3.72372pt too wide) detected at line 136
+Overfull \hbox (3.72372pt too wide) detected at line 146
 []
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 136.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 146.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [29
 
 ]
-Overfull \vbox (6.28749pt too high) detected at line 156
+Overfull \vbox (6.28749pt too high) detected at line 166
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 156.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 166.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [30
 
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 158.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 168.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [31
 
@@ -2272,21 +2272,21 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 158.
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 185.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 195.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [33
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 196.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 206.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [34
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 208.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 218.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [35
 
@@ -2582,7 +2582,7 @@ s/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy5.pfb>
 are/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public
 /lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (52 pages, 2523007 bytes).
+Output written on main.pdf (52 pages, 2525737 bytes).
 PDF statistics:
  3909 PDF objects out of 4296 (max. 8388607)
  3696 compressed objects within 37 object streams
