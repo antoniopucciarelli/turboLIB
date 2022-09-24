@@ -1,6 +1,6 @@
-\subsection{$\mathtt{turboLIB}$}
-	\begin{frame}[fragile]{$\mathtt{turboLIB}$}
-		The preliminary compressor design model program \href{https://github.com/antoniopucciarelli/turboLIB}{\color{blue}{$\mathtt{turboLIB}$}} can be downloaded from GitHub.
+\subsection{\texttt{turboLIB}}
+	\begin{frame}[fragile]{\texttt{turboLIB}}
+		The preliminary compressor design model program \href{https://github.com/antoniopucciarelli/turboLIB}{\color{blue}{\texttt{turboLIB}}} can be downloaded from GitHub.
 		\begin{block}{Main objects and modules}
 			\begin{itemize}
 				\item \verb|turboClass.turboBlade.blade|: blade object
@@ -38,17 +38,17 @@
 		\end{columns}
 	\end{frame}
 	}
-\subsubsection{$\mathtt{NISRE}$}
-	\begin{frame}[fragile]{$\mathtt{NISRE}$}
-		The \verb|NISRE| is solved through a \textbf{double nested} loop:
+\subsubsection{\texttt{NISRE}}
+	\begin{frame}[fragile]{\texttt{NISRE}}
+		The \texttt{NISRE} is solved through a \textbf{double nested} loop:
 		\begin{itemize}
 			\item \textbf{continuity loop}. Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is used for the solution of the $V_{a2}^2$ \textbf{ODE}.
 			\item \textbf{entropy loop}. Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is used for the computation of the blade \textbf{shape}.
 		\end{itemize}
 	\end{frame}
 
-\subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
-	\begin{frame}[fragile]{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}
+\subsubsection{\texttt{.stl} \& \texttt{.scad} generation}
+	\begin{frame}[fragile]{\texttt{.stl} \& \texttt{.scad} generation}
 		At the end of the \verb|NISRE|, all the main blade quantities are avaliable for the \textbf{generation} of the \textbf{3D geometry}. This geometry can be converted into a \verb|.stl| file that can be used in \verb|OpenFOAM| for the flow properties study. In addition a \verb|.scad| file is made for understanding position and checking possible contacts between rotor and stator blades.	
 		\newline
 		\newline 
@@ -56,9 +56,9 @@
 	\end{frame}
 
 \subsection{Results}
-	\subsubsection{$\mathtt{NISRE}$ and main quantities}
+	\subsubsection{\texttt{NISRE} and main quantities}
 
-	\begin{frame}{\textbf{Rotor} equilibrium results: $\mathtt{NISRE}$}
+	\begin{frame}{\textbf{Rotor} equilibrium results: \texttt{NISRE}}
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{figures/rotorEntropyFlow.pdf}
@@ -72,7 +72,7 @@
 		\end{figure}
 	\end{frame}
 	
-	\begin{frame}{\textbf{Stator} equilibrium results: $\mathtt{NISRE}$}
+	\begin{frame}{\textbf{Stator} equilibrium results: \texttt{NISRE}}
 		\begin{figure}
 			\centering
 			\includegraphics[width=1\textwidth]{figures/statorEntropyFlow.pdf}
@@ -143,8 +143,7 @@
 		\end{equation}
 		The \textbf{stator} efficiency is computed with:
 		\begin{equation}
-			\eta_{is_{stator}} = \frac{\Delta h_{is}}{\Delta h_{real}}
-			\nonumber 
+			\eta_{is_{stator}} = \frac{\Delta h_{is}}{\Delta h_{real}} \nonumber 
 		\end{equation}
 		The modeling results are stored into \verb|compressor_0.58_0.32_45_35.txt|.
 	\end{frame}

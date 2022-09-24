@@ -26,22 +26,22 @@
 \defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {3}{1}{6}{Tip leackage losses}{27}{0}{3}
 \defcounter {refsection}{0}\relax 
-\beamer@subsectionintoc {3}{2}{Radial equilibrium}{28}{0}{3}
+\beamer@subsectionintoc {3}{2}{Blade shape}{28}{0}{3}
 \defcounter {refsection}{0}\relax 
-\beamer@subsectionintoc {3}{3}{Blade shape}{31}{0}{3}
+\beamer@subsectionintoc {3}{3}{Radial equilibrium}{33}{0}{3}
 \defcounter {refsection}{0}\relax 
-\beamer@sectionintoc {4}{$\mathtt {turboLIB}$ \& Results}{36}{0}{4}
+\beamer@sectionintoc {4}{\texttt {turboLIB} \& Results}{36}{0}{4}
 \defcounter {refsection}{0}\relax 
-\beamer@subsectionintoc {4}{1}{$\mathtt {turboLIB}$}{37}{0}{4}
+\beamer@subsectionintoc {4}{1}{\texttt {turboLIB}}{37}{0}{4}
 \defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{1}{1}{Blade number}{39}{0}{4}
 \defcounter {refsection}{0}\relax 
-\beamer@subsubsectionintoc {4}{1}{2}{$\mathtt {NISRE}$}{40}{0}{4}
+\beamer@subsubsectionintoc {4}{1}{2}{\texttt {NISRE}}{40}{0}{4}
 \defcounter {refsection}{0}\relax 
-\beamer@subsubsectionintoc {4}{1}{3}{$\mathtt {.stl}$ \& $\mathtt {.scad}$ generation}{41}{0}{4}
+\beamer@subsubsectionintoc {4}{1}{3}{\texttt {.stl} \& \texttt {.scad} generation}{41}{0}{4}
 \defcounter {refsection}{0}\relax 
 \beamer@subsectionintoc {4}{2}{Results}{42}{0}{4}
 \defcounter {refsection}{0}\relax 
-\beamer@subsubsectionintoc {4}{2}{1}{$\mathtt {NISRE}$ and main quantities}{43}{0}{4}
+\beamer@subsubsectionintoc {4}{2}{1}{\texttt {NISRE} and main quantities}{43}{0}{4}
 \defcounter {refsection}{0}\relax 
 \beamer@subsubsectionintoc {4}{2}{2}{Efficiency}{50}{0}{4}

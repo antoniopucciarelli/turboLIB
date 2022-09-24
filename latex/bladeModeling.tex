@@ -1,4 +1,4 @@
-\subsection{Losses modeling}
+\subsection{Losses modeling} \label{lossesModeling}
 \subsubsection{Profile losses}
 	{\nologo
 	\begin{frame}{Profile losses}
@@ -129,42 +129,6 @@
 	\end{frame}
 	}
 
-\subsection{Radial equilibrium}
-	\begin{frame}{Equation setup}
-		The \textbf{radial equilibrium} equation: $\frac{\partial h_t}{\partial r} = T \frac{\partial s}{\partial r} + V_a \frac{\partial V_a}{\partial r} + V_t \frac{\partial r V_t}{\partial r}$ is converted into, for the exit station\footnote{$1$ is the blade inlet station and $2$ is the blade outlet section.} of the blade, a \textbf{1st order ODE}:
-		\begin{equation}
-			\begin{split}
-				- \frac{1}{2} \frac{\partial V_{a2}^2}{\partial r} + \frac{V_{a2}^2}{2 \ c_P} \frac{\partial s_{2}}{\partial r} = - c_P \frac{\partial T_{T1}}{\partial r} - \omega \ \frac{\partial r V_{t2}}{\partial r} + \omega \ \frac{\partial r V_{t1}}{\partial r} \\ + T_{T1} \ \frac{\partial s_2}{\partial r} + \frac{\omega}{c_P} r V_{t2} \ \frac{\partial s_2}{\partial r} - \frac{\omega}{c_P} r V_{t1} \frac{\partial s_2}{\partial r} - \frac{1}{2 \ c_P} V_{t2}^2 \frac{\partial s_2}{\partial r} + \frac{V_{t2}}{r} \frac{\partial r V_{t2}}{\partial r}	
-			\nonumber
-			\end{split}
-		\end{equation}
-		\begin{itemize}
-			\item The \textbf{ODE} will be solved for $V_{a2}^2$ 
-			\item $s_2$ is computed from $\sum_i \bar{\omega}_{i}$ treated earlier 
-			\item $\omega, V_{t1}, V_{t2} \ \text{and} \ T_{T1}$ are known
-		\end{itemize}
-	\end{frame}
-	
-	\begin{frame}{$\Delta s$ computation}
-		From pressure loss coefficients it is possible compute the \textbf{outlet total pressure} as: 
-		\begin{equation}
-			P_{T2,r} = P_{T1,r} + \sum_i \bar{\omega}_{i} \ (P_{T1,r} - P_{1,r}) \nonumber
-		\end{equation}
-		The \textbf{entropy variation} is computed as: 
-		\begin{equation}
-			\Delta s = s_2 - s_1 = c_P \log{\frac{T_{T2,r}}{T_{T1,r}}} - R \log{\frac{P_{T2,r}}{P_{T1,r}}} \nonumber
-		\end{equation}
-		\vspace{-0.5cm}
-		\begin{alertblock}{Frames}
-			\begin{itemize}
-				\item $T_{T2} = T_{T1}$ in \textbf{stators} and $T_{T2,r} = T_{T1,r}$ in \textbf{rotors}
-				\item $\bar{\omega}_{*}$ have to be computed using \textbf{relative} quantities for \textbf{rotors} and \textbf{absolute} quantities for \textbf{stators}
-				\item $T_{T,r} = T + \frac{W^2}{2 c_P} = T_T + \frac{W^2 - V^2}{2 c_P}$
-				\item $P_{T,r} = P_T \Big( \frac{T_{T,r}}{T_T} \Big)^{\frac{\gamma}{\gamma - 1}}$
-			\end{itemize}
-		\end{alertblock}
-	\end{frame}
-	
 \subsection{Blade shape}
 	{\nologo
 	\begin{frame}{Blade shape setup}
@@ -215,4 +179,40 @@
 			\theta = \varepsilon - i^*_{(\theta)} + \delta_{(\theta)} \nonumber
 		\end{equation}
 		Once found $\theta$, the \textbf{total pressure loss} coefficients, $\bar{\omega}_{*}$, are computed.   
+	\end{frame}
+
+\subsection{Radial equilibrium}
+	\begin{frame}{Equation setup}
+		The \textbf{radial equilibrium} equation: $\frac{\partial h_t}{\partial r} = T \frac{\partial s}{\partial r} + V_a \frac{\partial V_a}{\partial r} + V_t \frac{\partial r V_t}{\partial r}$ is converted into, for the exit station\footnote{$1$ is the blade inlet station and $2$ is the blade outlet section.} of the blade, a \textbf{1st order ODE}:
+		\begin{equation}
+			\begin{split}
+				- \frac{1}{2} \frac{\partial V_{a2}^2}{\partial r} + \frac{V_{a2}^2}{2 \ c_P} \frac{\partial s_{2}}{\partial r} = - c_P \frac{\partial T_{T1}}{\partial r} - \omega \ \frac{\partial r V_{t2}}{\partial r} + \omega \ \frac{\partial r V_{t1}}{\partial r} \\ + T_{T1} \ \frac{\partial s_2}{\partial r} + \frac{\omega}{c_P} r V_{t2} \ \frac{\partial s_2}{\partial r} - \frac{\omega}{c_P} r V_{t1} \frac{\partial s_2}{\partial r} - \frac{1}{2 \ c_P} V_{t2}^2 \frac{\partial s_2}{\partial r} + \frac{V_{t2}}{r} \frac{\partial r V_{t2}}{\partial r}	
+			\nonumber
+			\end{split}
+		\end{equation}
+		\begin{itemize}
+			\item The \textbf{ODE} will be solved for $V_{a2}^2$ 
+			\item $s_2$ is computed from\footnote{$\bar{\omega}_{*}$ computation has been treated earlier in \hyperlink{lossesModeling}{{\color{blue} \nameref{lossesModeling}}}.} $\sum_i \bar{\omega}_{i}$.  
+			\item $\omega, V_{t1}, V_{t2} \ \text{and} \ T_{T1}$ are known
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{$\Delta s$ computation}
+		From pressure loss coefficients it is possible compute the \textbf{outlet total pressure} as: 
+		\begin{equation}
+			P_{T2,r} = P_{T1,r} + \sum_i \bar{\omega}_{i} \ (P_{T1,r} - P_{1,r}) \nonumber
+		\end{equation}
+		The \textbf{entropy variation} is computed as: 
+		\begin{equation}
+			\Delta s = s_2 - s_1 = c_P \log{\frac{T_{T2,r}}{T_{T1,r}}} - R \log{\frac{P_{T2,r}}{P_{T1,r}}} \nonumber
+		\end{equation}
+		\vspace{-0.5cm}
+		\begin{alertblock}{Frames}
+			\begin{itemize}
+				\item $T_{T2} = T_{T1}$ in \textbf{stators} and $T_{T2,r} = T_{T1,r}$ in \textbf{rotors}
+				\item $\bar{\omega}_{*}$ have to be computed using \textbf{relative} quantities for \textbf{rotors} and \textbf{absolute} quantities for \textbf{stators}
+				\item $T_{T,r} = T + \frac{W^2}{2 c_P} = T_T + \frac{W^2 - V^2}{2 c_P}$
+				\item $P_{T,r} = P_T \Big( \frac{T_{T,r}}{T_T} \Big)^{\frac{\gamma}{\gamma - 1}}$
+			\end{itemize}
+		\end{alertblock}
 	\end{frame}
