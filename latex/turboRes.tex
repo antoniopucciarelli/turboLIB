@@ -38,17 +38,13 @@
 		\end{columns}
 	\end{frame}
 	}
-\subsubsection{$\mathtt{NISRE}$ results}
+\subsubsection{$\mathtt{NISRE}$}
 	\begin{frame}[fragile]{$\mathtt{NISRE}$ setup}
 		The \verb|NISRE| is solved through a \textbf{double nested} loop:
 		\begin{itemize}
-			\item \textbf{continuity loop}
-			\item \textbf{entropy loop}
+			\item \textbf{continuity loop}. Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is used for the solution of the $V_{a2}^2$ \textbf{ODE}.
+			\item \textbf{entropy loop}. Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is used for the computation of the blade \textbf{shape}.
 		\end{itemize}
-		Inside the \textbf{continuity loop} the \verb|scipy.integrate.odeint| function is used for the solution of the $V_{a2}^2$ \textbf{ODE}.
-		\newline
-		\newline
-		Inside the \textbf{entropy loop} the \verb|scipy.optimize.minimize| function is used for the computation of the blade \textbf{shape}.
 	\end{frame}
 
 \subsubsection{$\mathtt{.stl}$ \& $\mathtt{.scad}$ generation}

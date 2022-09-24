@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  28 APR 2022 20:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  24 SEP 2022 11:17
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -727,10 +727,239 @@ File: pgfmodulematrix.code.tex 2020/01/08 v3.1.5b (3.1.5b)
 zlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2020/01/08 v3.1.5b (3.1.5b)
 )))
+(/usr/share/texlive/texmf-dist/tex/latex/pgfplots/pgfplotstable.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.revision.tex)
+Package: pgfplotstable 2018/03/28 v1.16 Table typesetting and Pretty-printing (
+1.16)
+
+(/usr/share/texlive/texmf-dist/tex/latex/pgfplots/pgfplots.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.revision.tex)
+Package: pgfplots 2018/03/28 v1.16 Data Visualization (1.16)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotscore.code.tex
+\t@pgfplots@toka=\toks47
+\t@pgfplots@tokb=\toks48
+\t@pgfplots@tokc=\toks49
+\pgfplots@tmpa=\dimen290
+\c@pgfplots@coordindex=\count320
+\c@pgfplots@scanlineindex=\count321
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/sys/pgfplotssysgeneric.code
+.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/libs/pgfplotslibrary.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_loader.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryfpu.code.tex
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotslists
+tructure.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotslists
+tructureext.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsarray
+.code.tex
+\c@pgfplotsarray@tmp=\count322
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsmatri
+x.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstableshare
+d.code.tex
+\c@pgfplotstable@counta=\count323
+\t@pgfplotstable@a=\toks50
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsdeque
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.code.te
+x
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.data.co
+de.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.verb.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/libs/pgflibrarypgfplots.sur
+fshading.code.tex
+\c@pgfplotslibrarysurf@no=\count324
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/sys/pgflibrarypgfplots.surf
+shading.pgfsys-pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotscolormap.code.
+tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotscolor.code.tex
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsstackedplots.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsplothandlers.code.t
+ex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsmeshplothandler.cod
+e.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsmeshplotimage.code.
+tex)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.scaling.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotscoordprocessing.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.errorbars.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.markers.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsticks.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.paths.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarydecorations.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduledecorations.cod
+e.tex
+\pgfdecoratedcompleteddistance=\dimen291
+\pgfdecoratedremainingdistance=\dimen292
+\pgfdecoratedinputsegmentcompleteddistance=\dimen293
+\pgfdecoratedinputsegmentremainingdistance=\dimen294
+\pgf@decorate@distancetomove=\dimen295
+\pgf@decorate@repeatstate=\count325
+\pgfdecorationsegmentamplitude=\dimen296
+\pgfdecorationsegmentlength=\dimen297
+)
+\tikz@lib@dec@box=\box78
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarydecorations.pathmorphing.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrary
+decorations.pathmorphing.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarydecorations.pathreplacing.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/decorations/pgflibrary
+decorations.pathreplacing.code.tex))
+\pgfplots@numplots=\count326
+\pgfplots@xmin@reg=\dimen298
+\pgfplots@xmax@reg=\dimen299
+\pgfplots@ymin@reg=\dimen300
+\pgfplots@ymax@reg=\dimen301
+\pgfplots@zmin@reg=\dimen302
+\pgfplots@zmax@reg=\dimen303
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryplotmarks.code.tex
+File: tikzlibraryplotmarks.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmarks.co
+de.tex
+File: pgflibraryplotmarks.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstable.code
+.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstable.colt
+ype.code.tex)) (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
+Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
+\col@sep=\dimen304
+\ar@mcellbox=\box79
+\extrarowheight=\dimen305
+\NC@list=\toks51
+\extratabsurround=\skip63
+\backup@length=\skip64
+\ar@cellbox=\box80
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex
+File: pgflibraryarrows.meta.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfarrowinset=\dimen306
+\pgfarrowlength=\dimen307
+\pgfarrowwidth=\dimen308
+\pgfarrowlinewidth=\dimen309
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@layerbox@background=\box81
+\pgf@layerboxsaved@background=\box82
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarychains.code.tex
+File: tikzlibrarychains.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
 zlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2020/01/08 v3.1.5b (3.1.5b)
-) (/usr/share/texmf/tex/latex/lm/lmodern.sty
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypatterns.code.tex
+File: tikzlibrarypatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibrarypatterns.cod
+e.tex
+File: pgflibrarypatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.callouts.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.callouts.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfnodepartlowerbox=\box83
+\pgfnodeparttwobox=\box84
+\pgfnodepartthreebox=\box85
+\pgfnodepartfourbox=\box86
+\pgfnodeparttwentybox=\box87
+\pgfnodepartnineteenbox=\box88
+\pgfnodeparteighteenbox=\box89
+\pgfnodepartseventeenbox=\box90
+\pgfnodepartsixteenbox=\box91
+\pgfnodepartfifteenbox=\box92
+\pgfnodepartfourteenbox=\box93
+\pgfnodepartthirteenbox=\box94
+\pgfnodeparttwelvebox=\box95
+\pgfnodepartelevenbox=\box96
+\pgfnodeparttenbox=\box97
+\pgfnodepartninebox=\box98
+\pgfnodeparteightbox=\box99
+\pgfnodepartsevenbox=\box100
+\pgfnodepartsixbox=\box101
+\pgfnodepartfivebox=\box102
+))) (/usr/share/texmf/tex/latex/lm/lmodern.sty
 Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -771,32 +1000,32 @@ Package: transparent 2019/11/29 v1.4 Transparency via pdfTeX's color stack (HO)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
 Package: verbatim 2019/11/10 v1.5r LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks47
-\verbatim@line=\toks48
+\every@verbatim=\toks52
+\verbatim@line=\toks53
 \verbatim@in@stream=\read3
 )
 (/usr/share/texlive/texmf-dist/tex/generic/genmisc/nth.sty
 Package: nth 2002/02/27
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count320
-\lst@gtempboxa=\box78
-\lst@token=\toks49
-\lst@length=\count321
-\lst@currlwidth=\dimen290
-\lst@column=\count322
-\lst@pos=\count323
-\lst@lostspace=\dimen291
-\lst@width=\dimen292
-\lst@newlines=\count324
-\lst@lineno=\count325
-\lst@maxwidth=\dimen293
+\lst@mode=\count327
+\lst@gtempboxa=\box103
+\lst@token=\toks54
+\lst@length=\count328
+\lst@currlwidth=\dimen310
+\lst@column=\count329
+\lst@pos=\count330
+\lst@lostspace=\dimen311
+\lst@width=\dimen312
+\lst@newlines=\count331
+\lst@lineno=\count332
+\lst@maxwidth=\dimen313
 
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
-\c@lstnumber=\count326
-\lst@skipnumbers=\count327
-\lst@framebox=\box79
+\c@lstnumber=\count333
+\lst@skipnumbers=\count334
+\lst@framebox=\box104
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
 File: listings.cfg 2019/09/10 1.8c listings configuration
@@ -805,40 +1034,40 @@ Package: listings 2019/09/10 1.8c (Carsten Heinz)
 
 (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen294
-\lightrulewidth=\dimen295
-\cmidrulewidth=\dimen296
-\belowrulesep=\dimen297
-\belowbottomsep=\dimen298
-\aboverulesep=\dimen299
-\abovetopsep=\dimen300
-\cmidrulesep=\dimen301
-\cmidrulekern=\dimen302
-\defaultaddspace=\dimen303
-\@cmidla=\count328
-\@cmidlb=\count329
-\@aboverulesep=\dimen304
-\@belowrulesep=\dimen305
-\@thisruleclass=\count330
-\@lastruleclass=\count331
-\@thisrulewidth=\dimen306
+\heavyrulewidth=\dimen314
+\lightrulewidth=\dimen315
+\cmidrulewidth=\dimen316
+\belowrulesep=\dimen317
+\belowbottomsep=\dimen318
+\aboverulesep=\dimen319
+\abovetopsep=\dimen320
+\cmidrulesep=\dimen321
+\cmidrulekern=\dimen322
+\defaultaddspace=\dimen323
+\@cmidla=\count335
+\@cmidlb=\count336
+\@aboverulesep=\dimen324
+\@belowrulesep=\dimen325
+\@thisruleclass=\count337
+\@lastruleclass=\count338
+\@thisrulewidth=\dimen326
 )
 (/usr/share/texlive/texmf-dist/tex/latex/textpos/textpos.sty
 Package: textpos 2019/04/15 v1.9.1
 
 Package: textpos 2019/04/15 1.9.1, absolute positioning of text on the page
-\TP@textbox=\box80
-\TP@holdbox=\box81
-\TPHorizModule=\dimen307
-\TPVertModule=\dimen308
-\TP@margin=\dimen309
-\TP@absmargin=\dimen310
+\TP@textbox=\box105
+\TP@holdbox=\box106
+\TPHorizModule=\dimen327
+\TPVertModule=\dimen328
+\TP@margin=\dimen329
+\TP@absmargin=\dimen330
 Grid set 16 x 16 = 22.7622pt x 17.07166pt
-\TPboxrulesize=\dimen311
-\TP@ox=\dimen312
-\TP@oy=\dimen313
-\TP@tbargs=\toks50
-\TP@prevdepth=\dimen314
+\TPboxrulesize=\dimen331
+\TP@ox=\dimen332
+\TP@oy=\dimen333
+\TP@tbargs=\toks55
+\TP@prevdepth=\dimen334
 TextBlockOrigin set to 0pt x 0pt
 ) (/usr/share/texlive/texmf-dist/tex/latex/base/latexsym.sty
 Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
@@ -848,52 +1077,27 @@ LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
 Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
-\c@tracingmulticols=\count332
-\mult@box=\box82
-\multicol@leftmargin=\dimen315
-\c@unbalance=\count333
-\c@collectmore=\count334
-\doublecol@number=\count335
-\multicoltolerance=\count336
-\multicolpretolerance=\count337
-\full@width=\dimen316
-\page@free=\dimen317
-\premulticols=\dimen318
-\postmulticols=\dimen319
-\multicolsep=\skip63
-\multicolbaselineskip=\skip64
-\partial@page=\box83
-\last@line=\box84
-\maxbalancingoverflow=\dimen320
-\mult@rightbox=\box85
-\mult@grightbox=\box86
-\mult@gfirstbox=\box87
-\mult@firstbox=\box88
-\@tempa=\box89
-\@tempa=\box90
-\@tempa=\box91
-\@tempa=\box92
-\@tempa=\box93
-\@tempa=\box94
-\@tempa=\box95
-\@tempa=\box96
-\@tempa=\box97
-\@tempa=\box98
-\@tempa=\box99
-\@tempa=\box100
-\@tempa=\box101
-\@tempa=\box102
-\@tempa=\box103
-\@tempa=\box104
-\@tempa=\box105
-\@tempa=\box106
-\@tempa=\box107
-\@tempa=\box108
-\@tempa=\box109
-\@tempa=\box110
-\@tempa=\box111
-\@tempa=\box112
-\@tempa=\box113
+\c@tracingmulticols=\count339
+\mult@box=\box107
+\multicol@leftmargin=\dimen335
+\c@unbalance=\count340
+\c@collectmore=\count341
+\doublecol@number=\count342
+\multicoltolerance=\count343
+\multicolpretolerance=\count344
+\full@width=\dimen336
+\page@free=\dimen337
+\premulticols=\dimen338
+\postmulticols=\dimen339
+\multicolsep=\skip65
+\multicolbaselineskip=\skip66
+\partial@page=\box108
+\last@line=\box109
+\maxbalancingoverflow=\dimen340
+\mult@rightbox=\box110
+\mult@grightbox=\box111
+\mult@gfirstbox=\box112
+\mult@firstbox=\box113
 \@tempa=\box114
 \@tempa=\box115
 \@tempa=\box116
@@ -906,15 +1110,40 @@ Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
 \@tempa=\box123
 \@tempa=\box124
 \@tempa=\box125
-\c@minrows=\count338
-\c@columnbadness=\count339
-\c@finalcolumnbadness=\count340
-\last@try=\dimen321
-\multicolovershoot=\dimen322
-\multicolundershoot=\dimen323
-\mult@nat@firstbox=\box126
-\colbreak@box=\box127
-\mc@col@check@num=\count341
+\@tempa=\box126
+\@tempa=\box127
+\@tempa=\box128
+\@tempa=\box129
+\@tempa=\box130
+\@tempa=\box131
+\@tempa=\box132
+\@tempa=\box133
+\@tempa=\box134
+\@tempa=\box135
+\@tempa=\box136
+\@tempa=\box137
+\@tempa=\box138
+\@tempa=\box139
+\@tempa=\box140
+\@tempa=\box141
+\@tempa=\box142
+\@tempa=\box143
+\@tempa=\box144
+\@tempa=\box145
+\@tempa=\box146
+\@tempa=\box147
+\@tempa=\box148
+\@tempa=\box149
+\@tempa=\box150
+\c@minrows=\count345
+\c@columnbadness=\count346
+\c@finalcolumnbadness=\count347
+\last@try=\dimen341
+\multicolovershoot=\dimen342
+\multicolundershoot=\dimen343
+\mult@nat@firstbox=\box151
+\colbreak@box=\box152
+\mc@col@check@num=\count348
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fundus-calligra/calligra.sty
 Package: calligra 2012/04/10 v1.9 LaTeX package calligra
@@ -927,10 +1156,10 @@ Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
 
 (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
 (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-\XKV@toks=\toks51
-\XKV@tempa@toks=\toks52
+\XKV@toks=\toks56
+\XKV@tempa@toks=\toks57
 )
-\XKV@depth=\count342
+\XKV@depth=\count349
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
 LaTeX Font Info:    Redeclaring math alphabet \mathcal on input line 10.
@@ -941,7 +1170,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathcal' in version `bold'
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/m/sl --> OT1/mathkerncmss/bx/sl on inp
-ut line 22.
+ut line 27.
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
 Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
@@ -965,63 +1194,63 @@ File: pst-xkey.tex 2005/11/25 v1.6 PSTricks specialization of xkeyval (HA)
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pst-fp.tex
 `pst-fp' v0.05, 2010/01/17 (hv)
-\pstFP@xs=\count343
-\pstFP@xia=\count344
-\pstFP@xib=\count345
-\pstFP@xfa=\count346
-\pstFP@xfb=\count347
-\pstFP@rega=\count348
-\pstFP@regb=\count349
-\pstFP@regs=\count350
-\pstFP@times=\count351
+\pstFP@xs=\count350
+\pstFP@xia=\count351
+\pstFP@xib=\count352
+\pstFP@xfa=\count353
+\pstFP@xfb=\count354
+\pstFP@rega=\count355
+\pstFP@regb=\count356
+\pstFP@regs=\count357
+\pstFP@times=\count358
 )
-\psLoopIndex=\count352
+\psLoopIndex=\count359
 
 `PSTricks' v2.97  <2019/05/11> (tvz,hv)
-\pst@dima=\dimen324
-\pst@dimb=\dimen325
-\pst@dimc=\dimen326
-\pst@dimd=\dimen327
-\pst@dimg=\dimen328
-\pst@dimh=\dimen329
-\pst@dimm=\dimen330
-\pst@dimn=\dimen331
-\pst@dimo=\dimen332
-\pst@dimp=\dimen333
-\pst@hbox=\box128
-\pst@ibox=\box129
-\pst@boxg=\box130
-\pst@cnta=\count353
-\pst@cntb=\count354
-\pst@cntc=\count355
-\pst@cntd=\count356
-\pst@cntg=\count357
-\pst@cnth=\count358
-\pst@cntm=\count359
-\pst@cntn=\count360
-\pst@cnto=\count361
-\pst@cntp=\count362
-\@zero=\count363
-\pst@toks=\toks53
+\pst@dima=\dimen344
+\pst@dimb=\dimen345
+\pst@dimc=\dimen346
+\pst@dimd=\dimen347
+\pst@dimg=\dimen348
+\pst@dimh=\dimen349
+\pst@dimm=\dimen350
+\pst@dimn=\dimen351
+\pst@dimo=\dimen352
+\pst@dimp=\dimen353
+\pst@hbox=\box153
+\pst@ibox=\box154
+\pst@boxg=\box155
+\pst@cnta=\count360
+\pst@cntb=\count361
+\pst@cntc=\count362
+\pst@cntd=\count363
+\pst@cntg=\count364
+\pst@cnth=\count365
+\pst@cntm=\count366
+\pst@cntn=\count367
+\pst@cnto=\count368
+\pst@cntp=\count369
+\@zero=\count370
+\pst@toks=\toks58
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks.con)
-\psunit=\dimen334
-\psxunit=\dimen335
-\psyunit=\dimen336
-\pst@C@@rType=\count364
-\pslinewidth=\dimen337
-\psk@startLW=\dimen338
-\psk@endLW=\dimen339
-\pst@customdefs=\toks54
-\pslinearc=\dimen340
-\pst@symbolStep=\dimen341
-\pst@symbolWidth=\dimen342
-\pst@symbolLinewidth=\dimen343
-\everypsbox=\toks55
-\psframesep=\dimen344
-\pslabelsep=\dimen345
-\sh@wgridXunit=\dimen346
-\sh@wgridYunit=\dimen347
-\pst@shift=\dimen348
+\psunit=\dimen354
+\psxunit=\dimen355
+\psyunit=\dimen356
+\pst@C@@rType=\count371
+\pslinewidth=\dimen357
+\psk@startLW=\dimen358
+\psk@endLW=\dimen359
+\pst@customdefs=\toks59
+\pslinearc=\dimen360
+\pst@symbolStep=\dimen361
+\pst@symbolWidth=\dimen362
+\pst@symbolLinewidth=\dimen363
+\everypsbox=\toks60
+\psframesep=\dimen364
+\pslabelsep=\dimen365
+\sh@wgridXunit=\dimen366
+\sh@wgridYunit=\dimen367
+\pst@shift=\dimen368
 )
 File: pstricks.tex 2019/05/11 v2.97 `PSTricks' (tvz,hv)
 
@@ -1034,35 +1263,35 @@ ways
 
 (/usr/share/texlive/texmf-dist/tex/generic/listofitems/listofitems.sty
 (/usr/share/texlive/texmf-dist/tex/generic/listofitems/listofitems.tex
-\loi_cnt_foreach_nest=\count365
-\loi_nestcnt=\count366
+\loi_cnt_foreach_nest=\count372
+\loi_nestcnt=\count373
 )
 Package: listofitems 2019/08/21 v1.63 Grab items in lists using user-specified 
 sep char (CT)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count367
-\calc@Bcount=\count368
-\calc@Adimen=\dimen349
-\calc@Bdimen=\dimen350
-\calc@Askip=\skip65
-\calc@Bskip=\skip66
+\calc@Acount=\count374
+\calc@Bcount=\count375
+\calc@Adimen=\dimen369
+\calc@Bdimen=\dimen370
+\calc@Askip=\skip67
+\calc@Bskip=\skip68
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count369
-\calc@Cskip=\skip67
+\calc@Ccount=\count376
+\calc@Cskip=\skip69
 )
-\c@@stackindex=\count370
-\@boxshift=\skip68
-\stack@tmplength=\skip69
-\temp@stkl=\skip70
-\@stackedboxwidth=\skip71
-\@addedbox=\box131
-\@anchorbox=\box132
-\stackedbox=\box133
-\@centerbox=\box134
-\c@ROWcellindex@=\count371
+\c@@stackindex=\count377
+\@boxshift=\skip70
+\stack@tmplength=\skip71
+\temp@stkl=\skip72
+\@stackedboxwidth=\skip73
+\@addedbox=\box156
+\@anchorbox=\box157
+\stackedbox=\box158
+\@centerbox=\box159
+\c@ROWcellindex@=\count378
 )
 (/usr/share/texlive/texmf-dist/tex/latex/romannum/romannum.sty
 Package: romannum 2009/09/03 v1.0b roman numerals
@@ -1081,11 +1310,11 @@ Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
 Package: fancyvrb 2020/01/13 v3.5 verbatim text (tvz,hv)
-\FV@CodeLineNo=\count372
+\FV@CodeLineNo=\count379
 \FV@InFile=\read4
-\FV@TabBox=\box135
-\c@FancyVerbLine=\count373
-\FV@StepNumber=\count374
+\FV@TabBox=\box160
+\c@FancyVerbLine=\count380
+\FV@StepNumber=\count381
 \FV@OutFile=\write5
 )
 (/usr/share/texlive/texmf-dist/tex/latex/upquote/upquote.sty
@@ -1097,44 +1326,44 @@ Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
-\linenopenalty=\count375
-\output=\toks56
-\linenoprevgraf=\count376
-\linenumbersep=\dimen351
-\linenumberwidth=\dimen352
-\c@linenumber=\count377
-\c@pagewiselinenumber=\count378
-\c@LN@truepage=\count379
-\c@internallinenumber=\count380
-\c@internallinenumbers=\count381
-\quotelinenumbersep=\dimen353
-\bframerule=\dimen354
-\bframesep=\dimen355
-\bframebox=\box136
+\linenopenalty=\count382
+\output=\toks61
+\linenoprevgraf=\count383
+\linenumbersep=\dimen371
+\linenumberwidth=\dimen372
+\c@linenumber=\count384
+\c@pagewiselinenumber=\count385
+\c@LN@truepage=\count386
+\c@internallinenumber=\count387
+\c@internallinenumbers=\count388
+\quotelinenumbersep=\dimen373
+\bframerule=\dimen374
+\bframesep=\dimen375
+\bframebox=\box161
 LaTeX Info: Redefining \\ on input line 3056.
 )
-\c@FV@TrueTabGroupLevel=\count382
-\c@FV@TrueTabCounter=\count383
-\FV@TabBox@Group=\box137
-\FV@TmpLength=\skip72
-\c@FV@HighlightLinesStart=\count384
-\c@FV@HighlightLinesStop=\count385
-\FV@LoopCount=\count386
-\FV@NCharsBox=\box138
-\FV@BreakIndent=\dimen356
-\FV@BreakIndentNChars=\count387
-\FV@BreakSymbolSepLeft=\dimen357
-\FV@BreakSymbolSepLeftNChars=\count388
-\FV@BreakSymbolSepRight=\dimen358
-\FV@BreakSymbolSepRightNChars=\count389
-\FV@BreakSymbolIndentLeft=\dimen359
-\FV@BreakSymbolIndentLeftNChars=\count390
-\FV@BreakSymbolIndentRight=\dimen360
-\FV@BreakSymbolIndentRightNChars=\count391
-\c@FancyVerbLineBreakLast=\count392
-\FV@LineBox=\box139
-\FV@LineIndentBox=\box140
-\FV@LineWidth=\dimen361
+\c@FV@TrueTabGroupLevel=\count389
+\c@FV@TrueTabCounter=\count390
+\FV@TabBox@Group=\box162
+\FV@TmpLength=\skip74
+\c@FV@HighlightLinesStart=\count391
+\c@FV@HighlightLinesStop=\count392
+\FV@LoopCount=\count393
+\FV@NCharsBox=\box163
+\FV@BreakIndent=\dimen376
+\FV@BreakIndentNChars=\count394
+\FV@BreakSymbolSepLeft=\dimen377
+\FV@BreakSymbolSepLeftNChars=\count395
+\FV@BreakSymbolSepRight=\dimen378
+\FV@BreakSymbolSepRightNChars=\count396
+\FV@BreakSymbolIndentLeft=\dimen379
+\FV@BreakSymbolIndentLeftNChars=\count397
+\FV@BreakSymbolIndentRight=\dimen380
+\FV@BreakSymbolIndentRightNChars=\count398
+\c@FancyVerbLineBreakLast=\count399
+\FV@LineBox=\box164
+\FV@LineIndentBox=\box165
+\FV@LineWidth=\dimen381
 )
 (/usr/share/texlive/texmf-dist/tex/latex/ifplatform/ifplatform.sty
 Package: ifplatform 2017/10/13 v0.4a Testing for the operating system
@@ -1153,34 +1382,34 @@ runsystem(rm -- "main.w18")...executed.
 )
 (/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.sty
 (/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.tex
-\integerpart=\count393
-\decimalpart=\count394
+\integerpart=\count400
+\decimalpart=\count401
 )
 Package: xstring 2019/02/06 v1.83 String manipulations (CT)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
-\OuterFrameSep=\skip73
-\fb@frw=\dimen362
-\fb@frh=\dimen363
-\FrameRule=\dimen364
-\FrameSep=\dimen365
+\OuterFrameSep=\skip75
+\fb@frw=\dimen382
+\fb@frh=\dimen383
+\FrameRule=\dimen384
+\FrameSep=\dimen385
 )
 (/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count395
-\float@exts=\toks57
-\float@box=\box141
-\@float@everytoks=\toks58
-\@floatcapt=\box142
+\c@float@type=\count402
+\float@exts=\toks62
+\float@box=\box166
+\@float@everytoks=\toks63
+\@floatcapt=\box167
 )
 \minted@appexistsfile=\read5
-\minted@bgbox=\box143
+\minted@bgbox=\box168
 \minted@code=\write6
-\c@minted@FancyVerbLineTemp=\count396
-\c@minted@pygmentizecounter=\count397
-\@float@every@listing=\toks59
-\c@listing=\count398
+\c@minted@FancyVerbLineTemp=\count403
+\c@minted@pygmentizecounter=\count404
+\@float@every@listing=\toks64
+\c@listing=\count405
 )
 runsystem(mkdir -p _minted-main)...executed.
 
@@ -1190,66 +1419,66 @@ Package: biblatex 2019/12/01 v3.14 programmable bibliographies (PK/MW)
 
 (/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count399
+\lrq@indent=\count406
 
 (/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count400
-\c@listtotal=\count401
-\c@listcount=\count402
-\c@liststart=\count403
-\c@liststop=\count404
-\c@citecount=\count405
-\c@citetotal=\count406
-\c@multicitecount=\count407
-\c@multicitetotal=\count408
-\c@instcount=\count409
-\c@maxnames=\count410
-\c@minnames=\count411
-\c@maxitems=\count412
-\c@minitems=\count413
-\c@citecounter=\count414
-\c@maxcitecounter=\count415
-\c@savedcitecounter=\count416
-\c@uniquelist=\count417
-\c@uniquename=\count418
-\c@refsection=\count419
-\c@refsegment=\count420
-\c@maxextratitle=\count421
-\c@maxextratitleyear=\count422
-\c@maxextraname=\count423
-\c@maxextradate=\count424
-\c@maxextraalpha=\count425
-\c@abbrvpenalty=\count426
-\c@highnamepenalty=\count427
-\c@lownamepenalty=\count428
-\c@maxparens=\count429
-\c@parenlevel=\count430
-\blx@tempcnta=\count431
-\blx@tempcntb=\count432
-\blx@tempcntc=\count433
-\blx@maxsection=\count434
-\blx@maxsegment@0=\count435
-\blx@notetype=\count436
-\blx@parenlevel@text=\count437
-\blx@parenlevel@foot=\count438
-\blx@sectionciteorder@0=\count439
-\blx@entrysetcounter=\count440
-\labelnumberwidth=\skip74
-\labelalphawidth=\skip75
-\biblabelsep=\skip76
-\bibitemsep=\skip77
-\bibnamesep=\skip78
-\bibinitsep=\skip79
-\bibparsep=\skip80
-\bibhang=\skip81
+\c@tabx@nest=\count407
+\c@listtotal=\count408
+\c@listcount=\count409
+\c@liststart=\count410
+\c@liststop=\count411
+\c@citecount=\count412
+\c@citetotal=\count413
+\c@multicitecount=\count414
+\c@multicitetotal=\count415
+\c@instcount=\count416
+\c@maxnames=\count417
+\c@minnames=\count418
+\c@maxitems=\count419
+\c@minitems=\count420
+\c@citecounter=\count421
+\c@maxcitecounter=\count422
+\c@savedcitecounter=\count423
+\c@uniquelist=\count424
+\c@uniquename=\count425
+\c@refsection=\count426
+\c@refsegment=\count427
+\c@maxextratitle=\count428
+\c@maxextratitleyear=\count429
+\c@maxextraname=\count430
+\c@maxextradate=\count431
+\c@maxextraalpha=\count432
+\c@abbrvpenalty=\count433
+\c@highnamepenalty=\count434
+\c@lownamepenalty=\count435
+\c@maxparens=\count436
+\c@parenlevel=\count437
+\blx@tempcnta=\count438
+\blx@tempcntb=\count439
+\blx@tempcntc=\count440
+\blx@maxsection=\count441
+\blx@maxsegment@0=\count442
+\blx@notetype=\count443
+\blx@parenlevel@text=\count444
+\blx@parenlevel@foot=\count445
+\blx@sectionciteorder@0=\count446
+\blx@entrysetcounter=\count447
+\labelnumberwidth=\skip76
+\labelalphawidth=\skip77
+\biblabelsep=\skip78
+\bibitemsep=\skip79
+\bibnamesep=\skip80
+\bibinitsep=\skip81
+\bibparsep=\skip82
+\bibhang=\skip83
 \blx@bcfin=\read6
 \blx@bcfout=\write7
 \blx@langwohyphens=\language85
-\c@mincomprange=\count441
-\c@maxcomprange=\count442
-\c@mincompwidth=\count443
+\c@mincomprange=\count448
+\c@maxcomprange=\count449
+\c@mincompwidth=\count450
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -1260,88 +1489,88 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'alphabetic-verb.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count444
-\c@savedafterword=\count445
-\c@annotator=\count446
-\c@savedannotator=\count447
-\c@author=\count448
-\c@savedauthor=\count449
-\c@bookauthor=\count450
-\c@savedbookauthor=\count451
-\c@commentator=\count452
-\c@savedcommentator=\count453
-\c@editor=\count454
-\c@savededitor=\count455
-\c@editora=\count456
-\c@savededitora=\count457
-\c@editorb=\count458
-\c@savededitorb=\count459
-\c@editorc=\count460
-\c@savededitorc=\count461
-\c@foreword=\count462
-\c@savedforeword=\count463
-\c@holder=\count464
-\c@savedholder=\count465
-\c@introduction=\count466
-\c@savedintroduction=\count467
-\c@namea=\count468
-\c@savednamea=\count469
-\c@nameb=\count470
-\c@savednameb=\count471
-\c@namec=\count472
-\c@savednamec=\count473
-\c@translator=\count474
-\c@savedtranslator=\count475
-\c@shortauthor=\count476
-\c@savedshortauthor=\count477
-\c@shorteditor=\count478
-\c@savedshorteditor=\count479
-\c@labelname=\count480
-\c@savedlabelname=\count481
-\c@institution=\count482
-\c@savedinstitution=\count483
-\c@lista=\count484
-\c@savedlista=\count485
-\c@listb=\count486
-\c@savedlistb=\count487
-\c@listc=\count488
-\c@savedlistc=\count489
-\c@listd=\count490
-\c@savedlistd=\count491
-\c@liste=\count492
-\c@savedliste=\count493
-\c@listf=\count494
-\c@savedlistf=\count495
-\c@location=\count496
-\c@savedlocation=\count497
-\c@organization=\count498
-\c@savedorganization=\count499
-\c@origlocation=\count500
-\c@savedoriglocation=\count501
-\c@origpublisher=\count502
-\c@savedorigpublisher=\count503
-\c@publisher=\count504
-\c@savedpublisher=\count505
-\c@language=\count506
-\c@savedlanguage=\count507
-\c@origlanguage=\count508
-\c@savedoriglanguage=\count509
-\c@pageref=\count510
-\c@savedpageref=\count511
-\shorthandwidth=\skip82
-\shortjournalwidth=\skip83
-\shortserieswidth=\skip84
-\shorttitlewidth=\skip85
-\shortauthorwidth=\skip86
-\shorteditorwidth=\skip87
-\locallabelnumberwidth=\skip88
-\locallabelalphawidth=\skip89
-\localshorthandwidth=\skip90
-\localshortjournalwidth=\skip91
-\localshortserieswidth=\skip92
-\localshorttitlewidth=\skip93
-\localshortauthorwidth=\skip94
-\localshorteditorwidth=\skip95
+\c@afterword=\count451
+\c@savedafterword=\count452
+\c@annotator=\count453
+\c@savedannotator=\count454
+\c@author=\count455
+\c@savedauthor=\count456
+\c@bookauthor=\count457
+\c@savedbookauthor=\count458
+\c@commentator=\count459
+\c@savedcommentator=\count460
+\c@editor=\count461
+\c@savededitor=\count462
+\c@editora=\count463
+\c@savededitora=\count464
+\c@editorb=\count465
+\c@savededitorb=\count466
+\c@editorc=\count467
+\c@savededitorc=\count468
+\c@foreword=\count469
+\c@savedforeword=\count470
+\c@holder=\count471
+\c@savedholder=\count472
+\c@introduction=\count473
+\c@savedintroduction=\count474
+\c@namea=\count475
+\c@savednamea=\count476
+\c@nameb=\count477
+\c@savednameb=\count478
+\c@namec=\count479
+\c@savednamec=\count480
+\c@translator=\count481
+\c@savedtranslator=\count482
+\c@shortauthor=\count483
+\c@savedshortauthor=\count484
+\c@shorteditor=\count485
+\c@savedshorteditor=\count486
+\c@labelname=\count487
+\c@savedlabelname=\count488
+\c@institution=\count489
+\c@savedinstitution=\count490
+\c@lista=\count491
+\c@savedlista=\count492
+\c@listb=\count493
+\c@savedlistb=\count494
+\c@listc=\count495
+\c@savedlistc=\count496
+\c@listd=\count497
+\c@savedlistd=\count498
+\c@liste=\count499
+\c@savedliste=\count500
+\c@listf=\count501
+\c@savedlistf=\count502
+\c@location=\count503
+\c@savedlocation=\count504
+\c@organization=\count505
+\c@savedorganization=\count506
+\c@origlocation=\count507
+\c@savedoriglocation=\count508
+\c@origpublisher=\count509
+\c@savedorigpublisher=\count510
+\c@publisher=\count511
+\c@savedpublisher=\count512
+\c@language=\count513
+\c@savedlanguage=\count514
+\c@origlanguage=\count515
+\c@savedoriglanguage=\count516
+\c@pageref=\count517
+\c@savedpageref=\count518
+\shorthandwidth=\skip84
+\shortjournalwidth=\skip85
+\shortserieswidth=\skip86
+\shorttitlewidth=\skip87
+\shortauthorwidth=\skip88
+\shorteditorwidth=\skip89
+\locallabelnumberwidth=\skip90
+\locallabelalphawidth=\skip91
+\localshorthandwidth=\skip92
+\localshortjournalwidth=\skip93
+\localshortserieswidth=\skip94
+\localshorttitlewidth=\skip95
+\localshortauthorwidth=\skip96
+\localshorteditorwidth=\skip97
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
@@ -1363,19 +1592,19 @@ Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
  (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.def
 File: biblatex.def 2019/12/01 v3.14 biblatex compatibility (PK/MW)
-\c@textcitecount=\count512
-\c@textcitetotal=\count513
-\c@textcitemaxnames=\count514
-\c@biburlbigbreakpenalty=\count515
-\c@biburlbreakpenalty=\count516
-\c@biburlnumpenalty=\count517
-\c@biburlucpenalty=\count518
-\c@biburllcpenalty=\count519
+\c@textcitecount=\count519
+\c@textcitetotal=\count520
+\c@textcitemaxnames=\count521
+\c@biburlbigbreakpenalty=\count522
+\c@biburlbreakpenalty=\count523
+\c@biburlnumpenalty=\count524
+\c@biburlucpenalty=\count525
+\c@biburllcpenalty=\count526
 \biburlbigskip=\muskip18
 \biburlnumskip=\muskip19
 \biburlucskip=\muskip20
 \biburllcskip=\muskip21
-\c@smartand=\count520
+\c@smartand=\count527
 )
 Package biblatex Info: Trying to load natbib compatibility...
 Package biblatex Info: ... file 'blx-natbib.def' found.
@@ -1400,8 +1629,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
 File: standard.bbx 2019/12/01 v3.14 biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count521
-\c@bbx:relatedtotal=\count522
+\c@bbx:relatedcount=\count528
+\c@bbx:relatedtotal=\count529
 )))
 Package biblatex Info: Trying to load citation style 'alphabetic-verb'...
 Package biblatex Info: ... file 'alphabetic-verb.cbx' found.
@@ -1426,40 +1655,40 @@ File: biblatex.cfg
 )) (./Wue.sty
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerouterthemesmoothbars.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerinnerthemecircles.sty))
-\c@thm=\count523
+\c@thm=\count530
 runsystem(which pygmentize && touch main.aex)...executed.
 
 runsystem(rm main.aex)...executed.
 
-\@quotelevel=\count524
-\@quotereset=\count525
+\@quotelevel=\count531
+\@quotereset=\count532
 
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
-\l__kernel_color_stack_int=\count526
-\l__pdf_internal_box=\box144
+\l__kernel_color_stack_int=\count533
+\l__pdf_internal_box=\box169
 )
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 58.
-LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
-58.
+63.
  (/usr/share/texmf/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1499,17 +1728,17 @@ File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count527
-\scratchdimen=\dimen366
-\scratchbox=\box145
-\nofMPsegments=\count528
-\nofMParguments=\count529
-\everyMPshowfont=\toks60
-\MPscratchCnt=\count530
-\MPscratchDim=\dimen367
-\MPnumerator=\count531
-\makeMPintoPDFobject=\count532
-\everyMPtoPDFconversion=\toks61
+\scratchcounter=\count534
+\scratchdimen=\dimen386
+\scratchbox=\box170
+\nofMPsegments=\count535
+\nofMParguments=\count536
+\everyMPshowfont=\toks65
+\MPscratchCnt=\count537
+\MPscratchDim=\dimen387
+\MPnumerator=\count538
+\makeMPintoPDFobject=\count539
+\everyMPtoPDFconversion=\toks66
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -1520,8 +1749,8 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box146
-Package hyperref Info: Link coloring OFF on input line 58.
+\AtBeginShipoutBox=\box171
+Package hyperref Info: Link coloring OFF on input line 63.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -1532,64 +1761,64 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count533
+\c@section@level=\count540
 )
-LaTeX Info: Redefining \ref on input line 58.
-LaTeX Info: Redefining \pageref on input line 58.
-LaTeX Info: Redefining \nameref on input line 58.
+LaTeX Info: Redefining \ref on input line 63.
+LaTeX Info: Redefining \pageref on input line 63.
+LaTeX Info: Redefining \nameref on input line 63.
 
 (./main.out) (./main.out)
 \@outlinefile=\write8
 \openout8 = `main.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 58.
+(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 63.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 58.
+(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 63.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 58.
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 63.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 58.
+(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 63.
 \symnumbers=\mathgroup12
-LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 58.
+LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 63.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `normal'
-(Font)                  OT1/mathkerncmss/m/sl --> OT1/lmss/m/it on input line 5
-8.
+(Font)                  OT1/mathkerncmss/m/sl --> OT1/lmss/m/it on input line 6
+3.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/bx/sl --> OT1/lmss/m/it on input line 
-58.
+63.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmss/m/n --> OT1/lmr/m/n on input line 58.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 58.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 58.
+(Font)                  OT1/lmss/m/n --> OT1/lmr/m/n on input line 63.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 63.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/m/n on input line 58.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/m/n on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> OT1/lmss/m/n on input line 58.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 58.
+(Font)                  OT1/lmss/bx/n --> OT1/lmss/m/n on input line 63.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> OT1/lmss/m/it on input line 58.
+(Font)                  OT1/lmr/m/it --> OT1/lmss/m/it on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmr/bx/it --> OT1/lmss/m/it on input line 58.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 58.
+(Font)                  OT1/lmr/bx/it --> OT1/lmss/m/it on input line 63.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 58.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 58.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 63.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 58.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 63.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 58.
+(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/lmss/b/n --> OT1/lmr/b/n on input line 58.
+(Font)                  OT1/lmss/b/n --> OT1/lmr/b/n on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/lmss/b/n --> OT1/lmss/b/n on input line 58.
+(Font)                  OT1/lmss/b/n --> OT1/lmss/b/n on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 58.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 58.
+(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 63.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/b/n on input line 58.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/b/n on input line 63.
 \symboldpureletters=\mathgroup13
 
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-basic-dictionary
@@ -1616,10 +1845,15 @@ Dictionary: translator-numbers-dictionary, Language: English
 ry-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-\c@lstlisting=\count534
+
+Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
+ick labels; missing features). Consider writing \pgfplotsset{compat=1.16} into 
+your preamble.
+ on input line 63.
+
+\c@lstlisting=\count541
 Package biblatex Info: Trying to load language 'english'...
 Package biblatex Info: ... file 'english.lbx' found.
-
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx
 File: english.lbx 2019/12/01 v3.14 biblatex localization (PK/MW)
 )
@@ -1634,85 +1868,85 @@ Package biblatex Info: Data encoding 'utf8' specified.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (./main.bbl)
-Package biblatex Info: Reference section=0 on input line 58.
-Package biblatex Info: Reference segment=0 on input line 58.
+Package biblatex Info: Reference section=0 on input line 63.
+Package biblatex Info: Reference segment=0 on input line 63.
 (./main.nav)
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 5
-8.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 6
+3.
  (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
 LaTeX Font Warning: Font shape `OT1/lmss/m/sc' in size <6> not available
-(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 58.
+(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 63.
 
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 5
-8.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 6
+3.
 (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-58.
+63.
 
 (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-58.
+63.
 
 (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 58.
+(Font)              <6> on input line 63.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 58.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 58.
+(Font)              <5> on input line 63.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 63.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 58.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 63.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 58
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 63
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <6> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 58.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 63.
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <5> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 58.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 63.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 58.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 63.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 58.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 63.
 LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <6> not available
-(Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 58.
+(Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 63.
 
 LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <5> not available
-(Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 58.
+(Font)              Font shape `OT1/lmss/bx/sl' tried instead on input line 63.
 
 LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 
-58.
+63.
 
 (/usr/share/texmf/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
 LaTeX Font Warning: Font shape `OT1/lmss/m/sc' in size <14.4> not available
-(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 61.
+(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 66.
 
-<figures/polimiLogo.jpeg, id=123, 1015.795pt x 428.60126pt>
+<figures/polimiLogo.jpeg, id=127, 1015.795pt x 428.60126pt>
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 61.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 66.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [1
 Non-PDF special ignored!
@@ -1752,7 +1986,7 @@ LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <8> not available
 )
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 63.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 68.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [2
 
@@ -1767,7 +2001,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 17.
 ]) (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 66.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 71.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [4
 
@@ -1806,7 +2040,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 32.
 [8
 
 ]
-<figures/rMeanChi.pdf, id=665, 927.57147pt x 529.18639pt>
+<figures/rMeanChi.pdf, id=705, 927.57147pt x 529.18639pt>
 File: figures/rMeanChi.pdf Graphic file (type pdf)
 <use figures/rMeanChi.pdf>
 Package pdftex.def Info: figures/rMeanChi.pdf  used on input line 39.
@@ -1821,7 +2055,7 @@ LaTeX Font Info:    Font shape `OT1/lmss/bx/it' in size <12> not available
  [9
 
  <./figures/rMeanChi.pdf>]
-<figures/betaAngles.pdf, id=770, 1025.48624pt x 567.63269pt>
+<figures/betaAngles.pdf, id=815, 1025.48624pt x 567.63269pt>
 File: figures/betaAngles.pdf Graphic file (type pdf)
 <use figures/betaAngles.pdf>
 Package pdftex.def Info: figures/betaAngles.pdf  used on input line 46.
@@ -1829,7 +2063,7 @@ Package pdftex.def Info: figures/betaAngles.pdf  used on input line 46.
  [10
 
  <./figures/betaAngles.pdf>]
-<figures/alphaAngles.pdf, id=854, 1025.48624pt x 567.63269pt>
+<figures/alphaAngles.pdf, id=903, 1025.48624pt x 567.63269pt>
 File: figures/alphaAngles.pdf Graphic file (type pdf)
 <use figures/alphaAngles.pdf>
 Package pdftex.def Info: figures/alphaAngles.pdf  used on input line 53.
@@ -1844,7 +2078,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 68.
  [12
 
 ]
-<figures/stagePerf.pdf, id=993, 455.30101pt x 339.66899pt>
+<figures/stagePerf.pdf, id=1051, 455.30101pt x 339.66899pt>
 File: figures/stagePerf.pdf Graphic file (type pdf)
 <use figures/stagePerf.pdf>
 Package pdftex.def Info: figures/stagePerf.pdf  used on input line 76.
@@ -1856,7 +2090,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 76.
  [13
 
  <./figures/stagePerf.pdf>]
-<figures/efficiency.pdf, id=1075, 354.12299pt x 354.12299pt>
+<figures/efficiency.pdf, id=1138, 354.12299pt x 354.12299pt>
 File: figures/efficiency.pdf Graphic file (type pdf)
 <use figures/efficiency.pdf>
 Package pdftex.def Info: figures/efficiency.pdf  used on input line 92.
@@ -1929,14 +2163,14 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 94.
  (./main.vrb)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 107.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 109.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [16
 
 ]) (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 69.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 74.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [17
 
@@ -1948,109 +2182,129 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 1.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [18
 
-]
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 15.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [19
+] [19
+
+] [20
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 26.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [20
-
-]
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 42.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 45.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [21
 
-]
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 54.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [22
+] [22
 
 ]
-Overfull \vbox (13.41594pt too high) detected at line 67
+Overfull \vbox (13.41594pt too high) detected at line 72
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 67.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 72.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [23
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 78.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 83.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [24
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 89.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 94.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [25
 
 ]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 99.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 104.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [26
 
-] [27
+]
+Overfull \vbox (2.2299pt too high) detected at line 119
+ []
+
+[27
 
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 116.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 122.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [28
 
 ]
-Overfull \hbox (3.72372pt too wide) detected at line 130
+Overfull \hbox (3.72372pt too wide) detected at line 136
 []
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 130.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 136.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [29
+
+]
+Overfull \vbox (6.28749pt too high) detected at line 156
+ []
+
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 156.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+[30
 
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 132.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 158.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [30
+ [31
 
-] [31
+] [32
+
+]
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 185.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+ [33
+
+]
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 196.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+ [34
+
+]
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 208.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+ [35
 
 ])
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 72.
+(hyperref)                removing `math shift' on input line 77.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 72.
+(hyperref)                removing `math shift' on input line 77.
 
 (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 72.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 77.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [32
+ [36
 
 ] (./turboRes.tex
 
@@ -2066,7 +2320,7 @@ File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
 Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 1.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [33
+ [37
 
 ]
 \openout4 = `main.vrb'.
@@ -2091,20 +2345,20 @@ File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
 Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 16.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [34
+ [38
 
 ]
-<figures/rotorBlades.pdf, id=2358, 704.98183pt x 517.45322pt>
+<figures/rotorBlades.pdf, id=2748, 704.98183pt x 517.45322pt>
 File: figures/rotorBlades.pdf Graphic file (type pdf)
 <use figures/rotorBlades.pdf>
 Package pdftex.def Info: figures/rotorBlades.pdf  used on input line 39.
 (pdftex.def)             Requested size: 153.64493pt x 112.77412pt.
-<figures/statorBlades.pdf, id=2359, 704.98183pt x 517.45322pt>
+<figures/statorBlades.pdf, id=2749, 704.98183pt x 517.45322pt>
 File: figures/statorBlades.pdf Graphic file (type pdf)
 <use figures/statorBlades.pdf>
 Package pdftex.def Info: figures/statorBlades.pdf  used on input line 39.
 (pdftex.def)             Requested size: 153.64493pt x 112.77412pt.
- [35
+ [39
 
  <./figures/rotorBlades.pdf> <./figures/statorBlades.pdf>]
 \openout4 = `main.vrb'.
@@ -2112,9 +2366,9 @@ Package pdftex.def Info: figures/statorBlades.pdf  used on input line 39.
  (./main.vrb)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 52.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 48.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [36
+ [40
 
 ]
 \openout4 = `main.vrb'.
@@ -2122,124 +2376,124 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 52.
  (./main.vrb)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 60.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 56.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [37
+ [41
 
 ] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 62.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [38
-
-]
-<figures/rotorEntropyFlow.pdf, id=2627, 1293.56775pt x 654.49818pt>
-File: figures/rotorEntropyFlow.pdf Graphic file (type pdf)
-<use figures/rotorEntropyFlow.pdf>
-Package pdftex.def Info: figures/rotorEntropyFlow.pdf  used on input line 70.
-(pdftex.def)             Requested size: 307.28987pt x 155.47488pt.
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 70.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
-
-[39
-
- <./figures/rotorEntropyFlow.pdf>]
-<figures/rotorBetaThermo.pdf, id=2701, 1293.63306pt x 680.99721pt>
-File: figures/rotorBetaThermo.pdf Graphic file (type pdf)
-<use figures/rotorBetaThermo.pdf>
-Package pdftex.def Info: figures/rotorBetaThermo.pdf  used on input line 77.
-(pdftex.def)             Requested size: 307.28987pt x 161.7593pt.
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 77.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [40
-
- <./figures/rotorBetaThermo.pdf>]
-<figures/statorEntropyFlow.pdf, id=2786, 1292.50677pt x 654.49818pt>
-File: figures/statorEntropyFlow.pdf Graphic file (type pdf)
-<use figures/statorEntropyFlow.pdf>
-Package pdftex.def Info: figures/statorEntropyFlow.pdf  used on input line 84.
-(pdftex.def)             Requested size: 307.28987pt x 155.60472pt.
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 84.
-(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
-
-[41
-
- <./figures/statorEntropyFlow.pdf>]
-<figures/statorBetaThermo.pdf, id=2857, 1293.63306pt x 679.22354pt>
-File: figures/statorBetaThermo.pdf Graphic file (type pdf)
-<use figures/statorBetaThermo.pdf>
-Package pdftex.def Info: figures/statorBetaThermo.pdf  used on input line 91.
-(pdftex.def)             Requested size: 307.28987pt x 161.33798pt.
-File: figures/polimiLogo.jpeg Graphic file (type jpg)
-<use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 91.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 58.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [42
 
- <./figures/statorBetaThermo.pdf>]
-<figures/rotorVelocityTriangle.pdf, id=2937, 361.35pt x 722.7pt>
-File: figures/rotorVelocityTriangle.pdf Graphic file (type pdf)
-<use figures/rotorVelocityTriangle.pdf>
-Package pdftex.def Info: figures/rotorVelocityTriangle.pdf  used on input line 
-115.
-(pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
-<figures/statorVelocityTriangle.pdf, id=2938, 361.35pt x 722.7pt>
-File: figures/statorVelocityTriangle.pdf Graphic file (type pdf)
-<use figures/statorVelocityTriangle.pdf>
-Package pdftex.def Info: figures/statorVelocityTriangle.pdf  used on input line
- 115.
-(pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
-
-Overfull \vbox (2.70277pt too high) detected at line 115
- []
+]
+<figures/rotorEntropyFlow.pdf, id=3032, 1293.56775pt x 654.49818pt>
+File: figures/rotorEntropyFlow.pdf Graphic file (type pdf)
+<use figures/rotorEntropyFlow.pdf>
+Package pdftex.def Info: figures/rotorEntropyFlow.pdf  used on input line 66.
+(pdftex.def)             Requested size: 307.28987pt x 155.47488pt.
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 66.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 
 [43
 
+ <./figures/rotorEntropyFlow.pdf>]
+<figures/rotorBetaThermo.pdf, id=3111, 1293.63306pt x 680.99721pt>
+File: figures/rotorBetaThermo.pdf Graphic file (type pdf)
+<use figures/rotorBetaThermo.pdf>
+Package pdftex.def Info: figures/rotorBetaThermo.pdf  used on input line 73.
+(pdftex.def)             Requested size: 307.28987pt x 161.7593pt.
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 73.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+ [44
+
+ <./figures/rotorBetaThermo.pdf>]
+<figures/statorEntropyFlow.pdf, id=3200, 1292.50677pt x 654.49818pt>
+File: figures/statorEntropyFlow.pdf Graphic file (type pdf)
+<use figures/statorEntropyFlow.pdf>
+Package pdftex.def Info: figures/statorEntropyFlow.pdf  used on input line 80.
+(pdftex.def)             Requested size: 307.28987pt x 155.60472pt.
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 80.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+
+[45
+
+ <./figures/statorEntropyFlow.pdf>]
+<figures/statorBetaThermo.pdf, id=3275, 1293.63306pt x 679.22354pt>
+File: figures/statorBetaThermo.pdf Graphic file (type pdf)
+<use figures/statorBetaThermo.pdf>
+Package pdftex.def Info: figures/statorBetaThermo.pdf  used on input line 87.
+(pdftex.def)             Requested size: 307.28987pt x 161.33798pt.
+File: figures/polimiLogo.jpeg Graphic file (type jpg)
+<use figures/polimiLogo.jpeg>
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 87.
+(pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
+ [46
+
+ <./figures/statorBetaThermo.pdf>]
+<figures/rotorVelocityTriangle.pdf, id=3359, 361.35pt x 722.7pt>
+File: figures/rotorVelocityTriangle.pdf Graphic file (type pdf)
+<use figures/rotorVelocityTriangle.pdf>
+Package pdftex.def Info: figures/rotorVelocityTriangle.pdf  used on input line 
+111.
+(pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
+<figures/statorVelocityTriangle.pdf, id=3360, 361.35pt x 722.7pt>
+File: figures/statorVelocityTriangle.pdf Graphic file (type pdf)
+<use figures/statorVelocityTriangle.pdf>
+Package pdftex.def Info: figures/statorVelocityTriangle.pdf  used on input line
+ 111.
+(pdftex.def)             Requested size: 76.82246pt x 153.64615pt.
+
+Overfull \vbox (2.70277pt too high) detected at line 111
+ []
+
+[47
+
  <./figures/rotorVelocityTriangle.pdf> <./figures/statorVelocityTriangle.pdf>]
-<figures/rotor.png, id=3041, 2862.695pt x 1555.8125pt>
+<figures/rotor.png, id=3466, 2862.695pt x 1555.8125pt>
 File: figures/rotor.png Graphic file (type png)
 <use figures/rotor.png>
-Package pdftex.def Info: figures/rotor.png  used on input line 133.
+Package pdftex.def Info: figures/rotor.png  used on input line 129.
 (pdftex.def)             Requested size: 230.46739pt x 125.25095pt.
 
-Overfull \hbox (76.82246pt too wide) in paragraph at lines 133--133
+Overfull \hbox (76.82246pt too wide) in paragraph at lines 129--129
  [] 
  []
 
-<figures/stator.png, id=3043, 2862.695pt x 1555.8125pt>
+<figures/stator.png, id=3468, 2862.695pt x 1555.8125pt>
 File: figures/stator.png Graphic file (type png)
 <use figures/stator.png>
-Package pdftex.def Info: figures/stator.png  used on input line 133.
+Package pdftex.def Info: figures/stator.png  used on input line 129.
 (pdftex.def)             Requested size: 230.46739pt x 125.25095pt.
 
-Overfull \hbox (76.82246pt too wide) in paragraph at lines 133--133
+Overfull \hbox (76.82246pt too wide) in paragraph at lines 129--129
  [] 
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 133.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 129.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
-[44
+[48
 
  <./figures/rotor.png> <./figures/stator.png>]
-<figures/compressor.png, id=3102, 2050.66125pt x 1022.31938pt>
+<figures/compressor.png, id=3531, 2050.66125pt x 1022.31938pt>
 File: figures/compressor.png Graphic file (type png)
 <use figures/compressor.png>
-Package pdftex.def Info: figures/compressor.png  used on input line 140.
+Package pdftex.def Info: figures/compressor.png  used on input line 136.
 (pdftex.def)             Requested size: 307.28987pt x 153.18529pt.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 140.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 136.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [45
+ [49
 
  <./figures/compressor.png (PNG copy)>]
 \openout4 = `main.vrb'.
@@ -2247,25 +2501,25 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 140.
  (./main.vrb)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 154.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 150.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [46
+ [50
 
 ])
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 80.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 85.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [47
+ [51
 
 ]
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <24.88> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 91.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 96.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 91.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 96.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [48
+ [52
 
 ]
 \tf@nav=\write9
@@ -2277,25 +2531,25 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 91.
 \tf@snm=\write11
 \openout11 = `main.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 92.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 92.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 97.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 97.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 92.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 92.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 97.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 97.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 8C0977AA25F79261B0875656B36AE001;781.
+(rerunfilecheck)             Checksum: 016C3A309E65252572DD8C772B10D89F;781.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 35065 strings out of 481239
- 677297 string characters out of 5920377
- 1361343 words of memory out of 5000000
- 49372 multiletter control sequences out of 15000+600000
+ 47924 strings out of 481239
+ 1100303 string characters out of 5920377
+ 1928906 words of memory out of 5000000
+ 62018 multiletter control sequences out of 15000+600000
  674285 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 58i,20n,72p,794b,1484s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 73i,20n,112p,794b,1484s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-rmtt.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/sha
 re/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/
@@ -2322,15 +2576,16 @@ mf/fonts/type1/public/lm/lmss9.pfb></usr/share/texmf/fonts/type1/public/lm/lmss
 bx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/share/texmf/
 fonts/type1/public/lm/lmsso12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso
 8.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso9.pfb></usr/share/texmf/font
-s/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb>
-</usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1
-/public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/s
-hare/texmf/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmtt8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (48 pages, 2484174 bytes).
+s/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy5.pfb>
+</usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></usr/share/texmf/fonts/type1
+/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy9.pfb></usr/sh
+are/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public
+/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/share/te
+xmf/fonts/type1/public/lm/lmtt9.pfb>
+Output written on main.pdf (52 pages, 2523007 bytes).
 PDF statistics:
- 3459 PDF objects out of 3580 (max. 8388607)
- 3259 compressed objects within 33 object streams
- 124 named destinations out of 1000 (max. 500000)
+ 3909 PDF objects out of 4296 (max. 8388607)
+ 3696 compressed objects within 37 object streams
+ 132 named destinations out of 1000 (max. 500000)
  250 words of extra memory for PDF output out of 10000 (max. 10000000)
 

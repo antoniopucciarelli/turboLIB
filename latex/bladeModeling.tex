@@ -1,9 +1,10 @@
 \subsection{Losses modeling}
 \subsubsection{Profile losses}
+	{\nologo
 	\begin{frame}{Profile losses}
 		The profile losses used are related to the \textbf{Leiblein modeling} approach\footnote{The following equations are interpolated data from \cite[Sec. 6.4]{axial2004}.}.
 		\newline
-		The model is based on the \textbf{equivalent diffusion factor}, $D_{eq}$:
+		The model is based on the \textbf{equivalent diffusion factor}\footnote{It describes how important is the \textbf{velocity change} along the blade. It can be seen as an \textit{indicator} of the \textbf{blade loading}.}, $D_{eq}$:
 		\begin{align}
 			\frac{W_{max}}{W_1} & = 1.12 + 0.61 \ \frac{cos(\beta_1)^2}{\sigma} \cdot \frac{r_1 \ V_{t1} - r_2 \ V_{t2}}{r_1 \ V_{a1}} \nonumber \\
 			D_{eq} & = \frac{W_{max}}{W_1} \cdot \frac{W_1}{W_2} \nonumber  
@@ -13,27 +14,29 @@
 			\bar{\omega}_{profile} = \frac{0.004 \ \Big( 1 + 3.1 \ \big( D_{eq} - 1 \big)^2 + 0.4 \ \big( D_{eq} - 1 \big)^8 \Big) \ 2 \ \sigma}{cos(\beta_2) \ \Big( \frac{W_1}{W_2} \Big)^2} \nonumber
 		\end{equation}
 	\end{frame}
+	}
 
 \subsubsection{Compressibility losses}
+	{\nologo
 	\begin{frame}{Compressibility losses -- \Romannum{1}}
 		 These losses can be seen as a \textbf{correction} of the \textbf{profile} losses due to the compressibility of the gas along its \textit{journey} in the stage. 
 		 \newline
 		 \newline
-		 The correction refers to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle, $i_c$ and $i_s$. 
+		 The correction refers to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle\footnote{$i_c$ and $i_s$ are related to the total pressure losses, $\bar{\omega}_c$ and $\bar{\omega}_s$, that are \textbf{twice} the minimum total pressure loss, $\bar{\omega}$, obtained at the \textbf{design incidence angle}, $i^*$.}, $i_c$ and $i_s$. 
 		 \newline
 		 \newline
 		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Sec. 6.6]{axial2004}}. 
 	\end{frame}
-
+	}
 	\begin{frame}{Compressibility losses -- \Romannum{2}}
 		$\bar{\omega}_{compressibility}$ setup:
 		\begin{itemize}
-			\item $R_c$ \& $R_s$ computation:
+			\item $R_c$ and $R_s$ computation\footnote{$R_{c}$ and $R_{s}$ are \textbf{range indices} for the computation of $i_c$ and $i_s$.}:
 				\begin{align}
 					R_c & = 9 - \Bigg[1 - \Bigg( \frac{30}{\beta_1} \Bigg)^{0.48} \Bigg] \ \frac{\theta}{8.2} \nonumber \\
 					R_s & = 10.3 + \Bigg( 2.92 - \frac{\beta_1}{15.6} \Bigg) \ \frac{\theta}{8.2} \nonumber  
 				\end{align}
-			\item $i_c$ \& $i_s$ computation:
+			\item $i_c$ and $i_s$ computation due to \textbf{compressibility} effects:
 				\begin{align}
 					i_c & = i^{*} - \frac{R_c}{1 + 0.5 \ M_{1}^{3}} \nonumber \\
 					i_s & = i^{*} + \frac{R_s}{1 + 0.5 \Big( K_{sh} \ M_{1} \Big)^3} \nonumber 
@@ -41,17 +44,19 @@
 		\end{itemize}
 	\end{frame}
 
+	{\nologo
 	\begin{frame}{Compressibility losses -- \Romannum{3}}
 		\begin{itemize}
-			\item $i_m$ computation: $i_m = i_c + \Big( i_s - i_c \Big) \ \frac{R_c}{R_c + R_s}$
+			\item $i_m$ computation\footnote{$i_m$ is the incidence angle at wich corresponds, having accounted the \textbf{compressibility}, the \textbf{minimum pressure loss}, $\bar{\omega}_m$.}: $i_m = i_c + \Big( i_s - i_c \Big) \ \frac{R_c}{R_c + R_s}$
 			\item $\bar{\omega}_{m}$ computation: $\bar{\omega}_{m} = \bar{\omega}_{profile} \ \Bigg[ 1 + \frac{\big( i_m - i^{*} \big)^2}{R_s^{2}} \Bigg]$
-			\item $\bar{\omega}_{compressibility}$ computation: 
+			\item $\bar{\omega}_{compressibility}$ computation\footnote{After having computed $i_c$, $i_s$, $i_m$ and $\bar{\omega}_m$. $\bar{\omega}_{compressibility}$ is a function of $i$. In the \textbf{total pressure losses study}: $\bar{\omega}_{compressibility} = \bar{\omega}_{compressibility_{(i^*)}}$.}: 
 				\begin{align}
 					\bar{\omega}_{compressibility} = \bar{\omega}_m + \bar{\omega}_m \ \Bigg[ \frac{i - i_m}{i_c - i_m} \Bigg]^2 \text{, if } i \leq i_m\nonumber \\ 
 					\bar{\omega}_{compressibility} = \bar{\omega}_m + \bar{\omega}_m \ \Bigg[ \frac{i - i_m}{i_s - i_m} \Bigg]^2 \text{, if } i \geq i_m \nonumber 
 				\end{align}
 		\end{itemize}
 	\end{frame}
+	}
 
 \subsubsection{Secondary flow losses}
 	\begin{frame}{Secondary flow losses}
@@ -101,7 +106,7 @@
 \subsubsection{Tip leackage losses}
 	{\nologo
 	\begin{frame}{Tip leackage losses}
-		Again these losses are computed from \cite[Sec. 6.9]{axial2004}. The main concept is: computing a \textbf{total} blade pressure loss and \textbf{assuming linear distribution} of losses from the hub to the tip. 
+		Again these losses are computed from \cite[Sec. 6.9]{axial2004}. The main concept is: computing a \textbf{total} blade pressure loss and \textbf{assuming linear distribution} of losses from the hub to the tip\footnote{$Z$ is the number of blades. $\delta_c$ is the tip clearance. $N_{row}$ is the number of blade rows in the compressor.}. 
 		\begin{align}
 			\tau & = \pi \ \delta_c \Big[ r_1 \rho_1 V_{a1_{mean}} + r_2 \rho_2 V_{a2_{mean}} \Big] \Big[ r_2 V_{t2_{mean}} - r_1 V_{t1_{mean}} \Big] \nonumber \\ 
 			\Delta P & = \frac{\tau}{Z \ r_{tip} \delta_c \ c \ cos(\gamma)} \nonumber \\ 
@@ -109,12 +114,13 @@
 			\dot{m_c} & = \rho_{mean} \ U_c \ Z \ \delta_c \ c \ cos(\gamma) \nonumber \\ 
 			\Delta P_T & = \frac{\Delta P \ \dot{m_c}}{\dot{m}} \nonumber  
 		\end{align}
-		$\Delta P_T$ is the \textbf{overall} total pressure loss due to \textbf{leackage} of the blade.
+		$\Delta P_T$ is the \textbf{overall} total pressure loss due to \textbf{tip leackage}.
+		\vspace{0.11cm}
 	\end{frame}
 	}
 
 \subsection{Radial equilibrium}
-	\begin{frame}{Radial equilibrium}
+	\begin{frame}{Equation setup}
 		The \textbf{radial equilibrium} equation: $\frac{\partial h_t}{\partial r} = T \frac{\partial s}{\partial r} + V_a \frac{\partial V_a}{\partial r} + V_t \frac{\partial r V_t}{\partial r}$ is converted into, for the exit station\footnote{$1$ is the blade inlet station and $2$ is the blade outlet section.} of the blade, a \textbf{1st order ODE}:
 		\begin{equation}
 			\begin{split}
@@ -122,28 +128,81 @@
 			\nonumber
 			\end{split}
 		\end{equation}
-		The \textbf{ODE} will be solved for $V_{a2}^2$.
-		\newline
-		$s_2$ is computed from $\sum_i \bar{\omega}_{i}$ treated earlier. 
-		\newline 
-		$\omega, V_{t1}, V_{t2} \& T_{T1}$ are known.
+		\begin{itemize}
+			\item The \textbf{ODE} will be solved for $V_{a2}^2$ 
+			\item $s_2$ is computed from $\sum_i \bar{\omega}_{i}$ treated earlier 
+			\item $\omega, V_{t1}, V_{t2} \ \text{and} \ T_{T1}$ are known
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{$\Delta s$ computation}
+		From pressure loss coefficients it is possible compute the \textbf{outlet total pressure} as: 
+		\begin{equation}
+			P_{T2,r} = P_{T1,r} + \sum_i \bar{\omega}_{i} \ (P_{T1,r} - P_{1,r}) \nonumber
+		\end{equation}
+		The \textbf{entropy variation} is computed as: 
+		\begin{equation}
+			 s_2 - s_1 = c_P \log{\frac{T_{T2,r}}{T_{T1,r}}} - R \log{\frac{P_{T2,r}}{P_{T1,r}}} \nonumber
+		\end{equation}
+		\vspace{-0.5cm}
+		\begin{alertblock}{Frames}
+			\begin{itemize}
+				\item $T_{T2} = T_{T1}$ in \textbf{stators} and $T_{T2,r} = T_{T1,r}$ in \textbf{rotors}
+				\item $\bar{\omega}_{*}$ have to be computed using \textbf{relative} quantities for \textbf{rotors} and \textbf{absolute} quantities for \textbf{stators}
+				\item $T_{T,r} = T + \frac{W^2}{2 c_P} = T_T + \frac{W^2 - V^2}{2 c_P}$
+				\item $P_{T,r} = P_T \Big( \frac{T_{T,r}}{T_T} \Big)^{\frac{\gamma}{\gamma - 1}}$
+			\end{itemize}
+		\end{alertblock}
 	\end{frame}
 	
 \subsection{Blade shape}
 	{\nologo
-	\begin{frame}{Blade shape}
+	\begin{frame}{Blade shape setup}
 		The \textbf{Leiblein model} from \cite[Ch. 6]{axial2004} has been used for the blade shape computation. 
 		\newline 
 		\newline
 		$\mathtt{NACA-65}$ profile has been chosen for the blade generation\footnote{Due to the low tip sonic Mach number it has been chosen to use this profile as well for the blade tip instead of a supersonic adapted profile shape.}.
 		\newline
 		\newline
-		The \textbf{main contraints} are: $\frac{t_b}{c} \approx 0.1$ and $max(\sigma) = 2.2$\footnote{$\frac{t_b}{c} \approx 0.1$ allows setting $K_{sh} \approx 0.1$. The upper bound on $\sigma$ is made in order to limit the blade chord.}.
+		The \textbf{main contraints} are: $\frac{t_b}{c} \approx 0.1$ and $\sigma$ is related just to $s$\footnote{$\frac{t_b}{c} \approx 0.1$ allows setting $K_{sh} \approx 0.1$. The blade chord, $c$, is set up as constant during the \textbf{blade numbering} study: using $AR = \frac{b_0}{c}$.}.
 		\newline
 		\newline
-		Due to the many possible blade configurations, an \textbf{optimization} procedure has been used for the computation of $i^{*}$, $\delta$, $\theta$ and $\sigma$. 
+		Due to the many possible blade configurations, an \textbf{optimization} procedure has been used for the computation of $i^{*}$, $\delta$ and $\theta$. 
 		\newline
 		\newline
 		Each section airfoil shape is \textbf{computed} from $\theta$ and $\mathtt{NACA-65} \ C_{L0}$ surface coordinates.
 	\end{frame}
 	}
+
+	\begin{frame}{$i^*$ computation}
+		The \textbf{incidence angle}, $i^*$, is computed using:
+		\begin{align}
+			K_{t,i} & = \Bigg( 10 \ \frac{t_b}{c} \Bigg)^q \ \text{; where} \ q = \frac{0.28}{0.1 + (\frac{t_b}{c})^{0.3}} \nonumber \\ 
+			(i^*_0)_{10} & = \frac{\beta_0^p}{5 + 46 \cdot e^{-2.3 \sigma}} - 0.1 \ \sigma^{3} \ e^{\frac{\beta_0 - 70}{4}} \ \text{; where} \ p = 0.914 + \frac{\sigma^3}{160} \nonumber \\
+			n & = 0.025 \sigma - 0.06 - \frac{\Big(\frac{\beta_0}{90} \Big)^{1 + 1.2 \sigma}}{1.5 + 0.43 \sigma} \nonumber \\ 
+			i^* & = K_{sh} \ K_{t,i} \ (i^*_0)_{10} + n \ \theta \nonumber 
+		\end{align}
+	\end{frame}
+
+	\begin{frame}{$\delta$ computation}
+		The \textbf{deviation angle}, $\delta$, is computed using:
+		\begin{align}
+			K_{t,\delta} & = 6.25 \frac{t_b}{c} + 37.5 \Bigg(\frac{t_b}{c}\Bigg)^2 \nonumber \\ 
+			(\delta^*_0)_{10} & = 0.01 \sigma \beta_0 + (0.74 \sigma^{1.9} + 3 \sigma) \Bigg(\frac{\beta_0}{90}\Bigg)^{1.67 + 1.09 \sigma} \nonumber \\
+			b & = 0.9625 - 0.17 \frac{\beta_0}{100} - 0.85 \Bigg(\frac{\beta_0}{100}\Bigg)^3 \nonumber \\ 
+			m & = \frac{m_{1.0}}{\sigma^b} \ \text{; where} \ m_{1.0} = 0.17 - 0.0333 \frac{\beta_0}{100} + 0.333 \Bigg(\frac{\beta_0}{100}\Bigg)^2 \nonumber \\
+			\delta & = K_{sh} \ K_{t,\delta} \ (\delta^*_0)_{10} + m \ \theta \nonumber  
+		\end{align}
+	\end{frame}
+
+	\begin{frame}{$\theta$ computation}
+		Starting from the \textbf{known} flow deflection angle\footnote{$\varepsilon = \beta_{inlet} - \beta_{outlet}$. $\beta_1$ and $\beta_2$ change with respect to the \textbf{axial speed}.}, $\varepsilon$, it is necessary to compute:
+		\begin{equation}
+			\theta = \varepsilon - i^* + \delta \nonumber
+		\end{equation}
+		Since $i^*$ and $\delta$ are functions of $\theta$, the computation of $\theta$ is made by an \textbf{iterative process}:
+		\begin{equation}
+			\theta = \varepsilon - i^*_{(\theta)} + \delta_{(\theta)} \nonumber
+		\end{equation}
+		Once found $\theta$, the \textbf{total pressure loss} coefficients, $\bar{\omega}_{*}$, are computed.   
+	\end{frame}
