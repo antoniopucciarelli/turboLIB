@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  24 SEP 2022 18:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.2.21)  25 SEP 2022 18:16
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1181,7 +1181,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathcal' in version `bold'
 \sympureletters=\mathgroup7
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/m/sl --> OT1/mathkerncmss/bx/sl on inp
-ut line 28.
+ut line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
 Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
@@ -1682,24 +1682,24 @@ File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 64.
-LaTeX Font Info:    ... okay on input line 64.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 
-64.
+66.
  (/usr/share/texmf/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1761,62 +1761,62 @@ e
 ))
 ABD: EveryShipout initializing macros
 \AtBeginShipoutBox=\box171
-Package hyperref Info: Link coloring OFF on input line 64.
-LaTeX Info: Redefining \ref on input line 64.
-LaTeX Info: Redefining \pageref on input line 64.
-LaTeX Info: Redefining \nameref on input line 64.
+Package hyperref Info: Link coloring OFF on input line 66.
+LaTeX Info: Redefining \ref on input line 66.
+LaTeX Info: Redefining \pageref on input line 66.
+LaTeX Info: Redefining \nameref on input line 66.
  (./main.out) (./main.out)
 \@outlinefile=\write8
 \openout8 = `main.out'.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 64.
+(Font)                  OT1/lmr/m/n --> OT1/cmss/m/n on input line 66.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 64.
+(Font)                  OT1/lmr/bx/n --> OT1/cmss/b/n on input line 66.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 64.
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 66.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 64.
+(Font)                  OT1/cmss/b/n --> OT1/lmss/b/n on input line 66.
 \symnumbers=\mathgroup12
-LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 64.
+LaTeX Font Info:    Redeclaring symbol font `pureletters' on input line 66.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `normal'
 (Font)                  OT1/mathkerncmss/m/sl --> OT1/lmss/m/it on input line 6
-4.
+6.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
 (Font)                  OT1/mathkerncmss/bx/sl --> OT1/lmss/m/it on input line 
-64.
+66.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/lmss/m/n --> OT1/lmr/m/n on input line 64.
-LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 64.
-LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 64.
+(Font)                  OT1/lmss/m/n --> OT1/lmr/m/n on input line 66.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 66.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/m/n on input line 64.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/m/n on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/bx/n --> OT1/lmss/m/n on input line 64.
-LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 64.
+(Font)                  OT1/lmss/bx/n --> OT1/lmss/m/n on input line 66.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/lmr/m/it --> OT1/lmss/m/it on input line 64.
+(Font)                  OT1/lmr/m/it --> OT1/lmss/m/it on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmr/bx/it --> OT1/lmss/m/it on input line 64.
-LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 64.
+(Font)                  OT1/lmr/bx/it --> OT1/lmss/m/it on input line 66.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 64.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 64.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/m/n on input line 66.
 LaTeX Font Info:    Overwriting symbol font `numbers' in version `bold'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 64.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 66.
 LaTeX Font Info:    Overwriting symbol font `pureletters' in version `bold'
-(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 64.
+(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `bold'
-(Font)                  OT1/lmss/b/n --> OT1/lmr/b/n on input line 64.
+(Font)                  OT1/lmss/b/n --> OT1/lmr/b/n on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
-(Font)                  OT1/lmss/b/n --> OT1/lmss/b/n on input line 64.
+(Font)                  OT1/lmss/b/n --> OT1/lmss/b/n on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 64.
+(Font)                  OT1/lmss/m/n --> OT1/lmss/b/n on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 64.
+(Font)                  OT1/lmss/m/it --> OT1/lmss/b/it on input line 66.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/lmtt/m/n --> OT1/lmtt/b/n on input line 64.
+(Font)                  OT1/lmtt/m/n --> OT1/lmtt/b/n on input line 66.
 \symboldpureletters=\mathgroup13
 
 (/usr/share/texlive/texmf-dist/tex/latex/translator/translator-basic-dictionary
@@ -1847,7 +1847,7 @@ Dictionary: translator-theorem-dictionary, Language: English
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.16} into 
 your preamble.
- on input line 64.
+ on input line 66.
 
 \c@lstlisting=\count541
 Package biblatex Info: Trying to load language 'english'...
@@ -1866,31 +1866,31 @@ Package biblatex Info: Data encoding 'utf8' specified.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (./main.bbl)
-Package biblatex Info: Reference section=0 on input line 64.
-Package biblatex Info: Reference segment=0 on input line 64.
+Package biblatex Info: Reference section=0 on input line 66.
+Package biblatex Info: Reference segment=0 on input line 66.
 (./main.nav)
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 6
-4.
+6.
  (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
 LaTeX Font Warning: Font shape `OT1/lmss/m/sc' in size <6> not available
-(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 64.
+(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 66.
 
 LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 
-64.
+66.
 (/usr/share/texmf/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 
 LaTeX Font Warning: Font shape `OT1/lmss/m/sc' in size <14.4> not available
-(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 67.
+(Font)              Font shape `OT1/lmr/m/sc' tried instead on input line 69.
 
 <figures/polimiLogo.jpeg, id=127, 1015.795pt x 428.60126pt>
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 67.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 69.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [1
 Non-PDF special ignored!
@@ -1913,7 +1913,7 @@ Non-PDF special ignored!
  <./figures/polimiLogo.jpeg>] (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 69.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 71.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [2
 
@@ -1988,7 +1988,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 17.
 ]) (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 72.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 74.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 
 [4
@@ -2069,7 +2069,7 @@ Package pdftex.def Info: figures/alphaAngles.pdf  used on input line 53.
  <./figures/alphaAngles.pdf>]
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 68.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 69.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 
 [12
@@ -2078,79 +2078,83 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 68.
 <figures/stagePerf.pdf, id=1051, 455.30101pt x 339.66899pt>
 File: figures/stagePerf.pdf Graphic file (type pdf)
 <use figures/stagePerf.pdf>
-Package pdftex.def Info: figures/stagePerf.pdf  used on input line 76.
+Package pdftex.def Info: figures/stagePerf.pdf  used on input line 77.
 (pdftex.def)             Requested size: 215.10196pt x 160.47371pt.
+
+Overfull \vbox (28.58282pt too high) detected at line 77
+ []
+
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 76.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 77.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
- [13
+[13
 
  <./figures/stagePerf.pdf>]
 <figures/efficiency.pdf, id=1138, 354.12299pt x 354.12299pt>
 File: figures/efficiency.pdf Graphic file (type pdf)
 <use figures/efficiency.pdf>
-Package pdftex.def Info: figures/efficiency.pdf  used on input line 92.
+Package pdftex.def Info: figures/efficiency.pdf  used on input line 93.
 (pdftex.def)             Requested size: 153.64493pt x 153.64778pt.
 
-Overfull \vbox (3.59436pt too high) detected at line 92
+Overfull \vbox (3.59436pt too high) detected at line 93
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 92.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 93.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
 [14
 
  <./figures/efficiency.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 94.
+(hyperref)                removing `subscript' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 94.
+(hyperref)                removing `subscript' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 94.
+(hyperref)                removing `subscript' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 94.
+(hyperref)                removing `subscript' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 94.
+(hyperref)                removing `subscript' on input line 95.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 94.
+(hyperref)                removing `math shift' on input line 95.
 
 (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 94.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 95.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [15
 
@@ -2167,7 +2171,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 109.
 ]) (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 75.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 77.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [17
 
@@ -2193,7 +2197,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 45.
 ] [22
 
 ]
-Overfull \vbox (13.41594pt too high) detected at line 72
+Overfull \vbox (2.41594pt too high) detected at line 72
  []
 
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
@@ -2290,7 +2294,7 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 218.
 ]) (./main.toc)
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 78.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 80.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [36
 
@@ -2489,16 +2493,16 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 149.
 ])
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 86.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 88.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [51
 
 ]
 LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <24.88> not available
-(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 97.
+(Font)              Font shape `OT1/lmss/m/sl' tried instead on input line 99.
 File: figures/polimiLogo.jpeg Graphic file (type jpg)
 <use figures/polimiLogo.jpeg>
-Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 97.
+Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 99.
 (pdftex.def)             Requested size: 61.45703pt x 25.93077pt.
  [52
 
@@ -2512,11 +2516,11 @@ Package pdftex.def Info: figures/polimiLogo.jpeg  used on input line 97.
 \tf@snm=\write11
 \openout11 = `main.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 100.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 100.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 100.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 100.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 2F9CE39D18311C2E81DC49B9392AC096;781.
 Package logreq Info: Writing requests to 'main.run.xml'.
@@ -2524,10 +2528,10 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 47926 strings out of 481239
- 1100333 string characters out of 5920377
+ 47927 strings out of 481239
+ 1100346 string characters out of 5920377
  1929884 words of memory out of 5000000
- 62019 multiletter control sequences out of 15000+600000
+ 62020 multiletter control sequences out of 15000+600000
  674285 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  73i,20n,112p,794b,1484s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2563,7 +2567,7 @@ s/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy5.pfb>
 are/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/public
 /lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (52 pages, 2525979 bytes).
+Output written on main.pdf (52 pages, 2526496 bytes).
 PDF statistics:
  3912 PDF objects out of 4296 (max. 8388607)
  3699 compressed objects within 37 object streams

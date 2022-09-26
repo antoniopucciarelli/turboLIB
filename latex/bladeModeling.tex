@@ -25,7 +25,7 @@
 		 The correction refers to a \textbf{Leiblein correction} model that uses the \textbf{positive} and \textbf{negative} blade section incidence angle\footnote{$i_c$ and $i_s$ are related to the total pressure losses, $\bar{\omega}_c$ and $\bar{\omega}_s$, that are \textbf{twice} the minimum total pressure loss, $\bar{\omega}$, obtained at the \textbf{design incidence angle}, $i^*$.}, $i_c$ and $i_s$. 
 		 \newline
 		 \newline
-		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Sec. 6.6]{axial2004}}. 
+		 These new stall incidence angles will build a new \textbf{mean} incidence angle, $i_m$, that can be seen as the \textbf{optimum} incidence angle related to the inlet Mach conditions\footnote{The implemented model follows \cite[Sec. 6.6]{axial2004}.}. 
 	\end{frame}
 	}
 	\begin{frame}{Compressibility losses -- \Romannum{2}}
@@ -62,7 +62,7 @@
 	\begin{frame}{Secondary flow losses}
 		These losses are relative to the \textbf{secondary flow} inside the compressor and are \textit{usually} \textbf{greater} than the other losses. These losses are related to \textbf{eddies} generated with the \textbf{blade-flow} interaction and \textbf{streamlines} displacement due to the presence of \textbf{pressure gradients}. 
 		\newline 
-		These losses are computed with \textbf{Howell}'s model \cite[Ch. 6]{axial2004}\footnote{Howell computed a secondary flow loss model that is automatically embedded into $\bar{\omega}_{profile}$: this model is used for the \textbf{estimation} of the stator/rotor \textbf{blade number}.}:
+		These losses are computed with \textbf{Howell}'s model \cite[Ch. 6]{axial2004}\footnote{Howell computed a secondary flow loss model that is automatically embedded into $\bar{\omega}_{profile}$. It is used for the \textbf{estimation} of the \textbf{blade number}.}:
 		\begin{align}
 			\bar{\beta} & = \frac{arctan( tan( \beta_1 ) + tan( \beta_2 ) )}{2}; & \text{\Romannum{1}} \nonumber \\ 
 			C_{L} & = 2 \ cos( \bar{\beta} ) \cdot \frac{tan( \beta_1 ) - tan( \beta_2 )}{\sigma}; & \text{\Romannum{2}} \nonumber \\
@@ -192,7 +192,7 @@
 		\end{equation}
 		\begin{itemize}
 			\item The \textbf{ODE} will be solved for $V_{a2}^2$ 
-			\item $s_2$ is computed from\footnote{$\bar{\omega}_{*}$ computation has been treated earlier in \hyperlink{lossesModeling}{{\color{blue} \nameref{lossesModeling}}}.} $\sum_i \bar{\omega}_{i}$.  
+			\item $s_2$ is computed from\footnote{$\bar{\omega}_{*}$ computation has been treated earlier in \hyperlink{lossesModeling}{{\color{blue} \nameref{lossesModeling}}}.} $\sum_i \bar{\omega}_{i}$
 			\item $\omega, V_{t1}, V_{t2} \ \text{and} \ T_{T1}$ are known
 		\end{itemize}
 	\end{frame}
